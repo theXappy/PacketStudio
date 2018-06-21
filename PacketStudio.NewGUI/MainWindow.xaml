@@ -1,0 +1,93 @@
+﻿<controls:RibbonWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI"
+        xmlns:controls="http://schemas.syncfusion.com/wpf"
+    xmlns:syncfusionskin="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+    xmlns:WpfJokes="clr-namespace:ByteArrayToPcap.NewGUI.WpfJokes"
+    syncfusionskin:SfSkinManager.VisualStyle="VisualStudio2015"
+        x:Class="ByteArrayToPcap.NewGUI.MainWindow"
+        mc:Ignorable="d"
+        Title="Byte Array To Pcap" Height="837" Width="1166" ShowHelpButton="False">
+    <controls:RibbonWindow.Resources>
+        <WpfJokes:WidthToRightPaddingConverter x:Key="WidthToRightPaddingConverter"/>
+    </controls:RibbonWindow.Resources>
+    <DockPanel>
+        <controls:Ribbon x:Name="ribbon" DockPanel.Dock="Top">
+            <controls:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23">
+                <controls:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="1,2">
+                    <controls:SplitButton x:Name="copyForCSharpButton" Label="Copy For C#" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png" ScrollViewer.CanContentScroll="True" Width="35" Click="CopyCSharpShort">
+                        <controls:DropDownMenuItem Header="0xAA, 0xBB" Click="CopyCSharpShort"/>
+                        <controls:DropDownMenuItem Header="new byte[]{0xAA, 0xBB};" Click="CopyCSharpLong"/>
+                    </controls:SplitButton>
+                    <controls:RibbonButton Focusable="False" IsLargeImageVisible="True" IsSmallImageVisible="True" Label="Normalize Hex" SizeForm="Large" Click="RibbonButton_Click"/>
+                </controls:RibbonBar>
+                <controls:RibbonBar  Focusable="False" Header="Live Preview" IsLauncherButtonVisible="False" Margin="1,2" >
+                    <controls:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Preview Enabled" IsChecked="True"/>
+                    <controls:RibbonButton x:Name="previewDelayButton" IconType="VectorImage" Label="Preivew Delay" Click="ShowPreviewDelayTextBox"/>
+                    <controls:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="previewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="previewDelayTextBox_PreviewKeyDown"/>
+                </controls:RibbonBar>
+            </controls:RibbonTab>
+        </controls:Ribbon>
+        <controls:DockingManager x:Name="DockManager" UseDocumentContainer="False" >
+            <controls:DockingManager.ClientControl>
+                <Grid>
+                    <controls:TabControlExt x:Name="tabControl" IsNewButtonEnabled="True" NewButtonClick="AddNewPacketTab" CloseMode="Delete" CloseButtonType="Hide" TabClosed="tabControl_TabClosed">
+                        <controls:TabControlExt.NewButtonTemplate>
+                            <ControlTemplate>
+                                <Button Content="+" MinWidth="30" Margin="6,2" Click="AddNewPacketTab" Background="#FFEEEEF2" BorderBrush="#FFB2B2B2" />
+                            </ControlTemplate>
+                        </controls:TabControlExt.NewButtonTemplate>
+                        <controls:TabItemExt Header="Packet 1" IsNewTab="False" Margin="1,1" MouseDown="PacketTab_MouseDown">
+                            <DockPanel LastChildFill="True">
+                                <local:PacketDefiner DockPanel.Dock="Top" Margin="5,5" Width="Auto" Height="Auto" />
+                            </DockPanel>
+                        </controls:TabItemExt>
+                    </controls:TabControlExt>
+                </Grid>
+            </controls:DockingManager.ClientControl>
+            <DockPanel controls:DockingManager.CanClose="False" 
+                       controls:DockingManager.IsContextMenuButtonVisible="False" 
+                       controls:DockingManager.Header="Live Preview" 
+                       controls:DockingManager.State="Dock" 
+                       controls:DockingManager.CanAutoHide="False" 
+                       controls:DockingManager.SideInDockedMode="Right" 
+                       controls:DockingManager.DesiredWidthInDockedMode="450">
+                <TreeView x:Name="previewTree" FontFamily="Consolas" FontSize="12" Margin="0" DockPanel.Dock="Top" Foreground="#FF000001" >
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeViewItem Header="" Background="White" Padding="{Binding ActualWidth, Converter={StaticResource WidthToRightPaddingConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}" />
+                </TreeView>
+            </DockPanel>
+            <DockPanel controls:DockingManager.CanClose="False" 
+                       controls:DockingManager.IsContextMenuButtonVisible="False" 
+                       controls:DockingManager.Header="Hex View" 
+                       controls:DockingManager.State="Dock" 
+                       controls:DockingManager.CanAutoHide="False" 
+                       controls:DockingManager.SideInDockedMode="Bottom" 
+                       controls:DockingManager.DesiredHeightInDockedMode="200">
+                <TextBox x:Name="hexBox" IsReadOnly="True" Background="White" Style="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:BalloonTip}}}" FontFamily="Consolas" FontSize="16" LostFocus="hexBox_LostFocus" />
+            </DockPanel>
+        </controls:DockingManager>
+    </DockPanel>
+</controls:RibbonWindow>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

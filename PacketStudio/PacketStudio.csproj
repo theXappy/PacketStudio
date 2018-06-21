@@ -1,0 +1,461 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PacketStudio</RootNamespace>
+    <AssemblyName>PacketStudio</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>psb.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Be.Windows.Forms.HexBox">
+      <HintPath>..\dependencies\be.HexEditor\Be.Windows.Forms.HexBox.dll</HintPath>
+    </Reference>
+    <Reference Include="CliWrap, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CliWrap.1.2.3\lib\net45\CliWrap.dll</HintPath>
+    </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\PacketDotNet.v2016\PacketDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.Grid.Base">
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Grid.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Grid.Windows">
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Grid.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.Base, Version=15.2460.0.40, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Shared.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.Windows, Version=15.2460.0.40, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Shared.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SpellChecker.Base, Version=15.2460.0.40, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.SpellChecker.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Tools.Base">
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Tools.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Tools.Windows, Version=15.2460.0.40, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\Syncfusion\Syncfusion.Tools.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\AdvancedTabControl.cs" />
+    <Compile Include="Controls\PacketsDef\IPacketDefiner.cs" />
+    <Compile Include="Controls\PacketsDef\RawPacketDefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\RawPacketDefControl.Designer.cs">
+      <DependentUpon>RawPacketDefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\SctpPacketDefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\SctpPacketDefControl.Designer.cs">
+      <DependentUpon>SctpPacketDefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\IpPacketDefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\IpPacketDefControl.Designer.cs">
+      <DependentUpon>IpPacketDefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\UdpPacketDefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\UdpPacketDefControl.Designer.cs">
+      <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TabPacketListItem.cs" />
+    <Compile Include="TabRenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TabRenameDialog.Designer.cs">
+      <DependentUpon>TabRenameDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ExpandingToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\PacketDefineControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\PacketDefineControl.Designer.cs">
+      <DependentUpon>PacketDefineControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controls\TreeViewWithArrows.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <EmbeddedResource Include="Controls\PacketsDef\SctpPacketDefControl.resx">
+      <DependentUpon>SctpPacketDefControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PacketsDef\IpPacketDefControl.resx">
+      <DependentUpon>IpPacketDefControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PacketsDef\UdpPacketDefControl.resx">
+      <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PacketsDef\PacketDefineControl.resx">
+      <DependentUpon>PacketDefineControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="TabRenameDialog.resx">
+      <DependentUpon>TabRenameDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bytesToPcap.ico" />
+    <None Include="NewAgeIcons\icons8-open-96.png" />
+    <None Include="NewAgeIcons\icons8-save-96.png" />
+    <Content Include="psb.ico" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\address-book-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\appointment-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\bookmark-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\contact-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-open.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-print-preview.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-print.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-properties.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-save-as.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\document-save.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-clear.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-copy.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-cut.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-delete.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-find-replace.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-find.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-paste.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-redo.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-select-all.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\edit-undo.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\folder-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-indent-less.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-indent-more.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-justify-center.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-justify-fill.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-justify-left.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-justify-right.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-text-bold.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-text-italic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-text-strikethrough.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\format-text-underline.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-bottom.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-down.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-first.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-home.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-jump.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-last.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-next.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-previous.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-top.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\go-up.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\list-add.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\list-remove.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-forward.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-mark-junk.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-mark-not-junk.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-message-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-reply-all.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-reply-sender.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\mail-send-receive.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-eject.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-playback-pause.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-playback-start.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-playback-stop.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-record.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-seek-backward.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-seek-forward.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-skip-backward.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\media-skip-forward.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\process-stop.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\system-lock-screen.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\system-log-out.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\system-search.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\system-shutdown.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\tab-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\view-fullscreen.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\view-refresh.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\actions\window-new.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\animations\process-working.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\accessories-calculator.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\accessories-character-map.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\accessories-text-editor.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\help-browser.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\internet-group-chat.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\internet-mail.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\internet-news-reader.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\internet-web-browser.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\office-calendar.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-accessibility.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-assistive-technology.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-font.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-keyboard-shortcuts.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-locale.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-multimedia.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-remote-desktop.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-screensaver.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-theme.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-desktop-wallpaper.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-system-network-proxy.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-system-session.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\preferences-system-windows.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\system-file-manager.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\system-installer.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\system-software-update.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\system-users.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\utilities-system-monitor.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\apps\utilities-terminal.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-accessories.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-development.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-games.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-graphics.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-internet.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-multimedia.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-office.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-other.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\applications-system.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\preferences-desktop-peripherals.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\preferences-desktop.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\categories\preferences-system.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\audio-card.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\audio-input-microphone.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\battery.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\camera-photo.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\camera-video.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\computer.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\drive-harddisk.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\drive-optical.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\drive-removable-media.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\input-gaming.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\input-keyboard.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\input-mouse.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\media-flash.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\media-floppy.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\media-optical.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\multimedia-player.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\network-wired.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\network-wireless.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\printer.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\devices\video-display.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-favorite.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-important.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-photos.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-readonly.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-symbolic-link.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-system.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emblems\emblem-unreadable.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-angel.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-crying.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-devilish.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-glasses.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-grin.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-kiss.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-monkey.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-plain.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-sad.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-smile-big.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-smile.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-surprise.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\emotes\face-wink.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\application-certificate.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\application-x-executable.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\audio-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\font-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\image-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\package-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\text-html.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\text-x-generic-template.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\text-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\text-x-script.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\video-x-generic.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-address-book.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-calendar.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-document-template.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-document.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-drawing-template.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-drawing.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-presentation-template.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-presentation.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-spreadsheet-template.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\mimetypes\x-office-spreadsheet.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\folder-remote.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\folder-saved-search.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\folder.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\network-server.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\network-workgroup.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\start-here.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\user-desktop.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\user-home.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\places\user-trash.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\audio-volume-high.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\audio-volume-low.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\audio-volume-medium.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\audio-volume-muted.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\battery-caution.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\dialog-error.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\dialog-information.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\dialog-warning.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\folder-drag-accept.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\folder-open.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\folder-visiting.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\image-loading.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\image-missing.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\mail-attachment.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-error.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-idle.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-offline.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-receive.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-transmit-receive.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-transmit.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\network-wireless-encrypted.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\printer-error.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\software-update-available.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\software-update-urgent.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\user-trash-full.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-clear-night.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-clear.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-few-clouds-night.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-few-clouds.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-overcast.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-severe-alert.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-showers-scattered.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-showers.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-snow.png" />
+    <Content Include="tango-icon-theme-0.8.90\16x16\status\weather-storm.png" />
+    <None Include="tango-icon-theme-0.8.90\16x16\actions\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\actions\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\animations\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\animations\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\apps\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\apps\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\categories\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\categories\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\devices\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\devices\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\emblems\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\emblems\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\emotes\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\emotes\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\mimetypes\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\mimetypes\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\places\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\places\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\16x16\status\Makefile.am" />
+    <None Include="tango-icon-theme-0.8.90\16x16\status\Makefile.in" />
+    <None Include="tango-icon-theme-0.8.90\32x32\emblems\emblem-system.png" />
+    <None Include="tango-icon-theme-0.8.90\32x32\actions\edit-copy_csharp.png" />
+    <None Include="tango-icon-theme-0.8.90\32x32\actions\document-save.png" />
+    <None Include="tango-icon-theme-0.8.90\32x32\actions\document-open.png" />
+    <None Include="tango-icon-theme-0.8.90\32x32\actions\document-new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj">
+      <Project>{E7558B32-25C1-4175-97E5-CA1BFFE951F8}</Project>
+      <Name>PacketStudio.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj">
+      <Project>{587fb8b1-bc09-40d5-950d-4cd0a3c5f855}</Project>
+      <Name>PacketStudio.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
