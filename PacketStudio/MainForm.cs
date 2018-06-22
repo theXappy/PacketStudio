@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,7 +17,6 @@ using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.Properties;
 using Syncfusion.Drawing;
-using Syncfusion.Windows.Forms;
 using Syncfusion.Windows.Forms.Tools;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
@@ -26,9 +24,10 @@ using Action = System.Action;
 
 namespace PacketStudio
 {
-	public partial class MainForm : RibbonForm
+    public partial class MainForm : RibbonForm
 	{
-		private WiresharkInterop _wireshark;
+        private TempPacketsSaver _tps = new TempPacketsSaver();
+        private WiresharkInterop _wireshark;
 		private TSharkInterop _tshark;
 
 		CancellationTokenSource _tokenSource;
@@ -797,10 +796,10 @@ namespace PacketStudio
 			sw.Dispose();
 		}
 
-		private void SaveAsPcap(string path)
+        private void SaveAsPcap(string path)
 		{
 			List<byte[]> packets = GetAllDefinedPackets();
-			string tempFilePath = WiresharkInterop.SaveToTempPcap(packets);
+            string tempFilePath = _tps.WritePackets(packets);
 			File.Move(tempFilePath,path);
 		}
 

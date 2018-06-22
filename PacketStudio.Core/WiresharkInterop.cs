@@ -34,7 +34,7 @@ namespace PacketStudio.Core
 
 		public Task<ExecutionOutput> ExportToWsAsync(IEnumerable<byte[]> packets)
 		{
-			string savedPcapPath = SaveToTempPcap(packets);
+			string savedPcapPath = _packetsSaver.WritePackets(packets);
 			// Running wireshark
 			// Note that when wireshark exists it triggers a live preview update since
 			// the user might have enabled/disabled some protocols/preferences so we need to update the current view!
@@ -51,19 +51,6 @@ namespace PacketStudio.Core
 			{
 				// ignored
 			}
-		}
-
-		public static string SaveToTempPcap(IEnumerable<byte[]> packets)
-		{
-			string pcapPath = Path.ChangeExtension(Path.GetTempFileName(), "pcap");
-			CaptureFileWriterDevice cfwd = new CaptureFileWriterDevice(pcapPath);
-			cfwd.Open();
-			foreach (byte[] packet in packets)
-			{
-				cfwd.Write(packet);
-			}
-			cfwd.Close();
-			return pcapPath;
 		}
 	}
 }
