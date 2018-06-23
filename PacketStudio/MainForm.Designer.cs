@@ -479,7 +479,7 @@ namespace PacketStudio
             // 
             // pcapToolStripButton
             // 
-            this.pcapToolStripButton.Image = global::PacketStudio.Properties.Resources.wireshark;
+            this.pcapToolStripButton.Image = global::PacketStudio.Properties.Resources.WS;
             this.pcapToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.pcapToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.pcapToolStripButton.Name = "pcapToolStripButton";
@@ -491,7 +491,7 @@ namespace PacketStudio
             // 
             // toolStripButton5
             // 
-            this.toolStripButton5.Image = global::PacketStudio.Properties.Resources.ws_dir;
+            this.toolStripButton5.Image = global::PacketStudio.Properties.Resources.ws_dir1;
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
             this.toolStripButton5.Size = new System.Drawing.Size(99, 56);

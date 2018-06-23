@@ -160,4 +160,10 @@
   <data name="csharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\NewAgeIcons\icons8-cs-100.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="WS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\NewAgeIcons\WS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ws_dir1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\NewAgeIcons\ws_dir.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
