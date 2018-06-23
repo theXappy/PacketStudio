@@ -313,8 +313,6 @@ namespace PacketStudio
             this.ribbonControlAdv1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.ribbonControlAdv1.Header.AddMainItem(homeToolStripTabItem);
             this.ribbonControlAdv1.Header.AddMainItem(previewToolStripTabItem);
-            this.ribbonControlAdv1.Header.AddQuickItem(new Syncfusion.Windows.Forms.Tools.QuickButtonReflectable(toolStripButton1));
-            this.ribbonControlAdv1.Header.AddQuickItem(new Syncfusion.Windows.Forms.Tools.QuickButtonReflectable(toolStripButton3));
             this.ribbonControlAdv1.LauncherStyle = Syncfusion.Windows.Forms.Tools.LauncherStyle.Metro;
             this.ribbonControlAdv1.Location = new System.Drawing.Point(2, 0);
             this.ribbonControlAdv1.MenuButtonFont = new System.Drawing.Font("Segoe UI", 8.25F);
