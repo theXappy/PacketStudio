@@ -56,9 +56,9 @@ namespace PacketStudio
             this.ribbonControlAdv1 = new Syncfusion.Windows.Forms.Tools.RibbonControlAdv();
             this.homeToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.newOpenSaveToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.copyToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.wiresharkToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
@@ -335,7 +335,7 @@ namespace PacketStudio
             this.ribbonControlAdv1.QuickPanelImageLayout = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ribbonControlAdv1.RibbonHeaderImage = Syncfusion.Windows.Forms.Tools.RibbonHeaderImage.None;
             this.ribbonControlAdv1.RibbonStyle = Syncfusion.Windows.Forms.Tools.RibbonStyle.TouchStyle;
-            this.ribbonControlAdv1.SelectedTab = this.homeToolStripTabItem;
+            this.ribbonControlAdv1.SelectedTab = this.previewToolStripTabItem;
             this.ribbonControlAdv1.ShowQuickItemsDropDownButton = false;
             this.ribbonControlAdv1.ShowRibbonDisplayOptionButton = false;
             this.ribbonControlAdv1.Size = new System.Drawing.Size(1396, 119);
@@ -375,9 +375,9 @@ namespace PacketStudio
             this.newOpenSaveToolStrip.Image = null;
             this.newOpenSaveToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.newOpenSaveToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
-            this.toolStripButton2,
-            this.toolStripButton3});
+            this.newToolStripButton,
+            this.openToolStripButton,
+            this.saveToolStripButton});
             this.newOpenSaveToolStrip.Location = new System.Drawing.Point(0, 1);
             this.newOpenSaveToolStrip.Name = "newOpenSaveToolStrip";
             this.newOpenSaveToolStrip.Office12Mode = false;
@@ -386,38 +386,41 @@ namespace PacketStudio
             this.newOpenSaveToolStrip.Size = new System.Drawing.Size(147, 64);
             this.newOpenSaveToolStrip.TabIndex = 0;
             // 
-            // toolStripButton1
+            // newToolStripButton
             // 
-            this.toolStripButton1.Image = global::PacketStudio.Properties.Resources.na_new;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(36, 55);
-            this.toolStripButton1.Text = "New";
-            this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton1.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            this.newToolStripButton.Image = global::PacketStudio.Properties.Resources.na_new;
+            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.newToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.newToolStripButton.Name = "newToolStripButton";
+            this.SetShortcut(this.newToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N))));
+            this.newToolStripButton.Size = new System.Drawing.Size(36, 55);
+            this.newToolStripButton.Text = "New";
+            this.newToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.newToolStripButton.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
-            // toolStripButton2
+            // openToolStripButton
             // 
-            this.toolStripButton2.Image = global::PacketStudio.Properties.Resources.na_open;
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(40, 55);
-            this.toolStripButton2.Text = "Open";
-            this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton2.Click += new System.EventHandler(this.loadFileToolStripMenuItem_Click);
+            this.openToolStripButton.Image = global::PacketStudio.Properties.Resources.na_open;
+            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.openToolStripButton.Name = "openToolStripButton";
+            this.SetShortcut(this.openToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O))));
+            this.openToolStripButton.Size = new System.Drawing.Size(40, 55);
+            this.openToolStripButton.Text = "Open";
+            this.openToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.openToolStripButton.Click += new System.EventHandler(this.loadFileToolStripMenuItem_Click);
             // 
-            // toolStripButton3
+            // saveToolStripButton
             // 
-            this.toolStripButton3.Image = global::PacketStudio.Properties.Resources.na_save;
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(36, 55);
-            this.toolStripButton3.Text = "Save";
-            this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton3.Click += new System.EventHandler(this.saveFileToolStripMenuItem_Click);
+            this.saveToolStripButton.Image = global::PacketStudio.Properties.Resources.na_save;
+            this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.saveToolStripButton.Name = "saveToolStripButton";
+            this.SetShortcut(this.saveToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S))));
+            this.saveToolStripButton.Size = new System.Drawing.Size(36, 55);
+            this.saveToolStripButton.Text = "Save";
+            this.saveToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.saveToolStripButton.Click += new System.EventHandler(this.saveFileToolStripMenuItem_Click);
             // 
             // copyToolStrip
             // 
@@ -443,7 +446,7 @@ namespace PacketStudio
             // 
             // toolStripButton4
             // 
-            this.toolStripButton4.Image = global::PacketStudio.Properties.Resources.edit_copy_csharp;
+            this.toolStripButton4.Image = global::PacketStudio.Properties.Resources.csharp;
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Margin = new System.Windows.Forms.Padding(2);
             this.toolStripButton4.Name = "toolStripButton4";
@@ -519,6 +522,7 @@ namespace PacketStudio
             this.livePreviewToolStrip.ForeColor = System.Drawing.Color.Black;
             this.livePreviewToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.livePreviewToolStrip.Image = null;
+            this.livePreviewToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.livePreviewToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewtoolStripButton,
             this.previewContextToolStripButton,
@@ -530,40 +534,40 @@ namespace PacketStudio
             this.livePreviewToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.livePreviewToolStrip.ShowCaption = false;
             this.livePreviewToolStrip.ShowLauncher = false;
-            this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 60);
+            this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 64);
             this.livePreviewToolStrip.TabIndex = 3;
             // 
             // previewtoolStripButton
             // 
             this.previewtoolStripButton.Checked = true;
             this.previewtoolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.previewtoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.previewtoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("previewtoolStripButton.Image")));
+            this.previewtoolStripButton.Image = global::PacketStudio.Properties.Resources.preview;
             this.previewtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.previewtoolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.previewtoolStripButton.Name = "previewtoolStripButton";
-            this.previewtoolStripButton.Size = new System.Drawing.Size(88, 51);
+            this.previewtoolStripButton.Size = new System.Drawing.Size(88, 55);
             this.previewtoolStripButton.Text = "Enable Preview";
+            this.previewtoolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewtoolStripButton.Click += new System.EventHandler(this.livePreviewToolStripMenuItem_Click);
             // 
             // previewContextToolStripButton
             // 
             this.previewContextToolStripButton.Checked = true;
             this.previewContextToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.previewContextToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.previewContextToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("previewContextToolStripButton.Image")));
+            this.previewContextToolStripButton.Image = global::PacketStudio.Properties.Resources.preview_cntx;
             this.previewContextToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.previewContextToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.previewContextToolStripButton.Name = "previewContextToolStripButton";
-            this.previewContextToolStripButton.Size = new System.Drawing.Size(106, 51);
+            this.previewContextToolStripButton.Size = new System.Drawing.Size(106, 55);
             this.previewContextToolStripButton.Text = "Preview In Context";
+            this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
             // 
             // toolStripLabel2
             // 
             this.toolStripLabel2.Margin = new System.Windows.Forms.Padding(2);
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(80, 51);
+            this.toolStripLabel2.Size = new System.Drawing.Size(80, 55);
             this.toolStripLabel2.Text = "Preview Delay:";
             // 
             // livePrevToolStripTextBox
@@ -571,7 +575,7 @@ namespace PacketStudio
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
-            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 51);
+            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 23);
             this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.livePreviewDelayBox_TextChanged);
             // 
             // exitOfficeButton
@@ -653,9 +657,9 @@ namespace PacketStudio
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem homeToolStripTabItem;
 		private TreeViewWithArrows packetTreeView;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx newOpenSaveToolStrip;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
-		private System.Windows.Forms.ToolStripButton toolStripButton2;
-		private System.Windows.Forms.ToolStripButton toolStripButton3;
+		private System.Windows.Forms.ToolStripButton newToolStripButton;
+		private System.Windows.Forms.ToolStripButton openToolStripButton;
+		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx copyToolStrip;
 		private System.Windows.Forms.ToolStripButton toolStripButton4;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem toolStripTabItem2;

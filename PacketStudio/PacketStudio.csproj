@@ -193,6 +193,8 @@
     <Content Include="bytesToPcap.ico" />
     <None Include="NewAgeIcons\icons8-open-96.png" />
     <None Include="NewAgeIcons\icons8-save-96.png" />
+    <None Include="NewAgeIcons\icons8-eye-96.png" />
+    <None Include="NewAgeIcons\icons8-share-500.png" />
     <Content Include="psb.ico" />
     <Content Include="tango-icon-theme-0.8.90\16x16\actions\address-book-new.png" />
     <Content Include="tango-icon-theme-0.8.90\16x16\actions\appointment-new.png" />
