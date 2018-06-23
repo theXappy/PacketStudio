@@ -73,6 +73,16 @@ namespace PacketStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap csharp {
+            get {
+                object obj = ResourceManager.GetObject("csharp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap document_new {
             get {
                 object obj = ResourceManager.GetObject("document_new", resourceCulture);
@@ -146,6 +156,26 @@ namespace PacketStudio.Properties {
         internal static System.Drawing.Bitmap na_save {
             get {
                 object obj = ResourceManager.GetObject("na_save", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap preview {
+            get {
+                object obj = ResourceManager.GetObject("preview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap preview_cntx {
+            get {
+                object obj = ResourceManager.GetObject("preview_cntx", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
