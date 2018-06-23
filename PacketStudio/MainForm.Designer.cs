@@ -335,7 +335,7 @@ namespace PacketStudio
             this.ribbonControlAdv1.QuickPanelImageLayout = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ribbonControlAdv1.RibbonHeaderImage = Syncfusion.Windows.Forms.Tools.RibbonHeaderImage.None;
             this.ribbonControlAdv1.RibbonStyle = Syncfusion.Windows.Forms.Tools.RibbonStyle.TouchStyle;
-            this.ribbonControlAdv1.SelectedTab = this.previewToolStripTabItem;
+            this.ribbonControlAdv1.SelectedTab = this.homeToolStripTabItem;
             this.ribbonControlAdv1.ShowQuickItemsDropDownButton = false;
             this.ribbonControlAdv1.ShowRibbonDisplayOptionButton = false;
             this.ribbonControlAdv1.Size = new System.Drawing.Size(1396, 119);
@@ -575,7 +575,7 @@ namespace PacketStudio
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
-            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 55);
             this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.livePreviewDelayBox_TextChanged);
             // 
             // exitOfficeButton
