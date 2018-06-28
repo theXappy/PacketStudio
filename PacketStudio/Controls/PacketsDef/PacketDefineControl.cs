@@ -32,6 +32,15 @@ namespace PacketStudio.Controls.PacketsDef
                 { HexStreamType.IpPayload , 34 },
             };
 
+        public Dictionary<HexStreamType, Func<Control>> _streamTypeToPacketDefineControlFactory { get; set; } =
+            new Dictionary<HexStreamType, Func<Control>>
+            {
+                { HexStreamType.RawEthernet , ()=>{return new RawPacketDefControl();} },
+                { HexStreamType.UdpPayload , ()=>{return new UdpPacketDefControl();} },
+                { HexStreamType.SctpPayload, ()=>{return new SctpPacketDefControl();} },
+                { HexStreamType.IpPayload , ()=>{return new IpPacketDefControl();} },
+            };
+
 
 
         public PacketDefineControl() : this(null)
@@ -132,11 +141,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
         }
 
-        private void InvokeContentChanged()
-        {
-            EventArgs args = new EventArgs();
-            ContentChanged?.Invoke(this, args);
-        }
+        private void InvokeContentChanged() => ContentChanged?.Invoke(this, new EventArgs());
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -150,22 +155,17 @@ namespace PacketStudio.Controls.PacketsDef
             lastDefiner.PacketChanged -= PacketDefiner_PacketChanged;
             packetDefPanel.Controls.Clear();
             Control packetDefControl;
-            switch (PacketType)
+            Func<Control> controlCreatorFunc;
+            if(!_streamTypeToPacketDefineControlFactory.TryGetValue(PacketType,out controlCreatorFunc))
             {
-                default:
-                case HexStreamType.RawEthernet:
-                    packetDefControl = new RawPacketDefControl();
-                    break;
-                case HexStreamType.UdpPayload:
-                    packetDefControl = new UdpPacketDefControl();
-                    break;
-                case HexStreamType.SctpPayload:
-                    packetDefControl = new SctpPacketDefControl();
-                    break;
-                case HexStreamType.IpPayload:
-                    packetDefControl = new IpPacketDefControl();
-                    break;
+                // Couldn't find a creation function
+                throw new ArgumentException($"Can't find creation method for packets of type '{PacketType}'.\r\n" +
+                    $"This could be the result of sloppy addition of new encapsulation\r\n" +
+                    $"type without updating the {nameof(PacketDefineControl)} class.");
             }
+            // Calling C'tor of the desired packet def control
+            packetDefControl = controlCreatorFunc();
+            
             packetDefPanel.Controls.Add(packetDefControl);
             packetDefControl.Dock = DockStyle.Fill;
             ((IPacketDefiner)packetDefControl).PacketChanged += PacketDefiner_PacketChanged;
