@@ -103,7 +103,7 @@ namespace PacketStudio
 				{
 					MessageBox.Show(
 						"Wireshark path not saved in the settings and couldn't be found in any of the default paths.\r\n\r\n" +
-						"Please select the location in the next dialog","PacketStudio - Problem",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+						"Please select the location in the next dialog",Text+" - Init Problem",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
 					_isConstructing = true;
 					locateWireshark_Click(null, null);
 					_isConstructing = false;
@@ -153,8 +153,8 @@ namespace PacketStudio
 
 			if (!File.Exists(wsPath))
 			{
-				MessageBox.Show($"No file found at the given wireshark path.\r\n{wsPath}");
-				return;
+				MessageBox.Show($"No file found at the given wireshark path.\r\n{wsPath}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
 			}
 
 			List<byte[]> packets;
@@ -164,7 +164,7 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show(ex.Message,"PacketStudio",MessageBoxButtons.OK,MessageBoxIcon.Error);
 				return;
 			}
 
@@ -837,8 +837,8 @@ namespace PacketStudio
 
 			if (!anyPacketsFound)
 			{
-				MessageBox.Show("No packets to save");
-				return DialogResult.OK;
+				MessageBox.Show("No packets to save", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return DialogResult.OK;
 			}
 
 			Action<string> saveFunc = _filterIndexToSaveFunc[sfd.FilterIndex];
@@ -870,8 +870,8 @@ namespace PacketStudio
 		{
 			if (!File.Exists(path))
 			{
-				MessageBox.Show($"No such file '{path}'");
-				return;
+				MessageBox.Show($"No such file '{path}'", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
 			}
 
 			IPacketsProvider provider = null;
@@ -891,8 +891,8 @@ namespace PacketStudio
 					provider = new PcapNGProvider(path);
 					break;
 				default:
-					MessageBox.Show($"Unsupported extension '{ext}'");
-					break;
+					MessageBox.Show($"Unsupported extension '{ext}'", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
 			}
 
 			if (provider != null)
@@ -940,8 +940,8 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Error reading packets from file.\r\nError Message: {ex.Message}");
-			}
+				MessageBox.Show($"Error reading packets from file.\r\nError Message: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 			finally
 			{
 				provider.Dispose();
@@ -1254,8 +1254,8 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Error getting the current packet's data.\r\n{ex.Message}");
-				return;
+				MessageBox.Show($"Error getting the current packet's data.\r\n{ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
 			}
 			StringBuilder sb = new StringBuilder();
 			sb.AppendLine("new byte[]");

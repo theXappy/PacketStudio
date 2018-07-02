@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>psb.ico</ApplicationIcon>
+    <ApplicationIcon>NewAgeIcons\ps_icon_new.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Be.Windows.Forms.HexBox">
@@ -158,6 +158,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PacketsDef\PacketDefineControl.resx">
       <DependentUpon>PacketDefineControl.cs</DependentUpon>
@@ -195,6 +196,8 @@
     <None Include="NewAgeIcons\icons8-save-96.png" />
     <None Include="NewAgeIcons\icons8-eye-96.png" />
     <None Include="NewAgeIcons\icons8-share-500.png" />
+    <Content Include="NewAgeIcons\ps_icon_new.ico" />
+    <Content Include="NewAgeIcons\ps_white.ico" />
     <Content Include="psb.ico" />
     <Content Include="tango-icon-theme-0.8.90\16x16\actions\address-book-new.png" />
     <Content Include="tango-icon-theme-0.8.90\16x16\actions\appointment-new.png" />

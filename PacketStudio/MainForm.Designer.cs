@@ -494,7 +494,7 @@ namespace PacketStudio
             this.toolStripButton5.Image = global::PacketStudio.Properties.Resources.ws_dir1;
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(99, 56);
+            this.toolStripButton5.Size = new System.Drawing.Size(99, 49);
             this.toolStripButton5.Text = "Locate Wireshark";
             this.toolStripButton5.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton5.Click += new System.EventHandler(this.locateWireshark_Click);

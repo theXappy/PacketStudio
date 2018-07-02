@@ -23,7 +23,7 @@ namespace PacketStudio.Controls.PacketsDef
         public HexStreamType PacketType { get; private set; }
         public bool IsHexStream => _deserializer.IsHexStream(Text);
 
-        public Dictionary<HexStreamType, int> _streamTypeToFirstOffset { get; set; } =
+        private Dictionary<HexStreamType, int> _streamTypeToFirstOffset { get; set; } =
             new Dictionary<HexStreamType, int>
             {
                 { HexStreamType.RawEthernet , 0 },
@@ -32,7 +32,7 @@ namespace PacketStudio.Controls.PacketsDef
                 { HexStreamType.IpPayload , 34 },
             };
 
-        public Dictionary<HexStreamType, Func<Control>> _streamTypeToPacketDefineControlFactory { get; set; } =
+        private Dictionary<HexStreamType, Func<Control>> _streamTypeToPacketDefineControlFactory { get; set; } =
             new Dictionary<HexStreamType, Func<Control>>
             {
                 { HexStreamType.RawEthernet , ()=>{return new RawPacketDefControl();} },
