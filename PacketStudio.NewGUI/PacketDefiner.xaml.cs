@@ -36,43 +36,29 @@ namespace ByteArrayToPcap.NewGUI
 				{
 					case 1: // UDP
 						string udpStreamIdStr = streamIdTextbox.Text;
-						try
-						{
-							var parsedId = int.Parse(udpStreamIdStr);
-						}
-						catch (Exception)
-						{
-							return false;
-						}
-						break;
+						return int.TryParse(udpStreamIdStr, out _);
 					case 2: // SCPT
 						string sctpStreamIdStr = streamIdTextbox.Text;
-						try
-						{
-							var parsedId = int.Parse(sctpStreamIdStr);
-						}
-						catch (Exception)
-						{
-							return false;
-						}
+					    if (!int.TryParse(sctpStreamIdStr, out _))
+					        return false;
 						string sctpPpid = ppidTextbox.Text;
-						try
+						if (sctpPpid.StartsWith("0x")) // PPID defined with HEX value
 						{
-							if (sctpPpid.StartsWith("0x")) // PPID defined with HEX value
-							{
-								sctpPpid = sctpPpid.Substring(2);
-								Convert.ToInt64(sctpPpid, 16);
-							}
-							else // PPID defined with decimal value
-							{
-								var parsedID = int.Parse(sctpPpid);
-							}
+						    try
+						    {
+						        sctpPpid = sctpPpid.Substring(2);
+						        Convert.ToInt64(sctpPpid, 16);
+                            }
+						    catch
+						    {
+						        return false;
+						    }
 						}
-						catch (Exception)
+						else // PPID defined with decimal value
 						{
-							return false;
+						    return int.TryParse(sctpPpid, out _);
 						}
-						break;
+					    break;
 				}
 				return true;
 			}
