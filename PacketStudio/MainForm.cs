@@ -16,6 +16,7 @@ using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.Properties;
+using PacketStudio.Utils;
 using Syncfusion.Drawing;
 using Syncfusion.Windows.Forms.Tools;
 using Action = System.Action;
@@ -176,7 +177,7 @@ namespace PacketStudio
 			List<byte[]> packets = new List<byte[]>();
 			foreach (TabPage tabPage in tabControl.TabPages)
 			{
-				if (tabPage.Name == "plusTab") // plus tab is a special case
+				if (tabPage.IsPlusTab()) // plus tab is a special case
 					continue;
 
 				PacketDefineControl pdc = null;
@@ -270,7 +271,7 @@ namespace PacketStudio
 			int index = 1;
 			foreach (TabPage tabPage in tabControl.TabPages)
 			{
-				if (tabPage.Name == "plusTab") // plus tab is a special case
+				if (tabPage.IsPlusTab()) // plus tab is a special case
 					continue;
 
 				TabPacketListItem tpli = new TabPacketListItem(index.ToString().PadLeft(digitsRequired,'0'),tabPage);
@@ -673,7 +674,7 @@ namespace PacketStudio
 			}
 			_lastSelectedPage = tabControl.SelectedTab;
 
-			if (tabControl.SelectedTab.Name == "plusTab")
+			if (tabControl.SelectedTab.IsPlusTab())
 			{
 				// The selected tab is the special 'Plus Tab' - we should create a new packet
 				TabPage plusTab = tabControl.SelectedTab;
@@ -727,7 +728,7 @@ namespace PacketStudio
 				// Use clicked a tab with it's middle mouse button, probably trying to remove the tab
 				// (Common UI respond like in Chrome)
 
-				if (pointedTab?.Name == "plusTab") // Not removing the plus tab
+				if (pointedTab.IsPlusTab()) // Not removing the plus tab
 					return;
 
 				if (tabs.Count == 2)
@@ -750,7 +751,7 @@ namespace PacketStudio
 			{
 				// Use clicked a tab with it's right mouse button, probably looking for a context menu (to rename)
 
-				if (pointedTab?.Name == "plusTab") // Not renaming the plus tab
+				if (pointedTab.IsPlusTab()) // Not renaming the plus tab
 					return;
 
 				_tabRequestingRename = pointedTab;
@@ -916,7 +917,7 @@ namespace PacketStudio
 			List<TabPage> toRemove = new List<TabPage>();
 			foreach (TabPage tabPage in tabControl.TabPages)
 			{
-				if (tabPage.Name == "plusTab")
+				if (tabPage.IsPlusTab())
 				{
 					localPlusTab = tabPage;
 
@@ -1040,7 +1041,7 @@ namespace PacketStudio
 			List<TabPage> toRemove = new List<TabPage>();
 			foreach (TabPage tabPage in tabControl.TabPages)
 			{
-				if (tabPage.Name == "plusTab")
+				if (tabPage.IsPlusTab())
 				{
 					localPlusTab = tabPage;
 
@@ -1323,7 +1324,7 @@ namespace PacketStudio
 				return;
 			}
 
-			_plusTab = tabControl.TabPages.OfType<TabPage>().SingleOrDefault(page => page.Name == "plusTab");
+			_plusTab = tabControl.TabPages.OfType<TabPage>().SingleOrDefault(page => page.IsPlusTab());
 			if (_plusTab != null)
 			{
 				_rectangle = tabControl.GetTabRect(tabControl.TabCount - 1);
@@ -1350,12 +1351,7 @@ namespace PacketStudio
 			UpdatePacketListBox();
 		}
 
-		private void closeButton_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void packetTabsList_SelectedIndexChanged(object sender, EventArgs e)
+	    private void packetTabsList_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			TabPacketListItem tpli = packetTabsList.SelectedItem as TabPacketListItem;
 			if (tpli != null)
