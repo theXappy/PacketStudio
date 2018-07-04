@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -107,10 +108,16 @@ namespace PacketStudio
 			_tokenSource = new CancellationTokenSource();
 			_unsavedChangesExist = false;
 
-            // Register drag-drop events for all controls in the window, to allow file dropping
-	        WireDragDrop(this.Controls);
+            
+            // Allow dropping in the background of the form
+            WireDragDrop(new Control[1]{this});
+		    // Register drag-drop events for all controls registered directly under the main form, such as the main tab control
+            WireDragDrop(this.Controls);
+            // Allow dropping in the dock manager's panels (i.e. hex view panel, tree view panel)
+	        WireDragDrop(this.dockingManager1.Controls.Iterate());
+
 	    }
-	    private void WireDragDrop(Control.ControlCollection ctls)
+	    private void WireDragDrop(IEnumerable ctls)
 	    {
 	        foreach (Control ctl in ctls)
 	        {
