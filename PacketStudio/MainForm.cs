@@ -63,20 +63,10 @@ namespace PacketStudio
 			tabControl_SelectedIndexChanged(null, null);
 
 			_askAboutUnsaved = Settings.Default.lastAskToSaveSetting;
-			//askToSaveToolStripMenuItem.Checked = _askAboutUnsaved;
-
-
-			//previewInBatPContextToolStripMenuItem.Checked = Settings.Default.livePreviewInContext;
 
 			bool previewActive = Settings.Default.livePreviewActive;
-			//livePreviewToolStripMenuItem.Checked = previewActive;
 			previewtoolStripButton.Checked = previewActive;
-			if (!previewActive)
-			{
-				//ShrinkWindow();
-			}
 			_delayMs = Settings.Default.livePreviewDelayMs;
-			//livePreviewDelayTextBox.Text = _delayMs.ToString();
 			livePrevToolStripTextBox.Text = _delayMs.ToString();
 
 			packetTreeView.DrawNode += DrawTreeNodeLikeWireshark;
