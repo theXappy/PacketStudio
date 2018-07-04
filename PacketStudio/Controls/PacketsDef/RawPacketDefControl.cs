@@ -6,13 +6,19 @@ namespace PacketStudio.Controls.PacketsDef
 {
 	public partial class RawPacketDefControl : UserControl, IPacketDefiner
 	{
-		public RawPacketDefControl()
+	    public RawPacketDefControl()
 		{
 			InitializeComponent();
 		}
 
-		public event EventHandler PacketChanged;
-		public bool IsValid => true;
+        // Unused in this class
+	    event EventHandler IPacketDefiner.PacketChanged
+	    {
+	        add {}
+	        remove {}
+	    }
+
+	    public bool IsValid => true;
 		public string Error => String.Empty;
 
 		public byte[] Generate(byte[] rawBytes)

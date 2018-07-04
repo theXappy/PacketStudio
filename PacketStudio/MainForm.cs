@@ -44,9 +44,8 @@ namespace PacketStudio
 			Color.FromArgb(0x81,0xFB,0xB8)
 		});
 		private static Color ERROR_PINK => Color.FromArgb(255, 92, 92); // Wireshark's error background color
-		private TreeNode _previousSelectedNode;
 
-		private readonly System.Threading.Timer _timer;
+	    private readonly System.Threading.Timer _timer;
 		private bool _askAboutUnsaved;
 		private bool _unsavedChangesExist = false;
 		private int _nextPacketTabNumber = 1;

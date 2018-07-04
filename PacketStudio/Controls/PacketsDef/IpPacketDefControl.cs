@@ -40,7 +40,7 @@ namespace PacketStudio.Controls.PacketsDef
 					nextProto = (int.Parse(nextProtoTextBox.Text));
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				throw new Exception($"Failed to parse Next Protocol. Must be an integer or hex (with 0x), was: '{nextProtoTextBox.Text}'");
 			}
