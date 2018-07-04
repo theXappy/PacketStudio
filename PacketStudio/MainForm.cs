@@ -802,7 +802,7 @@ namespace PacketStudio
 			};
 
 			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "ByteArrayToPcap file|*.b2p|pcap file|*.pcap";
+			sfd.Filter = "ByteArrayToPcap file|*.b2p|Wireshark/tcpdump/... -pcap|*.pcap";
 			var res = sfd.ShowDialog();
 
 			if (res != DialogResult.Yes && res != DialogResult.OK)
