@@ -119,6 +119,11 @@
     <Compile Include="Controls\PacketsDef\UdpPacketDefControl.Designer.cs">
       <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\TabPacketListItem.cs" />
     <Compile Include="Utils\TabPageExt.cs" />
     <Compile Include="TabRenameDialog.cs">
@@ -166,14 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="TabRenameDialog.resx">
       <DependentUpon>TabRenameDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -192,14 +192,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bytesToPcap.ico" />
     <None Include="NewAgeIcons\icons8-open-96.png" />
     <None Include="NewAgeIcons\icons8-save-96.png" />
     <None Include="NewAgeIcons\icons8-eye-96.png" />
     <None Include="NewAgeIcons\icons8-share-500.png" />
     <Content Include="NewAgeIcons\ps_icon_new.ico" />
     <Content Include="NewAgeIcons\ps_white.ico" />
-    <Content Include="psb.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj">
