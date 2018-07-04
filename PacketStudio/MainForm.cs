@@ -53,12 +53,16 @@ namespace PacketStudio
 		
 		private TabPage _tabRequestingRename = null;
 
+        // Original form name
+	    private string _rawFormName;
+
 		public MainForm()
 		{
 			_timer = new System.Threading.Timer(UpdateLivePreview);
 			InitializeComponent();
 			// Removing initial, unalligned, "packet 1" tab.
 			tabControl.TabPages.Remove(tabControl.SelectedTab);
+		    _rawFormName = Text;
 			// Adding new , alligned, "packet 1" tab
 			tabControl_SelectedIndexChanged(null, null);
 
@@ -888,6 +892,8 @@ namespace PacketStudio
 			if (provider != null)
 			{
 				LoadPackets(provider);
+			    string fileName = Path.GetFileName(path);
+			    Text = $"{_rawFormName} - {fileName}";
 				Pdc_ContentChanged(null, null);
 			}
 		}
@@ -1053,7 +1059,10 @@ namespace PacketStudio
 			tabControl_SelectedIndexChanged(null, null);
 
 			tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
-		}
+
+            // Remove any old filename from the form's title
+		    Text = _rawFormName;
+        }
 
 		private void livePreviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
