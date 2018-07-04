@@ -85,7 +85,7 @@ namespace ByteArrayToPcap.NewGUI
 						string udpStreamIdStr = streamIdTextbox.Text;
 						try
 						{
-							var parsedId = int.Parse(udpStreamIdStr);
+							int.Parse(udpStreamIdStr);
 						}
 						catch (Exception e)
 						{
@@ -96,7 +96,7 @@ namespace ByteArrayToPcap.NewGUI
 						string sctpStreamIdStr = streamIdTextbox.Text;
 						try
 						{
-							var parsedId = int.Parse(sctpStreamIdStr);
+							int.Parse(sctpStreamIdStr);
 						}
 						catch (Exception e)
 						{
@@ -112,7 +112,7 @@ namespace ByteArrayToPcap.NewGUI
 							}
 							else // PPID defined with decimal value
 							{
-								var parsedID = int.Parse(sctpPpid);
+								int.Parse(sctpPpid);
 							}
 						}
 						catch (Exception e)
