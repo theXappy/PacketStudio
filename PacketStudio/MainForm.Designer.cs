@@ -94,6 +94,7 @@ namespace PacketStudio
             // 
             // dockingManager1
             // 
+            this.dockingManager1.ActiveCaptionBackground = new Syncfusion.Drawing.BrushInfo(System.Drawing.SystemColors.ActiveCaption);
             this.dockingManager1.ActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
             this.dockingManager1.AnimateAutoHiddenWindow = true;
             this.dockingManager1.AutoHideSelectionStyle = Syncfusion.Windows.Forms.Tools.AutoHideSelectionStyle.Click;
@@ -121,11 +122,11 @@ namespace PacketStudio
             this.dockingManager1.SetEnableDocking(this.packetTabsPanel, true);
             ccbpacketTabsPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
             this.dockingManager1.SetCustomCaptionButtons(this.packetTabsPanel, ccbpacketTabsPanel);
-            this.dockingManager1.SetDockLabel(this.statusPanel, "statusPanel");
+            this.dockingManager1.SetDockLabel(this.statusPanel, "Status");
             this.dockingManager1.SetEnableDocking(this.statusPanel, true);
             ccbstatusPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
             this.dockingManager1.SetCustomCaptionButtons(this.statusPanel, ccbstatusPanel);
-            this.dockingManager1.SetDockLabel(this.HexViewPanel, "HexViewPanel");
+            this.dockingManager1.SetDockLabel(this.HexViewPanel, "Hex View");
             this.dockingManager1.SetEnableDocking(this.HexViewPanel, true);
             ccbHexViewPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
             this.dockingManager1.SetCustomCaptionButtons(this.HexViewPanel, ccbHexViewPanel);
@@ -494,7 +495,7 @@ namespace PacketStudio
             this.toolStripButton5.Image = global::PacketStudio.Properties.Resources.ws_dir1;
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(99, 49);
+            this.toolStripButton5.Size = new System.Drawing.Size(99, 56);
             this.toolStripButton5.Text = "Locate Wireshark";
             this.toolStripButton5.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton5.Click += new System.EventHandler(this.locateWireshark_Click);
