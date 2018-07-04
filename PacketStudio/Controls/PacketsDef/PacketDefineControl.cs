@@ -18,7 +18,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         public event EventHandler<EventArgs> ContentChanged;
 
-        public string Text => hexBox.Text;
+        public override string Text => hexBox.Text;
 
         public HexStreamType PacketType { get; private set; }
         public bool IsHexStream => _deserializer.IsHexStream(Text);

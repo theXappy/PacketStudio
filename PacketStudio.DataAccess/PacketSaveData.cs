@@ -11,7 +11,9 @@ namespace PacketStudio.DataAccess
 			switch (magicWord)
 			{
 				case "M4G1C":
-					return PacketSaveDataV1.Parse(content);
+#pragma warning disable 612 // Disable 'Obsolete' warning since this is here to handle backward compatibility
+                    return PacketSaveDataV1.Parse(content);
+#pragma warning restore 612
 				case "P0NTI4K":
 					return PacketSaveDataV2.Parse(content);
 				default:

@@ -47,7 +47,7 @@ namespace ByteArrayToPcap.NewGUI
 						{
 							var parsedId = int.Parse(udpStreamIdStr);
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
 							return false;
 						}
@@ -58,7 +58,7 @@ namespace ByteArrayToPcap.NewGUI
 						{
 							var parsedId = int.Parse(sctpStreamIdStr);
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
 							return false;
 						}
@@ -75,7 +75,7 @@ namespace ByteArrayToPcap.NewGUI
 								var parsedID = int.Parse(sctpPpid);
 							}
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
 							return false;
 						}
@@ -162,8 +162,7 @@ namespace ByteArrayToPcap.NewGUI
 					case 0: // Raw Ethernet
 					default:
 						return rawBytes;
-						break;
-					case 1: // UDP
+				    case 1: // UDP
 						var parsedUdpId = int.Parse(streamIdTextbox.Text);
 						return _udpPacketFactory.GetPacket(rawBytes, parsedUdpId);
 					case 2: // SCPT
