@@ -317,7 +317,6 @@ namespace PacketStudio
             this.ribbonControlAdv1.LauncherStyle = Syncfusion.Windows.Forms.Tools.LauncherStyle.Metro;
             this.ribbonControlAdv1.Location = new System.Drawing.Point(2, 0);
             this.ribbonControlAdv1.MenuButtonFont = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ribbonControlAdv1.MenuButtonImage = global::PacketStudio.Properties.Resources.emblem_system;
             this.ribbonControlAdv1.MenuButtonText = "";
             this.ribbonControlAdv1.MenuButtonVisible = false;
             this.ribbonControlAdv1.MenuButtonWidth = 56;
