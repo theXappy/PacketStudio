@@ -106,9 +106,41 @@ namespace PacketStudio
 
 			_tokenSource = new CancellationTokenSource();
 			_unsavedChangesExist = false;
-		}
 
-		private void DrawTreeNodeLikeWireshark(object sender, DrawTreeNodeEventArgs e)
+            // Register drag-drop events for all controls in the window, to allow file dropping
+	        WireDragDrop(this.Controls);
+	    }
+	    private void WireDragDrop(Control.ControlCollection ctls)
+	    {
+	        foreach (Control ctl in ctls)
+	        {
+	            ctl.AllowDrop = true;
+	            ctl.DragEnter += ctl_DragEnter;
+	            ctl.DragDrop += ctl_DragDrop;
+	            WireDragDrop(ctl.Controls);
+	        }
+	    }
+
+	    void ctl_DragDrop(object sender, DragEventArgs e)
+	    {
+	        string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+	        if (files.Skip(1).Any())
+	        {
+	            // Multiple files dropped, can't open
+	            MessageBox.Show("Please drop only a single file.");
+                return;
+	        }
+
+	        string file = files.First();
+	        LoadFile(file);
+        }
+
+	    void ctl_DragEnter(object sender, DragEventArgs e)
+	    {
+	        if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        private void DrawTreeNodeLikeWireshark(object sender, DrawTreeNodeEventArgs e)
 		{
 			if (e.Node == null) return;
 
