@@ -96,9 +96,8 @@ namespace PacketStudio
 				}
 				else
 				{
-					MessageBox.Show(
-						"Wireshark path not saved in the settings and couldn't be found in any of the default paths.\r\n\r\n" +
-						"Please select the location in the next dialog",Text+" - Init Problem",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    ShowErrorMessageBox("Wireshark path not saved in the settings and couldn't be found in any of the default paths.\r\n\r\n" +
+                        "Please select the location in the next dialog",MessageBoxIcon.Exclamation);
 					_isConstructing = true;
 					locateWireshark_Click(null, null);
 					_isConstructing = false;
@@ -108,16 +107,21 @@ namespace PacketStudio
 			_tokenSource = new CancellationTokenSource();
 			_unsavedChangesExist = false;
 
-            
+
             // Allow dropping in the background of the form
+            // Also recursivly register drag-drop events for all controls under the main form, such as the main tab control
             WireDragDrop(new Control[1]{this});
-		    // Register drag-drop events for all controls registered directly under the main form, such as the main tab control
-            WireDragDrop(this.Controls);
             // Allow dropping in the dock manager's panels (i.e. hex view panel, tree view panel)
-	        WireDragDrop(this.dockingManager1.Controls.Iterate());
+	        WireDragDrop(this.dockingManager1.ControlsArray);
 
 	    }
-	    private void WireDragDrop(IEnumerable ctls)
+
+        private void ShowErrorMessageBox(string errorMessage,MessageBoxIcon icon)
+        {
+            MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.OK, icon);
+        }
+
+        private void WireDragDrop(IEnumerable ctls)
 	    {
 	        foreach (Control ctl in ctls)
 	        {
@@ -133,8 +137,8 @@ namespace PacketStudio
 	        string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 	        if (files.Skip(1).Any())
 	        {
-	            // Multiple files dropped, can't open
-	            MessageBox.Show("Please drop only a single file.");
+                // Multiple files dropped, can't open
+                ShowErrorMessageBox("Please drop only a single file.",MessageBoxIcon.Exclamation);
                 return;
 	        }
 
@@ -186,7 +190,7 @@ namespace PacketStudio
 
 			if (!File.Exists(wsPath))
 			{
-				MessageBox.Show($"No file found at the given wireshark path.\r\n{wsPath}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessageBox($"No file found at the given wireshark path.\r\n{wsPath}",MessageBoxIcon.Error);
                 return;
 			}
 
@@ -197,7 +201,7 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message,"PacketStudio",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                ShowErrorMessageBox("Exception when trying to get all defined packets.\r\nMessage:\r\n"+ex.Message,MessageBoxIcon.Error);
 				return;
 			}
 
@@ -870,7 +874,7 @@ namespace PacketStudio
 
 			if (!anyPacketsFound)
 			{
-				MessageBox.Show("No packets to save", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessageBox("No packets to save", MessageBoxIcon.Error);
                 return DialogResult.OK;
 			}
 
@@ -903,7 +907,7 @@ namespace PacketStudio
 		{
 			if (!File.Exists(path))
 			{
-				MessageBox.Show($"No such file '{path}'", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessageBox($"No such file '{path}'", MessageBoxIcon.Error);
                 return;
 			}
 
@@ -924,7 +928,7 @@ namespace PacketStudio
 					provider = new PcapNGProvider(path);
 					break;
 				default:
-					MessageBox.Show($"Unsupported extension '{ext}'", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowErrorMessageBox($"Unsupported extension '{ext}'", MessageBoxIcon.Error);
                     break;
 			}
 
@@ -975,7 +979,7 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Error reading packets from file.\r\nError Message: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessageBox($"Error reading packets from file.\r\nError Message: {ex.Message}", MessageBoxIcon.Error);
             }
 			finally
 			{
@@ -1292,7 +1296,7 @@ namespace PacketStudio
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show($"Error getting the current packet's data.\r\n{ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessageBox($"Error getting the current packet's data.\r\n{ex.Message}", MessageBoxIcon.Error);
                 return;
 			}
 			StringBuilder sb = new StringBuilder();
@@ -1356,7 +1360,15 @@ namespace PacketStudio
 		private Rectangle _rectangle = Rectangle.Empty;
 		private void tabControl_DragEnter(object sender, DragEventArgs e)
 		{
-			if (_plusTab != null)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // This is a file drag-drop into the GUI, not trying to hide the plus tab.
+                return;
+            }
+
+
+            // If we reached here, this might be a packet tab drag-frop
+            if (_plusTab != null)
 			{
 				return;
 			}
