@@ -119,7 +119,6 @@
     <Compile Include="Controls\PacketsDef\UdpPacketDefControl.Designer.cs">
       <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\EnumeratorExt.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
