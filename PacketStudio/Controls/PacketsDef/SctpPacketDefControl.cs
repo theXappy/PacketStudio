@@ -98,7 +98,7 @@ namespace PacketStudio.Controls.PacketsDef
 			var asV2 = data as PacketSaveDataV2;
 			if (asV2 != null)
 			{
-				ppidTextBox.Text = asV2.Text;
+				ppidTextBox.Text = asV2.PPID;
 			}
 		}
 
