@@ -484,7 +484,7 @@ namespace PacketStudio
 				TSharkCombinedResults results = tsharkTask.Result;
 				XElement packetElement = results.Pdml;
 				JObject packetJson = results.JsonRaw;
-				IEnumerable<JProperty> jProps = packetJson.DescendantsAndSelf().Where(jtoken => jtoken is JProperty).Cast<JProperty>();
+				IEnumerable<JProperty> jProps = packetJson?.DescendantsAndSelf().Where(jtoken => jtoken is JProperty).Cast<JProperty>() ?? Enumerable.Empty<JProperty>();
 				List<JProperty> jPropsListed = null;
 
 				TreeView tree = packetTreeView;

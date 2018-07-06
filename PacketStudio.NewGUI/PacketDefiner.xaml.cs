@@ -300,7 +300,7 @@ namespace ByteArrayToPcap.NewGUI
 		public byte[] GetPacket(byte[] payload, int streamId)
 		{
 			PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IpV4);
+			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
 
 			bool flip = streamId < 0;
 			streamId = Math.Abs(streamId);
@@ -329,7 +329,7 @@ namespace ByteArrayToPcap.NewGUI
 			PacketDotNet.Sctp.Chunks.SctpPayloadProtocol proto = (SctpPayloadProtocol)ppid;
 
 			PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IpV4);
+			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
 
 			bool flip = sctpStreamId < 0;
 			sctpStreamId = Math.Abs(sctpStreamId);

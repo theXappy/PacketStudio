@@ -111,9 +111,12 @@ namespace PacketStudio.Core
 
 				CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
 				Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync($"-r {pcapPath} -2 -T jsonraw --no-duplicate-keys", token);
-				tsharkTask.Wait();
+				bool timedOut = !tsharkTask.Wait(5_000);
 
-				if (tsharkTask.IsCanceled) // task was canceled
+                if(timedOut)
+                    throw new TaskCanceledException();
+
+                if (tsharkTask.IsCanceled) // task was canceled
 					throw new TaskCanceledException();
 
 				ExecutionOutput res = tsharkTask.Result;
@@ -202,8 +205,25 @@ namespace PacketStudio.Core
 
 			return Task.Factory.StartNew(() =>
 			{
-				XElement pdml = pdmlTask.Result;
-				JObject json = jsonTask.Result;
+                XElement pdml = null;
+                JObject json = null;
+
+			    try
+			    {
+			        pdml = pdmlTask.Result;
+                }
+			    catch (Exception e)
+			    {
+			        // Don't care
+			    }
+			    try
+			    {
+			        json = jsonTask.Result;
+                }
+			    catch (Exception e)
+			    {
+			        // Don't care
+			    }
 				return new TSharkCombinedResults(pdml, json);
 			},token);
 		}
