@@ -38,7 +38,7 @@ namespace PacketStudio
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbstatusPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
-            this.dockingManager1 = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
+            this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
             this.livePreviewPanel = new System.Windows.Forms.Panel();
             this.packetTreeView = new PacketStudio.Controls.TreeViewWithArrows();
             this.packetTabsPanel = new System.Windows.Forms.Panel();
@@ -48,86 +48,86 @@ namespace PacketStudio
             this.livePreviewTextBox = new System.Windows.Forms.Label();
             this.HexViewPanel = new System.Windows.Forms.Panel();
             this.hexViewBox = new Be.Windows.Forms.HexBox();
-            this.dockingClientPanel1 = new Syncfusion.Windows.Forms.Tools.DockingClientPanel();
+            this.mainPanel = new Syncfusion.Windows.Forms.Tools.DockingClientPanel();
             this.tabControl = new PacketStudio.Controls.AdvancedTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.packetDefineControl1 = new PacketStudio.Controls.PacketsDef.PacketDefineControl();
             this.plusTab = new System.Windows.Forms.TabPage();
-            this.ribbonControlAdv1 = new Syncfusion.Windows.Forms.Tools.RibbonControlAdv();
+            this.ribbonControl = new Syncfusion.Windows.Forms.Tools.RibbonControlAdv();
             this.homeToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
-            this.newOpenSaveToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
+            this.fileToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.copyToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.csharpCopyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.wiresharkToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.pcapToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.locateWsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.previewToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.livePreviewToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.previewtoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.previewContextToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.prevDelayToolStripLabel = new System.Windows.Forms.ToolStripLabel();
             this.livePrevToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.exitOfficeButton = new Syncfusion.Windows.Forms.Tools.OfficeButton();
             this.toolStripTabItem2 = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
-            ((System.ComponentModel.ISupportInitialize)(this.dockingManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).BeginInit();
             this.livePreviewPanel.SuspendLayout();
             this.packetTabsPanel.SuspendLayout();
             this.statusPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.livePrevStatusPanel)).BeginInit();
             this.livePrevStatusPanel.SuspendLayout();
             this.HexViewPanel.SuspendLayout();
-            this.dockingClientPanel1.SuspendLayout();
+            this.mainPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ribbonControlAdv1)).BeginInit();
-            this.ribbonControlAdv1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
+            this.ribbonControl.SuspendLayout();
             this.homeToolStripTabItem.Panel.SuspendLayout();
-            this.newOpenSaveToolStrip.SuspendLayout();
+            this.fileToolStrip.SuspendLayout();
             this.copyToolStrip.SuspendLayout();
             this.wiresharkToolStrip.SuspendLayout();
             this.previewToolStripTabItem.Panel.SuspendLayout();
             this.livePreviewToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // dockingManager1
+            // dockingManager
             // 
-            this.dockingManager1.ActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
-            this.dockingManager1.AnimateAutoHiddenWindow = true;
-            this.dockingManager1.AutoHideSelectionStyle = Syncfusion.Windows.Forms.Tools.AutoHideSelectionStyle.Click;
-            this.dockingManager1.AutoHideTabForeColor = System.Drawing.Color.Empty;
-            this.dockingManager1.DockBehavior = Syncfusion.Windows.Forms.Tools.DockBehavior.VS2010;
-            this.dockingManager1.DockLayoutStream = ((System.IO.MemoryStream)(resources.GetObject("dockingManager1.DockLayoutStream")));
-            this.dockingManager1.DockTabPadX = 0F;
-            this.dockingManager1.DragProviderStyle = Syncfusion.Windows.Forms.Tools.DragProviderStyle.VS2012;
-            this.dockingManager1.HostControl = this;
-            this.dockingManager1.InActiveCaptionBackground = new Syncfusion.Drawing.BrushInfo(System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(211)))), ((int)(((byte)(212))))));
-            this.dockingManager1.InActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
-            this.dockingManager1.MetroButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.dockingManager1.MetroColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(158)))), ((int)(((byte)(218)))));
-            this.dockingManager1.MetroSplitterBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(159)))), ((int)(((byte)(183)))));
-            this.dockingManager1.ReduceFlickeringInRtl = false;
-            this.dockingManager1.ThemesEnabled = true;
-            this.dockingManager1.VisualStyle = Syncfusion.Windows.Forms.VisualStyle.Metro;
-            this.dockingManager1.CaptionButtons.Add(new Syncfusion.Windows.Forms.Tools.CaptionButton(Syncfusion.Windows.Forms.Tools.CaptionButtonType.Pin, "PinButton"));
-            this.dockingManager1.SetDockLabel(this.livePreviewPanel, "Live Preview");
-            this.dockingManager1.SetEnableDocking(this.livePreviewPanel, true);
-            ccblivePreviewPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
-            this.dockingManager1.SetCustomCaptionButtons(this.livePreviewPanel, ccblivePreviewPanel);
-            this.dockingManager1.SetDockLabel(this.packetTabsPanel, "Packets List");
-            this.dockingManager1.SetEnableDocking(this.packetTabsPanel, true);
-            ccbpacketTabsPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
-            this.dockingManager1.SetCustomCaptionButtons(this.packetTabsPanel, ccbpacketTabsPanel);
-            this.dockingManager1.SetDockLabel(this.statusPanel, "Status");
-            this.dockingManager1.SetEnableDocking(this.statusPanel, true);
-            ccbstatusPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
-            this.dockingManager1.SetCustomCaptionButtons(this.statusPanel, ccbstatusPanel);
-            this.dockingManager1.SetDockLabel(this.HexViewPanel, "Hex View");
-            this.dockingManager1.SetEnableDocking(this.HexViewPanel, true);
-            ccbHexViewPanel.MergeWith(this.dockingManager1.CaptionButtons, false);
-            this.dockingManager1.SetCustomCaptionButtons(this.HexViewPanel, ccbHexViewPanel);
+            this.dockingManager.ActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.dockingManager.AnimateAutoHiddenWindow = true;
+            this.dockingManager.AutoHideSelectionStyle = Syncfusion.Windows.Forms.Tools.AutoHideSelectionStyle.Click;
+            this.dockingManager.AutoHideTabForeColor = System.Drawing.Color.Empty;
+            this.dockingManager.DockBehavior = Syncfusion.Windows.Forms.Tools.DockBehavior.VS2010;
+            this.dockingManager.DockLayoutStream = ((System.IO.MemoryStream)(resources.GetObject("dockingManager.DockLayoutStream")));
+            this.dockingManager.DockTabPadX = 0F;
+            this.dockingManager.DragProviderStyle = Syncfusion.Windows.Forms.Tools.DragProviderStyle.VS2012;
+            this.dockingManager.HostControl = this;
+            this.dockingManager.InActiveCaptionBackground = new Syncfusion.Drawing.BrushInfo(System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(211)))), ((int)(((byte)(212))))));
+            this.dockingManager.InActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.dockingManager.MetroButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.dockingManager.MetroColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(158)))), ((int)(((byte)(218)))));
+            this.dockingManager.MetroSplitterBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(159)))), ((int)(((byte)(183)))));
+            this.dockingManager.ReduceFlickeringInRtl = false;
+            this.dockingManager.ThemesEnabled = true;
+            this.dockingManager.VisualStyle = Syncfusion.Windows.Forms.VisualStyle.Metro;
+            this.dockingManager.CaptionButtons.Add(new Syncfusion.Windows.Forms.Tools.CaptionButton(Syncfusion.Windows.Forms.Tools.CaptionButtonType.Pin, "PinButton"));
+            this.dockingManager.SetDockLabel(this.livePreviewPanel, "Live Preview");
+            this.dockingManager.SetEnableDocking(this.livePreviewPanel, true);
+            ccblivePreviewPanel.MergeWith(this.dockingManager.CaptionButtons, false);
+            this.dockingManager.SetCustomCaptionButtons(this.livePreviewPanel, ccblivePreviewPanel);
+            this.dockingManager.SetDockLabel(this.packetTabsPanel, "Packets List");
+            this.dockingManager.SetEnableDocking(this.packetTabsPanel, true);
+            ccbpacketTabsPanel.MergeWith(this.dockingManager.CaptionButtons, false);
+            this.dockingManager.SetCustomCaptionButtons(this.packetTabsPanel, ccbpacketTabsPanel);
+            this.dockingManager.SetDockLabel(this.statusPanel, "Status");
+            this.dockingManager.SetEnableDocking(this.statusPanel, true);
+            ccbstatusPanel.MergeWith(this.dockingManager.CaptionButtons, false);
+            this.dockingManager.SetCustomCaptionButtons(this.statusPanel, ccbstatusPanel);
+            this.dockingManager.SetDockLabel(this.HexViewPanel, "Hex View");
+            this.dockingManager.SetEnableDocking(this.HexViewPanel, true);
+            ccbHexViewPanel.MergeWith(this.dockingManager.CaptionButtons, false);
+            this.dockingManager.SetCustomCaptionButtons(this.HexViewPanel, ccbHexViewPanel);
             // 
             // livePreviewPanel
             // 
@@ -244,15 +244,15 @@ namespace PacketStudio
             this.hexViewBox.VScrollBarVisible = true;
             this.hexViewBox.Copied += new System.EventHandler(this.hexViewBox_Copied);
             // 
-            // dockingClientPanel1
+            // mainPanel
             // 
-            this.dockingClientPanel1.BackColor = System.Drawing.SystemColors.Control;
-            this.dockingClientPanel1.Controls.Add(this.tabControl);
-            this.dockingClientPanel1.Location = new System.Drawing.Point(212, 119);
-            this.dockingClientPanel1.Name = "dockingClientPanel1";
-            this.dockingClientPanel1.Size = new System.Drawing.Size(725, 477);
-            this.dockingClientPanel1.SizeToFit = true;
-            this.dockingClientPanel1.TabIndex = 9;
+            this.mainPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.mainPanel.Controls.Add(this.tabControl);
+            this.mainPanel.Location = new System.Drawing.Point(212, 119);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Size = new System.Drawing.Size(725, 477);
+            this.mainPanel.SizeToFit = true;
+            this.mainPanel.TabIndex = 9;
             // 
             // tabControl
             // 
@@ -305,51 +305,51 @@ namespace PacketStudio
             this.plusTab.Text = "+";
             this.plusTab.UseVisualStyleBackColor = true;
             // 
-            // ribbonControlAdv1
+            // ribbonControl
             // 
-            this.ribbonControlAdv1.CaptionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ribbonControlAdv1.Dock = Syncfusion.Windows.Forms.Tools.DockStyleEx.Top;
-            this.ribbonControlAdv1.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ribbonControlAdv1.Header.AddMainItem(homeToolStripTabItem);
-            this.ribbonControlAdv1.Header.AddMainItem(previewToolStripTabItem);
-            this.ribbonControlAdv1.LauncherStyle = Syncfusion.Windows.Forms.Tools.LauncherStyle.Metro;
-            this.ribbonControlAdv1.Location = new System.Drawing.Point(2, 0);
-            this.ribbonControlAdv1.MenuButtonFont = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ribbonControlAdv1.MenuButtonText = "";
-            this.ribbonControlAdv1.MenuButtonVisible = false;
-            this.ribbonControlAdv1.MenuButtonWidth = 56;
-            this.ribbonControlAdv1.MenuColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
-            this.ribbonControlAdv1.Name = "ribbonControlAdv1";
-            this.ribbonControlAdv1.Office2016ColorTable.Add(office2016ColorTable1);
-            this.ribbonControlAdv1.OfficeColorScheme = Syncfusion.Windows.Forms.Tools.ToolStripEx.ColorScheme.Black;
+            this.ribbonControl.CaptionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ribbonControl.Dock = Syncfusion.Windows.Forms.Tools.DockStyleEx.Top;
+            this.ribbonControl.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.ribbonControl.Header.AddMainItem(homeToolStripTabItem);
+            this.ribbonControl.Header.AddMainItem(previewToolStripTabItem);
+            this.ribbonControl.LauncherStyle = Syncfusion.Windows.Forms.Tools.LauncherStyle.Metro;
+            this.ribbonControl.Location = new System.Drawing.Point(2, 0);
+            this.ribbonControl.MenuButtonFont = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.ribbonControl.MenuButtonText = "";
+            this.ribbonControl.MenuButtonVisible = false;
+            this.ribbonControl.MenuButtonWidth = 56;
+            this.ribbonControl.MenuColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
+            this.ribbonControl.Name = "ribbonControl";
+            this.ribbonControl.Office2016ColorTable.Add(office2016ColorTable1);
+            this.ribbonControl.OfficeColorScheme = Syncfusion.Windows.Forms.Tools.ToolStripEx.ColorScheme.Black;
             // 
-            // ribbonControlAdv1.OfficeMenu
+            // ribbonControl.OfficeMenu
             // 
-            this.ribbonControlAdv1.OfficeMenu.MainPanel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ribbonControl.OfficeMenu.MainPanel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitOfficeButton});
-            this.ribbonControlAdv1.OfficeMenu.Name = "OfficeMenu";
-            this.ribbonControlAdv1.OfficeMenu.ShowItemToolTips = true;
-            this.ribbonControlAdv1.OfficeMenu.Size = new System.Drawing.Size(114, 71);
-            this.ribbonControlAdv1.QuickPanelImageLayout = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.ribbonControlAdv1.RibbonHeaderImage = Syncfusion.Windows.Forms.Tools.RibbonHeaderImage.None;
-            this.ribbonControlAdv1.RibbonStyle = Syncfusion.Windows.Forms.Tools.RibbonStyle.TouchStyle;
-            this.ribbonControlAdv1.SelectedTab = this.homeToolStripTabItem;
-            this.ribbonControlAdv1.ShowQuickItemsDropDownButton = false;
-            this.ribbonControlAdv1.ShowRibbonDisplayOptionButton = false;
-            this.ribbonControlAdv1.Size = new System.Drawing.Size(1396, 119);
-            this.ribbonControlAdv1.SystemText.QuickAccessDialogDropDownName = "Start menu";
-            this.ribbonControlAdv1.SystemText.RenameDisplayLabelText = "&Display Name:";
-            this.ribbonControlAdv1.TabIndex = 5;
-            this.ribbonControlAdv1.Text = "ribbonControlAdv1";
-            this.ribbonControlAdv1.TitleColor = System.Drawing.Color.White;
+            this.ribbonControl.OfficeMenu.Name = "OfficeMenu";
+            this.ribbonControl.OfficeMenu.ShowItemToolTips = true;
+            this.ribbonControl.OfficeMenu.Size = new System.Drawing.Size(114, 71);
+            this.ribbonControl.QuickPanelImageLayout = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.ribbonControl.RibbonHeaderImage = Syncfusion.Windows.Forms.Tools.RibbonHeaderImage.None;
+            this.ribbonControl.RibbonStyle = Syncfusion.Windows.Forms.Tools.RibbonStyle.TouchStyle;
+            this.ribbonControl.SelectedTab = this.homeToolStripTabItem;
+            this.ribbonControl.ShowQuickItemsDropDownButton = false;
+            this.ribbonControl.ShowRibbonDisplayOptionButton = false;
+            this.ribbonControl.Size = new System.Drawing.Size(1396, 119);
+            this.ribbonControl.SystemText.QuickAccessDialogDropDownName = "Start menu";
+            this.ribbonControl.SystemText.RenameDisplayLabelText = "&Display Name:";
+            this.ribbonControl.TabIndex = 5;
+            this.ribbonControl.Text = "ribbonControlAdv1";
+            this.ribbonControl.TitleColor = System.Drawing.Color.White;
             // 
             // homeToolStripTabItem
             // 
             this.homeToolStripTabItem.Name = "homeToolStripTabItem";
             // 
-            // ribbonControlAdv1.ribbonPanel1
+            // ribbonControl.ribbonPanel1
             // 
-            this.homeToolStripTabItem.Panel.Controls.Add(this.newOpenSaveToolStrip);
+            this.homeToolStripTabItem.Panel.Controls.Add(this.fileToolStrip);
             this.homeToolStripTabItem.Panel.Controls.Add(this.copyToolStrip);
             this.homeToolStripTabItem.Panel.Controls.Add(this.wiresharkToolStrip);
             this.homeToolStripTabItem.Panel.Name = "ribbonPanel1";
@@ -363,26 +363,27 @@ namespace PacketStudio
             this.homeToolStripTabItem.Tag = "1";
             this.homeToolStripTabItem.Text = "Home";
             // 
-            // newOpenSaveToolStrip
+            // fileToolStrip
             // 
-            this.newOpenSaveToolStrip.AutoSize = false;
-            this.newOpenSaveToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.newOpenSaveToolStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.newOpenSaveToolStrip.ForeColor = System.Drawing.Color.Black;
-            this.newOpenSaveToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.newOpenSaveToolStrip.Image = null;
-            this.newOpenSaveToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.newOpenSaveToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStrip.AutoSize = false;
+            this.fileToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.fileToolStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.fileToolStrip.ForeColor = System.Drawing.Color.Black;
+            this.fileToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.fileToolStrip.Image = null;
+            this.fileToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.fileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton});
-            this.newOpenSaveToolStrip.Location = new System.Drawing.Point(0, 1);
-            this.newOpenSaveToolStrip.Name = "newOpenSaveToolStrip";
-            this.newOpenSaveToolStrip.Office12Mode = false;
-            this.newOpenSaveToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.newOpenSaveToolStrip.ShowCaption = false;
-            this.newOpenSaveToolStrip.Size = new System.Drawing.Size(147, 64);
-            this.newOpenSaveToolStrip.TabIndex = 0;
+            this.fileToolStrip.Location = new System.Drawing.Point(0, 1);
+            this.fileToolStrip.Name = "fileToolStrip";
+            this.fileToolStrip.Office12Mode = false;
+            this.fileToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.fileToolStrip.ShowCaption = false;
+            this.fileToolStrip.Size = new System.Drawing.Size(147, 64);
+            this.fileToolStrip.TabIndex = 0;
+            this.fileToolStrip.Text = "File Tool Strip";
             // 
             // newToolStripButton
             // 
@@ -432,7 +433,7 @@ namespace PacketStudio
             this.copyToolStrip.Image = null;
             this.copyToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.copyToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton4});
+            this.csharpCopyToolStripButton});
             this.copyToolStrip.Location = new System.Drawing.Point(149, 1);
             this.copyToolStrip.Name = "copyToolStrip";
             this.copyToolStrip.Office12Mode = false;
@@ -441,18 +442,19 @@ namespace PacketStudio
             this.copyToolStrip.ShowLauncher = false;
             this.copyToolStrip.Size = new System.Drawing.Size(91, 64);
             this.copyToolStrip.TabIndex = 1;
+            this.copyToolStrip.Text = "Copy Tool Strip";
             // 
-            // toolStripButton4
+            // csharpCopyToolStripButton
             // 
-            this.toolStripButton4.Image = global::PacketStudio.Properties.Resources.csharp;
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(74, 55);
-            this.toolStripButton4.Text = "Copy For C#";
-            this.toolStripButton4.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
-            this.toolStripButton4.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton4.Click += new System.EventHandler(this.copyForCToolStripMenuItem_Click);
+            this.csharpCopyToolStripButton.Image = global::PacketStudio.Properties.Resources.csharp;
+            this.csharpCopyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.csharpCopyToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.csharpCopyToolStripButton.Name = "csharpCopyToolStripButton";
+            this.csharpCopyToolStripButton.Size = new System.Drawing.Size(74, 55);
+            this.csharpCopyToolStripButton.Text = "Copy For C#";
+            this.csharpCopyToolStripButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
+            this.csharpCopyToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.csharpCopyToolStripButton.Click += new System.EventHandler(this.copyForCToolStripMenuItem_Click);
             // 
             // wiresharkToolStrip
             // 
@@ -465,7 +467,7 @@ namespace PacketStudio
             this.wiresharkToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.wiresharkToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pcapToolStripButton,
-            this.toolStripButton5});
+            this.locateWsToolStripButton});
             this.wiresharkToolStrip.Location = new System.Drawing.Point(242, 1);
             this.wiresharkToolStrip.Name = "wiresharkToolStrip";
             this.wiresharkToolStrip.Office12Mode = false;
@@ -474,6 +476,7 @@ namespace PacketStudio
             this.wiresharkToolStrip.ShowLauncher = false;
             this.wiresharkToolStrip.Size = new System.Drawing.Size(177, 64);
             this.wiresharkToolStrip.TabIndex = 2;
+            this.wiresharkToolStrip.Text = "Wireshark Tool Strip";
             // 
             // pcapToolStripButton
             // 
@@ -487,21 +490,21 @@ namespace PacketStudio
             this.pcapToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.pcapToolStripButton.Click += new System.EventHandler(this.GeneratePcapButton_Click);
             // 
-            // toolStripButton5
+            // locateWsToolStripButton
             // 
-            this.toolStripButton5.Image = global::PacketStudio.Properties.Resources.ws_dir1;
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(99, 56);
-            this.toolStripButton5.Text = "Locate Wireshark";
-            this.toolStripButton5.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton5.Click += new System.EventHandler(this.locateWireshark_Click);
+            this.locateWsToolStripButton.Image = global::PacketStudio.Properties.Resources.ws_dir1;
+            this.locateWsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.locateWsToolStripButton.Name = "locateWsToolStripButton";
+            this.locateWsToolStripButton.Size = new System.Drawing.Size(99, 56);
+            this.locateWsToolStripButton.Text = "Locate Wireshark";
+            this.locateWsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.locateWsToolStripButton.Click += new System.EventHandler(this.locateWireshark_Click);
             // 
             // previewToolStripTabItem
             // 
             this.previewToolStripTabItem.Name = "previewToolStripTabItem";
             // 
-            // ribbonControlAdv1.ribbonPanel2
+            // ribbonControl.ribbonPanel2
             // 
             this.previewToolStripTabItem.Panel.Controls.Add(this.livePreviewToolStrip);
             this.previewToolStripTabItem.Panel.Name = "ribbonPanel2";
@@ -524,7 +527,7 @@ namespace PacketStudio
             this.livePreviewToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewtoolStripButton,
             this.previewContextToolStripButton,
-            this.toolStripLabel2,
+            this.prevDelayToolStripLabel,
             this.livePrevToolStripTextBox});
             this.livePreviewToolStrip.Location = new System.Drawing.Point(0, 1);
             this.livePreviewToolStrip.Name = "livePreviewToolStrip";
@@ -534,6 +537,7 @@ namespace PacketStudio
             this.livePreviewToolStrip.ShowLauncher = false;
             this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 64);
             this.livePreviewToolStrip.TabIndex = 3;
+            this.livePreviewToolStrip.Text = "Live Preview Tool Strip";
             // 
             // previewtoolStripButton
             // 
@@ -561,12 +565,12 @@ namespace PacketStudio
             this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
             // 
-            // toolStripLabel2
+            // prevDelayToolStripLabel
             // 
-            this.toolStripLabel2.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(80, 55);
-            this.toolStripLabel2.Text = "Preview Delay:";
+            this.prevDelayToolStripLabel.Margin = new System.Windows.Forms.Padding(2);
+            this.prevDelayToolStripLabel.Name = "prevDelayToolStripLabel";
+            this.prevDelayToolStripLabel.Size = new System.Drawing.Size(80, 55);
+            this.prevDelayToolStripLabel.Text = "Preview Delay:";
             // 
             // livePrevToolStripTextBox
             // 
@@ -608,8 +612,8 @@ namespace PacketStudio
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1400, 1000);
             this.ColorScheme = Syncfusion.Windows.Forms.Tools.RibbonForm.ColorSchemeType.Black;
-            this.Controls.Add(this.ribbonControlAdv1);
-            this.Controls.Add(this.dockingClientPanel1);
+            this.Controls.Add(this.ribbonControl);
+            this.Controls.Add(this.mainPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(1, 0, 1, 1);
@@ -617,7 +621,7 @@ namespace PacketStudio
             this.Text = "Packet Studio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dockingManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).EndInit();
             this.livePreviewPanel.ResumeLayout(false);
             this.packetTabsPanel.ResumeLayout(false);
             this.statusPanel.ResumeLayout(false);
@@ -625,15 +629,15 @@ namespace PacketStudio
             this.livePrevStatusPanel.ResumeLayout(false);
             this.livePrevStatusPanel.PerformLayout();
             this.HexViewPanel.ResumeLayout(false);
-            this.dockingClientPanel1.ResumeLayout(false);
+            this.mainPanel.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ribbonControlAdv1)).EndInit();
-            this.ribbonControlAdv1.ResumeLayout(false);
-            this.ribbonControlAdv1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).EndInit();
+            this.ribbonControl.ResumeLayout(false);
+            this.ribbonControl.PerformLayout();
             this.homeToolStripTabItem.Panel.ResumeLayout(false);
-            this.newOpenSaveToolStrip.ResumeLayout(false);
-            this.newOpenSaveToolStrip.PerformLayout();
+            this.fileToolStrip.ResumeLayout(false);
+            this.fileToolStrip.PerformLayout();
             this.copyToolStrip.ResumeLayout(false);
             this.copyToolStrip.PerformLayout();
             this.wiresharkToolStrip.ResumeLayout(false);
@@ -646,24 +650,24 @@ namespace PacketStudio
         }
 
 	    #endregion
-		private Syncfusion.Windows.Forms.Tools.DockingClientPanel dockingClientPanel1;
-		private Syncfusion.Windows.Forms.Tools.DockingManager dockingManager1;
+		private Syncfusion.Windows.Forms.Tools.DockingClientPanel mainPanel;
+		private Syncfusion.Windows.Forms.Tools.DockingManager dockingManager;
 		private System.Windows.Forms.Panel livePreviewPanel;
 		private Syncfusion.Windows.Forms.Tools.GradientPanel livePrevStatusPanel;
 		private System.Windows.Forms.Label livePreviewTextBox;
-		private Syncfusion.Windows.Forms.Tools.RibbonControlAdv ribbonControlAdv1;
+		private Syncfusion.Windows.Forms.Tools.RibbonControlAdv ribbonControl;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem homeToolStripTabItem;
 		private TreeViewWithArrows packetTreeView;
-		private Syncfusion.Windows.Forms.Tools.ToolStripEx newOpenSaveToolStrip;
+		private Syncfusion.Windows.Forms.Tools.ToolStripEx fileToolStrip;
 		private System.Windows.Forms.ToolStripButton newToolStripButton;
 		private System.Windows.Forms.ToolStripButton openToolStripButton;
 		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx copyToolStrip;
-		private System.Windows.Forms.ToolStripButton toolStripButton4;
+		private System.Windows.Forms.ToolStripButton csharpCopyToolStripButton;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem toolStripTabItem2;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem previewToolStripTabItem;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewToolStrip;
-		private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+		private System.Windows.Forms.ToolStripLabel prevDelayToolStripLabel;
 		private System.Windows.Forms.ToolStripTextBox livePrevToolStripTextBox;
 		private Syncfusion.Windows.Forms.Tools.OfficeButton exitOfficeButton;
 		private System.Windows.Forms.ToolStripButton previewtoolStripButton;
@@ -676,7 +680,7 @@ namespace PacketStudio
 		private Be.Windows.Forms.HexBox hexViewBox;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx wiresharkToolStrip;
 		private System.Windows.Forms.ToolStripButton pcapToolStripButton;
-		private System.Windows.Forms.ToolStripButton toolStripButton5;
+		private System.Windows.Forms.ToolStripButton locateWsToolStripButton;
 		private System.Windows.Forms.Panel statusPanel;
 		private System.Windows.Forms.Panel packetTabsPanel;
 		private System.Windows.Forms.ListBox packetTabsList;

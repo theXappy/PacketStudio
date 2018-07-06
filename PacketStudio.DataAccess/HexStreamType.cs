@@ -1,10 +1,13 @@
-﻿namespace PacketStudio.DataAccess
+﻿using System.ComponentModel;
+
+namespace PacketStudio.DataAccess
 {
-	public enum HexStreamType
+    public enum HexStreamType
 	{
-		RawEthernet,
-		UdpPayload,
-		SctpPayload,
-		IpPayload,
-	}
+        RawEthernet,
+        IpPayload,
+        UdpPayload,
+        TcpPayload,
+        SctpPayload,
+    }
 }

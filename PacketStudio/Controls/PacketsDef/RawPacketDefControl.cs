@@ -18,6 +18,8 @@ namespace PacketStudio.Controls.PacketsDef
 	        remove {}
 	    }
 
+	    public HexStreamType StreamType => HexStreamType.RawEthernet;
+	    public int HeadersLength => 0;
 	    public bool IsValid => true;
 		public string Error => String.Empty;
 
