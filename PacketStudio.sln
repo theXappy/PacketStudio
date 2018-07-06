@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.NewGUI", "Pack
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Core", "PacketStudio.Core\PacketStudio.Core.csproj", "{E7558B32-25C1-4175-97E5-CA1BFFE951F8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet", "PacketDotNet\PacketDotNet.csproj", "{F205181B-B208-4D37-8AEC-899BE63932B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +35,15 @@ Global
 		{E7558B32-25C1-4175-97E5-CA1BFFE951F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7558B32-25C1-4175-97E5-CA1BFFE951F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7558B32-25C1-4175-97E5-CA1BFFE951F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F205181B-B208-4D37-8AEC-899BE63932B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F205181B-B208-4D37-8AEC-899BE63932B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F205181B-B208-4D37-8AEC-899BE63932B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F205181B-B208-4D37-8AEC-899BE63932B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BCBD0E4A-F534-443F-8A59-AE816578DBC2}
 	EndGlobalSection
 EndGlobal

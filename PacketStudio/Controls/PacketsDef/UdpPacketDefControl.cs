@@ -30,7 +30,7 @@ namespace PacketStudio.Controls.PacketsDef
 			}
 
 			PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IpV4);
+			PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
 
 			bool flip = udpStreamId < 0;
 			udpStreamId = Math.Abs(udpStreamId);

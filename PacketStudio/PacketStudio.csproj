@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PacketStudio</RootNamespace>
     <AssemblyName>PacketStudio</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -46,12 +46,11 @@
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\PacketDotNet.v2016\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
@@ -200,6 +199,10 @@
     <Content Include="NewAgeIcons\ps_white.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PacketDotNet\PacketDotNet.csproj">
+      <Project>{f205181b-b208-4d37-8aec-899be63932b6}</Project>
+      <Name>PacketDotNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj">
       <Project>{E7558B32-25C1-4175-97E5-CA1BFFE951F8}</Project>
       <Name>PacketStudio.Core</Name>
