@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using PacketStudio.Core;
@@ -14,7 +17,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         public override string Text => hexBox.Text;
 
-        public HexStreamType PacketType { get; private set; }
+        public HexTypeWrapper PacketType { get; private set; }
         public bool IsHexStream => _deserializer.IsHexStream(Text);
 
         public PacketDefineControl() : this(null)
@@ -26,15 +29,25 @@ namespace PacketStudio.Controls.PacketsDef
             _deserializer = new HexDeserializer();
             InitializeComponent();
 
-            foreach (HexStreamType hexStreamType in PacketsDefinersDictionaries.StreamTypeToFirstOffset.Keys)
+            IEnumerable<HexStreamType> supportedTypes = PacketsDefinersDictionaries.SupportedTypes.ToArray();
+            foreach (HexStreamType hexStreamType in Enum.GetValues(typeof(HexStreamType)))
             {
-                packetTypeListBox.Items.Add(hexStreamType);
+                // Check if Packet Define Control exists for this type
+                bool isSupported = supportedTypes.Contains(hexStreamType);
+                if (isSupported)
+                {
+                    // Supported  - Add to list box
+                    Debug.WriteLine(hexStreamType);
+                    HexTypeWrapper wrapper = new HexTypeWrapper(hexStreamType);
+                    packetTypeListBox.Items.Add(wrapper);
+                }
             }
 
             hexBox.Text = data?.Text ?? "";
             HexStreamType type = data?.Type ?? HexStreamType.RawEthernet;
-            packetTypeListBox.SelectedItem = type;
-            PacketType = type;
+            HexTypeWrapper wrapped = new HexTypeWrapper(type);
+            packetTypeListBox.SelectedItem = wrapped;
+            PacketType = wrapped;
 
             IPacketDefiner definer = GetCurrentDefiner();
 
@@ -80,7 +93,7 @@ namespace PacketStudio.Controls.PacketsDef
             int firstByteIndex = firstNibbleIndex / 2;
             if (IsHexStream)
             {
-                int headersLengthToRemove = PacketsDefinersDictionaries.StreamTypeToFirstOffset[PacketType];
+                int headersLengthToRemove = PacketsDefinersDictionaries.StreamTypeToFirstOffset[PacketType.Type];
                 firstByteIndex -= headersLengthToRemove;
 
                 if (firstByteIndex < 0 || bytesLength <= 0)
@@ -117,13 +130,13 @@ namespace PacketStudio.Controls.PacketsDef
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PacketType = (HexStreamType)packetTypeListBox.SelectedItem;
+            PacketType = (HexTypeWrapper)packetTypeListBox.SelectedItem;
             IPacketDefiner lastDefiner = GetCurrentDefiner();
             lastDefiner.PacketChanged -= PacketDefiner_PacketChanged;
             packetDefPanel.Controls.Clear();
             Control packetDefControl;
             Func<Control> controlCreatorFunc;
-            if (!PacketsDefinersDictionaries.StreamTypeToPacketDefineControlFactory.TryGetValue(PacketType, out controlCreatorFunc))
+            if (!PacketsDefinersDictionaries.StreamTypeToPacketDefineControlFactory.TryGetValue(PacketType.Type, out controlCreatorFunc))
             {
                 // Couldn't find a creation function
                 throw new ArgumentException($"Can't find creation method for packets of type '{PacketType}'.\r\n" +

@@ -8,8 +8,9 @@ namespace PacketStudio.Controls.PacketsDef
 {
     public static class PacketsDefinersDictionaries
     {
-        public static Dictionary<HexStreamType, int> StreamTypeToFirstOffset { get; set; }
-        public static Dictionary<HexStreamType, Func<Control>> StreamTypeToPacketDefineControlFactory { get; set; }
+        public static IEnumerable<HexStreamType> SupportedTypes => StreamTypeToFirstOffset.Keys;
+        public static IReadOnlyDictionary<HexStreamType, int> StreamTypeToFirstOffset { get; set; }
+        public static IReadOnlyDictionary<HexStreamType, Func<Control>> StreamTypeToPacketDefineControlFactory { get; set; }
 
         static PacketsDefinersDictionaries()
         {
@@ -18,16 +19,18 @@ namespace PacketStudio.Controls.PacketsDef
                 .Where(classType => classType.GetInterface(nameof(IPacketDefiner)) != null);
 
 
-            StreamTypeToFirstOffset = new Dictionary<HexStreamType, int>();
-            StreamTypeToPacketDefineControlFactory = new Dictionary<HexStreamType, Func<Control>>();
+            Dictionary<HexStreamType, int> StreamTypeToFirstOffsetTemp = new Dictionary<HexStreamType, int>();
+            StreamTypeToFirstOffset = StreamTypeToFirstOffsetTemp;
+            Dictionary<HexStreamType, Func<Control>> StreamTypeToPacketDefineControlFactoryTemp = new Dictionary<HexStreamType, Func<Control>>();
+            StreamTypeToPacketDefineControlFactory = StreamTypeToPacketDefineControlFactoryTemp;
             foreach (Type packetDefiner in packetDefiners)
             {
                 Func<Control> creationFunc = () => Activator.CreateInstance(packetDefiner) as Control;
                 IPacketDefiner prototype = Activator.CreateInstance(packetDefiner) as IPacketDefiner;
                 HexStreamType hexType = prototype.StreamType;
                 int headersLen = prototype.HeadersLength;
-                StreamTypeToFirstOffset[hexType] = headersLen;
-                StreamTypeToPacketDefineControlFactory[hexType] = creationFunc;
+                StreamTypeToFirstOffsetTemp[hexType] = headersLen;
+                StreamTypeToPacketDefineControlFactoryTemp[hexType] = creationFunc;
             }
         }
     }
