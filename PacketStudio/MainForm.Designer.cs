@@ -94,14 +94,12 @@ namespace PacketStudio
             // 
             // dockingManager1
             // 
-            this.dockingManager1.ActiveCaptionBackground = new Syncfusion.Drawing.BrushInfo(System.Drawing.SystemColors.ActiveCaption);
             this.dockingManager1.ActiveCaptionFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
             this.dockingManager1.AnimateAutoHiddenWindow = true;
             this.dockingManager1.AutoHideSelectionStyle = Syncfusion.Windows.Forms.Tools.AutoHideSelectionStyle.Click;
             this.dockingManager1.AutoHideTabForeColor = System.Drawing.Color.Empty;
             this.dockingManager1.DockBehavior = Syncfusion.Windows.Forms.Tools.DockBehavior.VS2010;
             this.dockingManager1.DockLayoutStream = ((System.IO.MemoryStream)(resources.GetObject("dockingManager1.DockLayoutStream")));
-            this.dockingManager1.DockTabForeColor = System.Drawing.Color.Empty;
             this.dockingManager1.DockTabPadX = 0F;
             this.dockingManager1.DragProviderStyle = Syncfusion.Windows.Forms.Tools.DragProviderStyle.VS2012;
             this.dockingManager1.HostControl = this;
