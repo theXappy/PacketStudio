@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Controls\AdvancedTabControl.cs" />
     <Compile Include="Controls\PacketsDef\IPacketDefiner.cs" />
+    <Compile Include="Controls\PacketsDef\PacketsDefinersDictionaries.cs" />
     <Compile Include="Controls\PacketsDef\RawPacketDefControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -92,6 +93,12 @@
     </Compile>
     <Compile Include="Controls\PacketsDef\IpPacketDefControl.Designer.cs">
       <DependentUpon>IpPacketDefControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\TcpPacketDefControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PacketsDef\TcpPacketDefControl.Designer.cs">
+      <DependentUpon>TcpPacketDefControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PacketsDef\UdpPacketDefControl.cs">
       <SubType>UserControl</SubType>

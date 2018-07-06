@@ -112,7 +112,7 @@ namespace PacketStudio
             // Also recursivly register drag-drop events for all controls under the main form, such as the main tab control
             WireDragDrop(new Control[1]{this});
             // Allow dropping in the dock manager's panels (i.e. hex view panel, tree view panel)
-	        WireDragDrop(this.dockingManager1.ControlsArray);
+	        WireDragDrop(this.dockingManager.ControlsArray);
 
 	    }
 
@@ -242,7 +242,7 @@ namespace PacketStudio
 		{
 			// Docking manager will KEEP FUCKING RESETTING THIS TO TRUE no matter what I set in the designer mode or underlaying code
 			// So every time the load forms, EAT A FUCKING FALSE YOU PEICE OF SHIT
-			dockingManager1.AnimateAutoHiddenWindow = false;
+			dockingManager.AnimateAutoHiddenWindow = false;
 			// Also, I can't choose 'no caption buttons' (will add ALL of them if I try) so I clear it here
 			// I Changed my mind, commented out.
 			//dockingManager1.CaptionButtons.Clear();

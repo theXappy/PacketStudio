@@ -7,7 +7,9 @@ namespace PacketStudio.Controls.PacketsDef
 	{
 		event EventHandler PacketChanged;
 
-		bool IsValid { get; }
+	    HexStreamType StreamType { get; }
+        int HeadersLength { get; }
+        bool IsValid { get; }
 		string Error { get; }
 		byte[] Generate(byte[] rawBytes);
 		PacketSaveData GetSaveData(string packetHex);

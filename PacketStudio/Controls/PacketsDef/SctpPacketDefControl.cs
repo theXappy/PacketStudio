@@ -16,7 +16,9 @@ namespace PacketStudio.Controls.PacketsDef
 		}
 
 		public event EventHandler PacketChanged;
-		public bool IsValid => int.TryParse(streamIdTextBox.Text, out _);
+	    public HexStreamType StreamType => HexStreamType.SctpPayload;
+	    public int HeadersLength => 62;
+	    public bool IsValid => int.TryParse(streamIdTextBox.Text, out _);
 
 		public string Error => IsValid == false
 			? $"Failed to parse UDP stream ID. Must be an integer, was: '{streamIdTextBox.Text}'"

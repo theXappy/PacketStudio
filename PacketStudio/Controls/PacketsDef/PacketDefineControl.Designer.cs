@@ -54,11 +54,6 @@
 			// 
 			this.packetTypeListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.packetTypeListBox.FormattingEnabled = true;
-			this.packetTypeListBox.Items.AddRange(new object[] {
-            "Raw Ethernet",
-            "UDP Payload",
-            "SCTP Payload",
-            "IP Payload"});
 			this.packetTypeListBox.Location = new System.Drawing.Point(3, 173);
 			this.packetTypeListBox.Name = "packetTypeListBox";
 			this.packetTypeListBox.Size = new System.Drawing.Size(139, 56);
