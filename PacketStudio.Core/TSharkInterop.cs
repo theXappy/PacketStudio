@@ -12,7 +12,7 @@ using PacketStudio.DataAccess;
 
 namespace PacketStudio.Core
 {
-	public class TSharkInterop
+    public class TSharkInterop
 	{
 		private string _tsharkPath;
 		private TempPacketsSaver _packetsSaver;

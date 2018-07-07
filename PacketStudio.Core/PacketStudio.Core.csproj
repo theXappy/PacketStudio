@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CapInfosInterop.cs" />
     <Compile Include="HexDeserializer.cs" />
     <Compile Include="SharksFinder.cs" />
     <Compile Include="TSharkCombinedResults.cs" />

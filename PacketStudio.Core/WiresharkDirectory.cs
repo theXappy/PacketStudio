@@ -4,11 +4,13 @@
 	{
 		public string WiresharkPath { get; set; }
 		public string TsharkPath { get; set; }
+		public string CapinfosPath { get; set; }
 
-		public WiresharkDirectory(string wiresharkPath, string tsharkPath)
-		{
-			WiresharkPath = wiresharkPath;
-			TsharkPath = tsharkPath;
-		}
+	    public WiresharkDirectory(string wiresharkPath, string tsharkPath, string capinfosPath)
+	    {
+	        WiresharkPath = wiresharkPath;
+	        TsharkPath = tsharkPath;
+	        CapinfosPath = capinfosPath;
+	    }
 	}
 }

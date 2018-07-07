@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Be.Windows.Forms;
+using Humanizer;
+using Humanizer.Bytes;
 using Newtonsoft.Json.Linq;
 using PacketStudio.Controls;
 using PacketStudio.Controls.PacketsDef;
@@ -31,8 +34,9 @@ namespace PacketStudio
         private TempPacketsSaver _tps = new TempPacketsSaver();
         private WiresharkInterop _wireshark;
 		private TSharkInterop _tshark;
+	    private CapInfosInterop _capinfos;
 
-		CancellationTokenSource _tokenSource;
+        CancellationTokenSource _tokenSource;
 
 		private BrushInfoColorArrayList badGradient = new BrushInfoColorArrayList(new[]
 		{
@@ -84,6 +88,7 @@ namespace PacketStudio
 			{
 				_wireshark = new WiresharkInterop(dir.WiresharkPath);
 				_tshark = new TSharkInterop(dir.TsharkPath);
+                _capinfos = new CapInfosInterop(dir.CapinfosPath);
 			}
 			else
 			{
@@ -93,7 +98,8 @@ namespace PacketStudio
 				{
 					_wireshark = new WiresharkInterop(dir.WiresharkPath);
 					_tshark = new TSharkInterop(dir.TsharkPath);
-				}
+				    _capinfos = new CapInfosInterop(dir.CapinfosPath);
+                }
 				else
 				{
                     ShowErrorMessageBox("Wireshark path not saved in the settings and couldn't be found in any of the default paths.\r\n\r\n" +
@@ -134,7 +140,13 @@ namespace PacketStudio
 
 	    void ctl_DragDrop(object sender, DragEventArgs e)
 	    {
-	        string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+	        if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+	        {
+                // Not a file dragging (maybe tabss?)
+	            return;
+	        }
+
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 	        if (files.Skip(1).Any())
 	        {
                 // Multiple files dropped, can't open
@@ -142,7 +154,27 @@ namespace PacketStudio
                 return;
 	        }
 
-	        string file = files.First();
+            // Ask about unsaved changes
+	        if (_unsavedChangesExist)
+	        {
+	            var res = MessageBox.Show(this, $"Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
+	            switch (res)
+	            {
+	                case DialogResult.Cancel:
+	                    return;
+	                case DialogResult.Yes:
+	                    DialogResult res2 = PromptUserToSave();
+	                    if (res2 == DialogResult.Cancel)
+	                    {
+	                        // User canceled saving, probably meant to cancel clearing as well
+	                        return;
+	                    }
+
+	                    break;
+	            }
+	        }
+
+            string file = files.First();
 	        LoadFile(file);
         }
 
@@ -905,13 +937,59 @@ namespace PacketStudio
 
 		public void LoadFile(string path)
 		{
-			if (!File.Exists(path))
+		    FileInfo finfo = new FileInfo(path);
+            if (!finfo.Exists)
 			{
                 ShowErrorMessageBox($"No such file '{path}'", MessageBoxIcon.Error);
                 return;
 			}
 
-			IPacketsProvider provider = null;
+
+		    string extension = finfo.Extension.ToLower();
+		    bool isCapinfoSupported = extension == ".pcap" || extension == ".pcapng";
+		    ByteSize bsize = finfo.Length.Bytes();
+		    string humanizedByteSize = $"{bsize.LargestWholeNumberValue:F2}{bsize.LargestWholeNumberSymbol}";
+            if (isCapinfoSupported && bsize.Megabytes > 1) // More than 1 MB
+		    {
+                // Found a large pcap/pcapngs, check if it has a large amount of packets
+                try
+		        {
+		            int packetsCount = this._capinfos.GetPacketsCount(finfo.FullName);
+		            int MAX_RECOMMENDED_PACKETS_COUNT = 500;
+		            if (packetsCount >= MAX_RECOMMENDED_PACKETS_COUNT)
+		            {
+		                // As suspected, this capture contains many packets, warn the user
+		                string errorMessage = $"The file you are trying to load is quite large ({humanizedByteSize})\r\n" +
+		                                      $"The file contains {packetsCount} packets, it's recommended you work file files with less than {MAX_RECOMMENDED_PACKETS_COUNT} packets\r\n\r\n"+
+                                              "Are you sure you want to load this file?";
+
+		                var res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo,
+		                    MessageBoxIcon.Warning);
+		                if (res == DialogResult.No)
+		                {
+		                    // Abort loading of large file
+		                    return;
+		                }
+		            }
+		        }
+		        catch (Exception e)
+		        {
+                    string errorMessage = $"The file you are trying to load is quite large ({humanizedByteSize})\r\n" +
+                                          $"Also an error prevented {_rawFormName} from getting the packets count in this capture.\r\n" +
+                                          $"The error message is:\r\n" +
+                                          $"{e.ToString()}\r\n\r\n"+
+		                                   "Are you sure you want to load this file?";
+
+                    var res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+		            if (res == DialogResult.No)
+		            {
+                        // Abort loading of large file
+		                return;
+		            }
+		        }
+		    }
+
+            IPacketsProvider provider = null;
 			string ext = Path.GetExtension(path);
 			switch (ext)
 			{
@@ -1339,7 +1417,8 @@ namespace PacketStudio
 						Settings.Default.Save();
 						_wireshark = new WiresharkInterop(wsDir.WiresharkPath);
 						_tshark = new TSharkInterop(wsDir.TsharkPath);
-					}
+					    _capinfos = new CapInfosInterop(wsDir.CapinfosPath);
+                    }
 				}
 				else if (_isConstructing)
 				{
@@ -1411,7 +1490,7 @@ namespace PacketStudio
 
 		private bool _interceptingKeyDown = false;
 
-		private void packetTreeView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+	    private void packetTreeView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Right)
 			{

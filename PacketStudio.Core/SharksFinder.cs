@@ -32,9 +32,10 @@ namespace PacketStudio.Core
 		{
 			string wsPath = dirPath + "wireshark.exe";
 			string tsPath = dirPath + "tshark.exe";
+			string ciPath = dirPath + "capinfos.exe";
 			if (File.Exists(wsPath) && File.Exists(tsPath))
 			{
-				output = new WiresharkDirectory(wsPath,tsPath);
+				output = new WiresharkDirectory(wsPath,tsPath,ciPath);
 				return true;
 			}
 			output = null;
@@ -53,8 +54,9 @@ namespace PacketStudio.Core
 			{
 				string wsPath = dirPath + "wireshark.exe";
 				string tsPath = dirPath + "tshark.exe";
+				string ciPath = dirPath + "capinfos.exe";
 
-				output = new WiresharkDirectory(wsPath, tsPath);
+				output = new WiresharkDirectory(wsPath, tsPath,ciPath);
 				return true;
 			}
 			output = null;
