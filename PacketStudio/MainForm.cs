@@ -736,7 +736,10 @@ namespace PacketStudio
 
 		private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_lastSelectedPage != null && !tabControl.SelectedTab.Equals(_lastSelectedPage))
+		    var currentSelectTab = tabControl.SelectedTab;
+		    bool isCurrentTabEqualLastTab = currentSelectTab == _lastSelectedPage;
+
+            if (_lastSelectedPage != null && !isCurrentTabEqualLastTab)
 			{
 				_lastSelectedPage.Controls.Clear();
 			}
@@ -960,7 +963,7 @@ namespace PacketStudio
 		            {
 		                // As suspected, this capture contains many packets, warn the user
 		                string errorMessage = $"The file you are trying to load is quite large ({humanizedByteSize})\r\n" +
-		                                      $"The file contains {packetsCount} packets, it's recommended you work file files with less than {MAX_RECOMMENDED_PACKETS_COUNT} packets\r\n\r\n"+
+		                                      $"The file contains {packetsCount:##,###} packets, it's recommended you work file files with less than {MAX_RECOMMENDED_PACKETS_COUNT} packets\r\n\r\n"+
                                               "Are you sure you want to load this file?";
 
 		                var res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo,
@@ -1012,16 +1015,25 @@ namespace PacketStudio
 
 			if (provider != null)
 			{
-				LoadPackets(provider);
-			    string fileName = Path.GetFileName(path);
-			    Text = $"{_rawFormName} - {fileName}";
-				Pdc_ContentChanged(null, null);
+				bool loaded = LoadPackets(provider);
+			    if (loaded)
+			    {
+			        string fileName = Path.GetFileName(path);
+			        Text = $"{_rawFormName} - {fileName}";
+			        Pdc_ContentChanged(null, null);
+                }
+			    else
+			    {
+			        Text = _rawFormName;
+			        Pdc_ContentChanged(null, null);
+                    _unsavedChangesExist = false;
+			    }
 			}
 		}
 
 		private bool _noDraw = false;
 
-		private void LoadPackets(IPacketsProvider provider)
+		private bool LoadPackets(IPacketsProvider provider)
 		{
 			_noDraw = true;
 
@@ -1048,11 +1060,13 @@ namespace PacketStudio
 
 			_nextPacketTabNumber = 1;
 
+		    bool anyPacketsFound = false;
 			try
 			{
 				foreach (PacketSaveData packet in provider)
 				{
-					AddNewTab(packet);
+				    anyPacketsFound = true;
+                    AddNewTab(packet);
 				}
 			}
 			catch (Exception ex)
@@ -1063,18 +1077,31 @@ namespace PacketStudio
 			{
 				provider.Dispose();
 			}
+		    if (!anyPacketsFound)
+		    {
+		        ShowErrorMessageBox($"Error reading packets from file.\r\n" +
+		                            $"No packets found.\t\n" +
+		                            $"(This could also be a result of failure to open the file)", MessageBoxIcon.Error);
+            }
 
 
 			if (localPlusTab != null)
 			{
 				tabControl.TabPages.Add(localPlusTab);
-			}
+			    if (!anyPacketsFound)
+			    {
+                    // No packets are found so select the plus tab, this way a new "packet 1" will be created
+			        tabControl.SelectedTab = localPlusTab;
+			    }
+            }
 
 			tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
 			tabControl_SelectedIndexChanged(null,null);
 
 			_noDraw = false;
 			UpdatePacketListBox();
+
+		    return anyPacketsFound;
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
