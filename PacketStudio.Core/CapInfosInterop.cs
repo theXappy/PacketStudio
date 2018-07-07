@@ -30,22 +30,12 @@ namespace PacketStudio.Core
         public int GetPacketsCount(string captureFile)
         {
             CliWrap.Cli cli = new CliWrap.Cli(_capinfosPath);
-            Task<ExecutionOutput> capinfosTask = cli.ExecuteAsync($"{captureFile} -c");
-            bool timedout = !capinfosTask.Wait(2_000); // Waiting 2 seconds max
 
-            if (timedout)
-            {
-                throw new Exception("It took capinfos too much time to execute.");
-            }
-
-            if (capinfosTask.IsCanceled) // task was canceled
-                throw new TaskCanceledException();
-
-            ExecutionOutput res = capinfosTask.Result;
+            ExecutionOutput res = cli.Execute($"{captureFile} -c");
             if (res.ExitCode != 0) // Capinfos returned an error exit code
             {
                 // Show the exit code + errors
-                throw new Exception($"Capinfos returned with exit code: {res.ExitCode}\r\n{capinfosTask.Result.StandardError}");
+                throw new Exception($"Capinfos returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
             }
 
             string output = res.StandardOutput;
@@ -55,13 +45,13 @@ namespace PacketStudio.Core
 
             if (packetsCountStr.Contains(" k"))
             {
-                packetsCountStr.Replace(" k", "000");
+                packetsCountStr = packetsCountStr.Replace(" k", "000");
             }
 
             int parsedCount;
             if (!int.TryParse(packetsCountStr, out parsedCount))
             {
-                throw new Exception("Failed to parse the result of capinfos.\r\n\r\nRaw output:\r\n"+output);
+                throw new Exception("Failed to parse the result of capinfos.\r\n\r\nRaw output:\r\n" + output);
             }
             return parsedCount;
         }
