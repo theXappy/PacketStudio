@@ -38,12 +38,17 @@ namespace PacketStudio
 
         CancellationTokenSource _tokenSource;
 
-		private BrushInfoColorArrayList badGradient = new BrushInfoColorArrayList(new[]
-		{
-			Color.FromArgb(0xEA,0x54,0x55),
-			Color.FromArgb(0xFE,0xB6,0x92)
-		});
-		private BrushInfoColorArrayList goodGradient = new BrushInfoColorArrayList(new[]
+	    private BrushInfoColorArrayList badGradient = new BrushInfoColorArrayList(new[]
+	    {
+	        Color.FromArgb(0xEA,0x54,0x55),
+	        Color.FromArgb(0xFE,0xB6,0x92)
+	    });
+	    private BrushInfoColorArrayList warnGradient = new BrushInfoColorArrayList(new[]
+	    {
+	        Color.FromArgb(241,194,107),
+	        Color.FromArgb(251,245,149)
+	    });
+        private BrushInfoColorArrayList goodGradient = new BrushInfoColorArrayList(new[]
 		{
 			Color.FromArgb(0x28,0xC7,0x6F),
 			Color.FromArgb(0x81,0xFB,0xB8)
@@ -272,12 +277,16 @@ namespace PacketStudio
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			// Docking manager will KEEP FUCKING RESETTING THIS TO TRUE no matter what I set in the designer mode or underlaying code
-			// So every time the load forms, EAT A FUCKING FALSE YOU PEICE OF SHIT
+			// Docking manager will KEEP RESETTING to TRUE no matter what I set in the designer mode or underlaying code
+			// So every time the load forms, Setting to FALSE *here* seems to solve this.
 			dockingManager.AnimateAutoHiddenWindow = false;
 			// Also, I can't choose 'no caption buttons' (will add ALL of them if I try) so I clear it here
 			// I Changed my mind, commented out.
 			//dockingManager1.CaptionButtons.Clear();
+
+            // Give focus to PDC (and it's hex box)
+		    PacketDefineControl pdc = GetCurrentPacketDefineControl();
+		    pdc.Select();
 		}
 
 		private TabPage AddNewTab(PacketSaveData saveData)
@@ -386,7 +395,15 @@ namespace PacketStudio
         bool _livePreviewInContext = true;
         private void QueueLivePreviewUpdate()
 		{
-			_tokenSource?.Cancel();
+		    try
+		    {
+		        _tokenSource?.Cancel();
+            }
+		    catch (Exception)
+		    {
+		        // For some reason this calls Process.Kill which might throw access is denied?
+		    }
+			
 			_tokenSource = new CancellationTokenSource();
 			livePreviewTextBox.Text = string.Empty;
 
@@ -1271,7 +1288,10 @@ namespace PacketStudio
 
 			if (!pdc.IsHexStream)
 			{
-				livePreviewTextBox.Text = "Bytes highlighting is only supported for 'clean' hex streams (no offsets, ASCII represenation, 0x's, spaces, etc)";
+			    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, warnGradient);
+                livePreviewTextBox.Text = "Bytes highlighting is only supported for 'clean' hex streams\r\n" +
+                                          "(no offsets, ASCII represenation, 0x's, spaces, etc)\r\n" +
+                                          $"You can use \"{refactorDropDownButton.Text}\"→\"{normalizeHexToolStripMenuItem.Text}\" to get a clean hex stream.";
 				return;
 			}
 
@@ -1393,8 +1413,8 @@ namespace PacketStudio
 		}
 		private void copyForCToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var pdc = tabControl.SelectedTab.Controls.Cast<Control>().Single(c => c is PacketDefineControl) as PacketDefineControl;
-			byte[] data;
+			PacketDefineControl pdc = GetCurrentPacketDefineControl();
+            byte[] data;
 			try
 			{
 				data = pdc.GetPacket();
@@ -1561,10 +1581,44 @@ namespace PacketStudio
 				}
 			}
 		}
+        
+        private void normalizeHexToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            PacketDefineControl pdc = GetCurrentPacketDefineControl();
+            try
+            {
+                // Check if packet is valid
+                pdc.GetPacket();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageBox($"Error getting the current packet's data.\r\n{ex.Message}", MessageBoxIcon.Error);
+                return;
+            }
+            pdc.NormalizeHex();
 
-		private void packetDefineControl1_Load(object sender, EventArgs e)
-		{
+        }
 
-		}
-	}
+        private void flattenProtocolStackToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            PacketDefineControl pdc = GetCurrentPacketDefineControl();
+            try
+            {
+                // Check if packet is valid
+                pdc.GetPacket();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageBox($"Error getting the current packet's data.\r\n{ex.Message}", MessageBoxIcon.Error);
+                return;
+            }
+            pdc.FlattenProtoStack();
+
+        }
+
+        private PacketDefineControl GetCurrentPacketDefineControl()
+        {
+            return tabControl.SelectedTab.Controls.Cast<Control>().Single(c => c is PacketDefineControl) as PacketDefineControl;
+        }
+    }
 }

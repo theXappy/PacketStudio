@@ -34,5 +34,10 @@ namespace PacketStudio.Controls.PacketsDef
         {
             return (int) Type;
         }
+
+        public static implicit operator HexTypeWrapper(HexStreamType type)
+        {
+            return new HexTypeWrapper(type);
+        }
     }
 }

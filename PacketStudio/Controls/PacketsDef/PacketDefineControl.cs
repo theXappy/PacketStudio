@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -12,12 +13,22 @@ namespace PacketStudio.Controls.PacketsDef
     public partial class PacketDefineControl : UserControl
     {
         private HexDeserializer _deserializer;
+        private HexTypeWrapper _packetType;
 
         public event EventHandler<EventArgs> ContentChanged;
 
         public override string Text => hexBox.Text;
 
-        public HexTypeWrapper PacketType { get; private set; }
+        public HexTypeWrapper PacketType
+        {
+            get { return _packetType; }
+            private set
+            {
+                _packetType = value;
+                packetTypeListBox.SelectedItem = value;
+            }
+        }
+
         public bool IsHexStream => _deserializer.IsHexStream(Text);
 
         public PacketDefineControl() : this(null)
@@ -167,6 +178,50 @@ namespace PacketStudio.Controls.PacketsDef
             }
 
             return definer;
+        }
+
+        public void NormalizeHex()
+        {
+            byte[] bytes;
+            string rawHex = hexBox.Text;
+            try
+            {
+                bytes = _deserializer.Deserialize(rawHex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append($"{b:x2}");
+            }
+            string finalHex = sb.ToString();
+            this.hexBox.Text = finalHex;
+        }
+
+        public void FlattenProtoStack()
+        {
+            byte[] bytes;
+            try
+            {
+                bytes = GetPacket();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append($"{b:x2}");
+            }
+            string finalHex = sb.ToString();
+            this.PacketType = HexStreamType.RawEthernet;
+            this.hexBox.Text = finalHex;
         }
     }
 }

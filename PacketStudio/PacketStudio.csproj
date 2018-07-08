@@ -187,6 +187,8 @@
     <None Include="NewAgeIcons\icons8-save-96.png" />
     <None Include="NewAgeIcons\icons8-eye-96.png" />
     <None Include="NewAgeIcons\icons8-share-500.png" />
+    <None Include="NewAgeIcons\hammer.ico" />
+    <Content Include="NewAgeIcons\hammer500.png" />
     <Content Include="NewAgeIcons\ps_icon_new.ico" />
     <Content Include="NewAgeIcons\ps_white.ico" />
   </ItemGroup>

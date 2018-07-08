@@ -1,4 +1,6 @@
-﻿namespace PacketStudio.Controls.PacketsDef
+﻿using System;
+
+namespace PacketStudio.Controls.PacketsDef
 {
     partial class PacketDefineControl
     {
