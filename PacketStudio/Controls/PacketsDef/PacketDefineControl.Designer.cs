@@ -45,7 +45,7 @@
             this.hexBox.Location = new System.Drawing.Point(3, 3);
             this.hexBox.Multiline = true;
             this.hexBox.Name = "hexBox";
-            this.hexBox.Size = new System.Drawing.Size(344, 166);
+            this.hexBox.Size = new System.Drawing.Size(392, 166);
             this.hexBox.TabIndex = 6;
             this.hexBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             this.hexBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
@@ -66,14 +66,15 @@
             this.packetDefPanel.Controls.Add(this.rawPacketDefControl1);
             this.packetDefPanel.Location = new System.Drawing.Point(148, 176);
             this.packetDefPanel.Name = "packetDefPanel";
-            this.packetDefPanel.Size = new System.Drawing.Size(199, 77);
+            this.packetDefPanel.Size = new System.Drawing.Size(247, 77);
             this.packetDefPanel.TabIndex = 15;
             // 
             // rawPacketDefControl1
             // 
-            this.rawPacketDefControl1.Location = new System.Drawing.Point(3, -13);
+            this.rawPacketDefControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rawPacketDefControl1.Location = new System.Drawing.Point(0, 0);
             this.rawPacketDefControl1.Name = "rawPacketDefControl1";
-            this.rawPacketDefControl1.Size = new System.Drawing.Size(193, 77);
+            this.rawPacketDefControl1.Size = new System.Drawing.Size(247, 77);
             this.rawPacketDefControl1.TabIndex = 0;
             // 
             // PacketDefineControl
@@ -84,7 +85,7 @@
             this.Controls.Add(this.packetTypeListBox);
             this.Controls.Add(this.hexBox);
             this.Name = "PacketDefineControl";
-            this.Size = new System.Drawing.Size(350, 256);
+            this.Size = new System.Drawing.Size(398, 256);
             this.packetDefPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
