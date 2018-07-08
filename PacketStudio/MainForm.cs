@@ -1620,5 +1620,22 @@ namespace PacketStudio
         {
             return tabControl.SelectedTab.Controls.Cast<Control>().Single(c => c is PacketDefineControl) as PacketDefineControl;
         }
+
+        private void packetTabsList_MeasureItem(object sender, MeasureItemEventArgs e)
+        {
+            e.ItemHeight = 15;
+        }
+
+        private void packetTabsList_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            e.DrawFocusRectangle();
+            var newBounds = new Rectangle(e.Bounds.X,e.Bounds.Y+1,e.Bounds.Width,e.Bounds.Height);
+            e.Graphics.DrawString(
+                (string)packetTabsList.Items[e.Index].ToString(),
+                e.Font,
+                new SolidBrush(e.ForeColor),
+                newBounds);
+        }
     }
 }
