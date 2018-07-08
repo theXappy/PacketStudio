@@ -56,9 +56,9 @@ namespace PacketStudio.Controls.PacketsDef
             // 
             this.packetTypeListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.packetTypeListBox.FormattingEnabled = true;
-            this.packetTypeListBox.Location = new System.Drawing.Point(3, 176);
+            this.packetTypeListBox.Location = new System.Drawing.Point(3, 171);
             this.packetTypeListBox.Name = "packetTypeListBox";
-            this.packetTypeListBox.Size = new System.Drawing.Size(139, 69);
+            this.packetTypeListBox.Size = new System.Drawing.Size(139, 82);
             this.packetTypeListBox.TabIndex = 14;
             this.packetTypeListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -66,9 +66,9 @@ namespace PacketStudio.Controls.PacketsDef
             // 
             this.packetDefPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.packetDefPanel.Controls.Add(this.rawPacketDefControl1);
-            this.packetDefPanel.Location = new System.Drawing.Point(148, 176);
+            this.packetDefPanel.Location = new System.Drawing.Point(148, 171);
             this.packetDefPanel.Name = "packetDefPanel";
-            this.packetDefPanel.Size = new System.Drawing.Size(247, 77);
+            this.packetDefPanel.Size = new System.Drawing.Size(247, 82);
             this.packetDefPanel.TabIndex = 15;
             // 
             // rawPacketDefControl1
@@ -76,7 +76,7 @@ namespace PacketStudio.Controls.PacketsDef
             this.rawPacketDefControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rawPacketDefControl1.Location = new System.Drawing.Point(0, 0);
             this.rawPacketDefControl1.Name = "rawPacketDefControl1";
-            this.rawPacketDefControl1.Size = new System.Drawing.Size(247, 77);
+            this.rawPacketDefControl1.Size = new System.Drawing.Size(247, 82);
             this.rawPacketDefControl1.TabIndex = 0;
             // 
             // PacketDefineControl
