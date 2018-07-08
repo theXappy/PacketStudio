@@ -37,7 +37,7 @@ namespace PacketStudio
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbpacketTabsPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbstatusPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
-            Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
+            Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable2 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
             this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
             this.livePreviewPanel = new System.Windows.Forms.Panel();
             this.packetTreeView = new PacketStudio.Controls.TreeViewWithArrows();
@@ -135,22 +135,20 @@ namespace PacketStudio
             this.livePreviewPanel.Controls.Add(this.packetTreeView);
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
-            this.livePreviewPanel.Size = new System.Drawing.Size(455, 672);
+            this.livePreviewPanel.Size = new System.Drawing.Size(455, 687);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
             // 
-            this.packetTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.packetTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.packetTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.packetTreeView.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.packetTreeView.HideSelection = false;
-            this.packetTreeView.Location = new System.Drawing.Point(10, 9);
-            this.packetTreeView.Margin = new System.Windows.Forms.Padding(10);
+            this.packetTreeView.Location = new System.Drawing.Point(0, 0);
+            this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(434, 654);
+            this.packetTreeView.Size = new System.Drawing.Size(455, 687);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.packetTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.packetTreeView_KeyDown);
@@ -167,13 +165,11 @@ namespace PacketStudio
             // 
             // packetTabsList
             // 
-            this.packetTabsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.packetTabsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.packetTabsList.FormattingEnabled = true;
-            this.packetTabsList.Location = new System.Drawing.Point(3, 5);
+            this.packetTabsList.Location = new System.Drawing.Point(0, 0);
             this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(198, 836);
+            this.packetTabsList.Size = new System.Drawing.Size(204, 855);
             this.packetTabsList.Sorted = true;
             this.packetTabsList.TabIndex = 0;
             this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.packetTabsList_SelectedIndexChanged);
@@ -185,23 +181,21 @@ namespace PacketStudio
             this.statusPanel.Controls.Add(this.livePrevStatusPanel);
             this.statusPanel.Location = new System.Drawing.Point(1, 24);
             this.statusPanel.Name = "statusPanel";
-            this.statusPanel.Size = new System.Drawing.Size(455, 154);
+            this.statusPanel.Size = new System.Drawing.Size(455, 139);
             this.statusPanel.TabIndex = 15;
             // 
             // livePrevStatusPanel
             // 
-            this.livePrevStatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.livePrevStatusPanel.BackColor = System.Drawing.Color.Transparent;
             this.livePrevStatusPanel.BackgroundColor = new Syncfusion.Drawing.BrushInfo(Syncfusion.Drawing.GradientStyle.None, System.Drawing.Color.FromArgb(((int)(((byte)(129)))), ((int)(((byte)(251)))), ((int)(((byte)(184))))), System.Drawing.Color.Gray);
             this.livePrevStatusPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.Flat;
             this.livePrevStatusPanel.BorderColor = System.Drawing.Color.DimGray;
             this.livePrevStatusPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.livePrevStatusPanel.Controls.Add(this.livePreviewTextBox);
-            this.livePrevStatusPanel.Location = new System.Drawing.Point(9, 10);
+            this.livePrevStatusPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.livePrevStatusPanel.Location = new System.Drawing.Point(0, 0);
             this.livePrevStatusPanel.Name = "livePrevStatusPanel";
-            this.livePrevStatusPanel.Size = new System.Drawing.Size(435, 133);
+            this.livePrevStatusPanel.Size = new System.Drawing.Size(455, 139);
             this.livePrevStatusPanel.TabIndex = 9;
             // 
             // livePreviewTextBox
@@ -225,20 +219,18 @@ namespace PacketStudio
             // 
             // hexViewBox
             // 
-            this.hexViewBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hexViewBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.hexViewBox.Font = new System.Drawing.Font("Consolas", 9F);
             this.hexViewBox.HexCasing = Be.Windows.Forms.HexCasing.Lower;
             this.hexViewBox.LineInfoVisible = true;
-            this.hexViewBox.Location = new System.Drawing.Point(7, 7);
+            this.hexViewBox.Location = new System.Drawing.Point(0, 0);
             this.hexViewBox.Margin = new System.Windows.Forms.Padding(10);
             this.hexViewBox.Name = "hexViewBox";
             this.hexViewBox.Padding = new System.Windows.Forms.Padding(5);
             this.hexViewBox.ReadOnly = true;
             this.hexViewBox.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
             this.hexViewBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexViewBox.Size = new System.Drawing.Size(710, 363);
+            this.hexViewBox.Size = new System.Drawing.Size(723, 374);
             this.hexViewBox.TabIndex = 0;
             this.hexViewBox.UseFixedBytesPerLine = true;
             this.hexViewBox.VScrollBarVisible = true;
@@ -257,17 +249,15 @@ namespace PacketStudio
             // tabControl
             // 
             this.tabControl.AllowClose = false;
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.plusTab);
-            this.tabControl.Location = new System.Drawing.Point(11, 9);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(5);
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(709, 463);
+            this.tabControl.Size = new System.Drawing.Size(725, 477);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabControl_DragDrop);
@@ -280,7 +270,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(701, 437);
+            this.tabPage1.Size = new System.Drawing.Size(717, 451);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -291,7 +281,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(695, 431);
+            this.packetDefineControl1.Size = new System.Drawing.Size(711, 445);
             this.packetDefineControl1.TabIndex = 0;
             this.packetDefineControl1.Load += new System.EventHandler(this.packetDefineControl1_Load);
             // 
@@ -320,7 +310,7 @@ namespace PacketStudio
             this.ribbonControl.MenuButtonWidth = 56;
             this.ribbonControl.MenuColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
             this.ribbonControl.Name = "ribbonControl";
-            this.ribbonControl.Office2016ColorTable.Add(office2016ColorTable1);
+            this.ribbonControl.Office2016ColorTable.Add(office2016ColorTable2);
             this.ribbonControl.OfficeColorScheme = Syncfusion.Windows.Forms.Tools.ToolStripEx.ColorScheme.Black;
             // 
             // ribbonControl.OfficeMenu

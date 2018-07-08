@@ -150,7 +150,7 @@ namespace PacketStudio
 	        if (files.Skip(1).Any())
 	        {
                 // Multiple files dropped, can't open
-                ShowErrorMessageBox("Please drop only a single file.",MessageBoxIcon.Exclamation);
+                ShowErrorMessageBox("Please only drop a single file.",MessageBoxIcon.Exclamation);
                 return;
 	        }
 
