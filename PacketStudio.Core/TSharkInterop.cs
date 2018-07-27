@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ using PacketStudio.DataAccess;
 
 namespace PacketStudio.Core
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class TSharkInterop
 	{
 		private string _tsharkPath;
@@ -119,7 +121,7 @@ namespace PacketStudio.Core
 				token.ThrowIfCancellationRequested();
 
 				return element;
-			}));
+			}), token);
 		}
 
 		public async Task<JObject> GetJsonRawAsync(byte[] packetBytes)
@@ -190,7 +192,7 @@ namespace PacketStudio.Core
                 // Get the right packet according to the given index (parameter)
 
                 // New PDML Style
-			    var skippedHeaderNode = ((XContainer)xdoc.FirstNode?.NextNode?.NextNode); 
+			    XContainer skippedHeaderNode = (XContainer)xdoc.FirstNode?.NextNode?.NextNode; 
 			    if (skippedHeaderNode  == null)
 			    {
                     // Old PDML Style
@@ -219,9 +221,9 @@ namespace PacketStudio.Core
 				token.ThrowIfCancellationRequested();
 
 				// This is most likely the heavy operation in this method. So checking the token right before and after
-				var serializer = JsonSerializer.CreateDefault();
+				JsonSerializer serializer = JsonSerializer.CreateDefault();
 				JsonReader reader = new JsonTextReader(new StringReader(json));
-				var deserialized = serializer.Deserialize(reader);
+				object deserialized = serializer.Deserialize(reader);
 				JArray asArray = deserialized as JArray;
 				
 
