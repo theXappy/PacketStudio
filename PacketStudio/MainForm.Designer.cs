@@ -35,7 +35,6 @@ namespace PacketStudio
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccblivePreviewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbpacketTabsPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
-            Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbstatusPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
             this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
@@ -45,9 +44,6 @@ namespace PacketStudio
             this.greyBorderPanel = new System.Windows.Forms.Panel();
             this.whiteBackgroundPanel = new System.Windows.Forms.Panel();
             this.packetTabsList = new System.Windows.Forms.ListBox();
-            this.statusPanel = new System.Windows.Forms.Panel();
-            this.livePrevStatusPanel = new Syncfusion.Windows.Forms.Tools.GradientPanel();
-            this.livePreviewTextBox = new System.Windows.Forms.Label();
             this.HexViewPanel = new System.Windows.Forms.Panel();
             this.hexViewBox = new Be.Windows.Forms.HexBox();
             this.mainPanel = new Syncfusion.Windows.Forms.Tools.DockingClientPanel();
@@ -84,9 +80,6 @@ namespace PacketStudio
             this.packetTabsPanel.SuspendLayout();
             this.greyBorderPanel.SuspendLayout();
             this.whiteBackgroundPanel.SuspendLayout();
-            this.statusPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.livePrevStatusPanel)).BeginInit();
-            this.livePrevStatusPanel.SuspendLayout();
             this.HexViewPanel.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -132,11 +125,6 @@ namespace PacketStudio
             this.dockingManager.SetEnableDocking(this.packetTabsPanel, true);
             ccbpacketTabsPanel.MergeWith(this.dockingManager.CaptionButtons, false);
             this.dockingManager.SetCustomCaptionButtons(this.packetTabsPanel, ccbpacketTabsPanel);
-            this.dockingManager.SetDockLabel(this.statusPanel, "Status");
-            this.dockingManager.SetEnableDocking(this.statusPanel, true);
-            this.dockingManager.SetAutoHideOnLoad(this.statusPanel, true);
-            ccbstatusPanel.MergeWith(this.dockingManager.CaptionButtons, false);
-            this.dockingManager.SetCustomCaptionButtons(this.statusPanel, ccbstatusPanel);
             this.dockingManager.SetDockLabel(this.HexViewPanel, "Hex View");
             this.dockingManager.SetEnableDocking(this.HexViewPanel, true);
             ccbHexViewPanel.MergeWith(this.dockingManager.CaptionButtons, false);
@@ -148,7 +136,7 @@ namespace PacketStudio
             this.livePreviewPanel.Controls.Add(this.packetTreeView);
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
-            this.livePreviewPanel.Size = new System.Drawing.Size(460, 607);
+            this.livePreviewPanel.Size = new System.Drawing.Size(460, 832);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
@@ -161,7 +149,7 @@ namespace PacketStudio
             this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(460, 607);
+            this.packetTreeView.Size = new System.Drawing.Size(460, 832);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
@@ -214,40 +202,6 @@ namespace PacketStudio
             this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
             this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
             this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PacketTabsList_MouseDown);
-            // 
-            // statusPanel
-            // 
-            this.statusPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.statusPanel.Controls.Add(this.livePrevStatusPanel);
-            this.statusPanel.Location = new System.Drawing.Point(1, 24);
-            this.statusPanel.Name = "statusPanel";
-            this.statusPanel.Size = new System.Drawing.Size(460, 196);
-            this.statusPanel.TabIndex = 15;
-            this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
-            // 
-            // livePrevStatusPanel
-            // 
-            this.livePrevStatusPanel.BackColor = System.Drawing.Color.Transparent;
-            this.livePrevStatusPanel.BackgroundColor = new Syncfusion.Drawing.BrushInfo(Syncfusion.Drawing.GradientStyle.None, System.Drawing.Color.FromArgb(((int)(((byte)(129)))), ((int)(((byte)(251)))), ((int)(((byte)(184))))), System.Drawing.Color.Gray);
-            this.livePrevStatusPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.Flat;
-            this.livePrevStatusPanel.BorderColor = System.Drawing.Color.DimGray;
-            this.livePrevStatusPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.livePrevStatusPanel.Controls.Add(this.livePreviewTextBox);
-            this.livePrevStatusPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.livePrevStatusPanel.Location = new System.Drawing.Point(0, 0);
-            this.livePrevStatusPanel.Name = "livePrevStatusPanel";
-            this.livePrevStatusPanel.Size = new System.Drawing.Size(460, 196);
-            this.livePrevStatusPanel.TabIndex = 9;
-            // 
-            // livePreviewTextBox
-            // 
-            this.livePreviewTextBox.AutoSize = true;
-            this.livePreviewTextBox.Location = new System.Drawing.Point(3, 3);
-            this.livePreviewTextBox.MaximumSize = new System.Drawing.Size(430, 0);
-            this.livePreviewTextBox.Name = "livePreviewTextBox";
-            this.livePreviewTextBox.Size = new System.Drawing.Size(24, 13);
-            this.livePreviewTextBox.TabIndex = 0;
-            this.livePreviewTextBox.Text = "Idle";
             // 
             // HexViewPanel
             // 
@@ -721,10 +675,6 @@ namespace PacketStudio
             this.packetTabsPanel.ResumeLayout(false);
             this.greyBorderPanel.ResumeLayout(false);
             this.whiteBackgroundPanel.ResumeLayout(false);
-            this.statusPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.livePrevStatusPanel)).EndInit();
-            this.livePrevStatusPanel.ResumeLayout(false);
-            this.livePrevStatusPanel.PerformLayout();
             this.HexViewPanel.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
@@ -753,8 +703,6 @@ namespace PacketStudio
 		private Syncfusion.Windows.Forms.Tools.DockingClientPanel mainPanel;
 		private Syncfusion.Windows.Forms.Tools.DockingManager dockingManager;
 		private System.Windows.Forms.Panel livePreviewPanel;
-		private Syncfusion.Windows.Forms.Tools.GradientPanel livePrevStatusPanel;
-		private System.Windows.Forms.Label livePreviewTextBox;
 		private Syncfusion.Windows.Forms.Tools.RibbonControlAdv ribbonControl;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem homeToolStripTabItem;
 		private TreeViewWithArrows packetTreeView;
@@ -781,7 +729,6 @@ namespace PacketStudio
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx wiresharkToolStrip;
 		private System.Windows.Forms.ToolStripButton pcapToolStripButton;
 		private System.Windows.Forms.ToolStripButton locateWsToolStripButton;
-		private System.Windows.Forms.Panel statusPanel;
 		private System.Windows.Forms.Panel packetTabsPanel;
         private System.Windows.Forms.ToolStripDropDownButton refactorDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem normalizeHexToolStripMenuItem;
