@@ -157,10 +157,10 @@ namespace PacketStudio
             this.packetTreeView.ShowLines = false;
             this.packetTreeView.Size = new System.Drawing.Size(460, 624);
             this.packetTreeView.TabIndex = 8;
-            this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.packetTreeView_AfterSelect);
-            this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.packetTreeView_KeyDown);
-            this.packetTreeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.packetTreeView_MouseClick);
-            this.packetTreeView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.packetTreeView_PreviewKeyDown);
+            this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
+            this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
+            this.packetTreeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PacketTreeView_MouseClick);
+            this.packetTreeView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.PacketTreeView_PreviewKeyDown);
             // 
             // packetTabsPanel
             // 
@@ -229,7 +229,7 @@ namespace PacketStudio
             this.hexViewBox.TabIndex = 0;
             this.hexViewBox.UseFixedBytesPerLine = true;
             this.hexViewBox.VScrollBarVisible = true;
-            this.hexViewBox.Copied += new System.EventHandler(this.hexViewBox_Copied);
+            this.hexViewBox.Copied += new System.EventHandler(this.HexViewBox_Copied);
             // 
             // mainPanel
             // 
@@ -254,10 +254,10 @@ namespace PacketStudio
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(714, 428);
             this.tabControl.TabIndex = 4;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.tabControl_DragDrop);
-            this.tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabControl_DragEnter);
-            this.tabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseClick);
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
+            this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
+            this.tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.TabControl_DragEnter);
+            this.tabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
             // 
             // tabPage1
             // 
@@ -379,7 +379,7 @@ namespace PacketStudio
             this.newToolStripButton.Size = new System.Drawing.Size(36, 55);
             this.newToolStripButton.Text = "New";
             this.newToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.newToolStripButton.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            this.newToolStripButton.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
             // 
             // openToolStripButton
             // 
@@ -391,7 +391,7 @@ namespace PacketStudio
             this.openToolStripButton.Size = new System.Drawing.Size(40, 55);
             this.openToolStripButton.Text = "Open";
             this.openToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.openToolStripButton.Click += new System.EventHandler(this.loadFileToolStripMenuItem_Click);
+            this.openToolStripButton.Click += new System.EventHandler(this.LoadFileToolStripMenuItem_Click);
             // 
             // saveToolStripButton
             // 
@@ -403,7 +403,7 @@ namespace PacketStudio
             this.saveToolStripButton.Size = new System.Drawing.Size(36, 55);
             this.saveToolStripButton.Text = "Save";
             this.saveToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.saveToolStripButton.Click += new System.EventHandler(this.saveFileToolStripMenuItem_Click);
+            this.saveToolStripButton.Click += new System.EventHandler(this.SaveFileToolStripMenuItem_Click);
             // 
             // copyToolStrip
             // 
@@ -439,7 +439,7 @@ namespace PacketStudio
             this.csharpCopyToolStripButton.Text = "Copy For C#";
             this.csharpCopyToolStripButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.csharpCopyToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.csharpCopyToolStripButton.Click += new System.EventHandler(this.copyForCToolStripMenuItem_Click);
+            this.csharpCopyToolStripButton.Click += new System.EventHandler(this.CopyForCToolStripMenuItem_Click);
             // 
             // refactorDropDownButton
             // 
@@ -458,14 +458,14 @@ namespace PacketStudio
             this.normalizeHexToolStripMenuItem.Name = "normalizeHexToolStripMenuItem";
             this.normalizeHexToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.normalizeHexToolStripMenuItem.Text = "Normalize Hex";
-            this.normalizeHexToolStripMenuItem.Click += new System.EventHandler(this.normalizeHexToolStripMenuItem_Click_1);
+            this.normalizeHexToolStripMenuItem.Click += new System.EventHandler(this.NormalizeHexToolStripMenuItem_Click_1);
             // 
             // flattenProtocolStackToolStripMenuItem
             // 
             this.flattenProtocolStackToolStripMenuItem.Name = "flattenProtocolStackToolStripMenuItem";
             this.flattenProtocolStackToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.flattenProtocolStackToolStripMenuItem.Text = "Flatten Protocol Stack";
-            this.flattenProtocolStackToolStripMenuItem.Click += new System.EventHandler(this.flattenProtocolStackToolStripMenuItem_Click_1);
+            this.flattenProtocolStackToolStripMenuItem.Click += new System.EventHandler(this.FlattenProtocolStackToolStripMenuItem_Click_1);
             // 
             // wiresharkToolStrip
             // 
@@ -509,7 +509,7 @@ namespace PacketStudio
             this.locateWsToolStripButton.Size = new System.Drawing.Size(99, 56);
             this.locateWsToolStripButton.Text = "Locate Wireshark";
             this.locateWsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.locateWsToolStripButton.Click += new System.EventHandler(this.locateWireshark_Click);
+            this.locateWsToolStripButton.Click += new System.EventHandler(this.LocateWireshark_Click);
             // 
             // previewToolStripTabItem
             // 
@@ -561,7 +561,7 @@ namespace PacketStudio
             this.previewtoolStripButton.Size = new System.Drawing.Size(88, 55);
             this.previewtoolStripButton.Text = "Enable Preview";
             this.previewtoolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.previewtoolStripButton.Click += new System.EventHandler(this.livePreviewToolStripMenuItem_Click);
+            this.previewtoolStripButton.Click += new System.EventHandler(this.LivePreviewToolStripMenuItem_Click);
             // 
             // previewContextToolStripButton
             // 
@@ -589,7 +589,7 @@ namespace PacketStudio
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
             this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 55);
-            this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.livePreviewDelayBox_TextChanged);
+            this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.LivePreviewDelayBox_TextChanged);
             // 
             // exitOfficeButton
             // 
@@ -601,7 +601,7 @@ namespace PacketStudio
             this.exitOfficeButton.Size = new System.Drawing.Size(102, 23);
             this.exitOfficeButton.Text = "Exit";
             this.exitOfficeButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.exitOfficeButton.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitOfficeButton.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // toolStripTabItem2
             // 
@@ -651,10 +651,10 @@ namespace PacketStudio
             this.packetTabsList.Size = new System.Drawing.Size(208, 853);
             this.packetTabsList.Sorted = true;
             this.packetTabsList.TabIndex = 1;
-            this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.packetTabsList_DrawItem);
-            this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.packetTabsList_MeasureItem);
-            this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.packetTabsList_SelectedIndexChanged);
-            this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.packetTabsList_MouseDown);
+            this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
+            this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
+            this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
+            this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PacketTabsList_MouseDown);
             // 
             // MainForm
             // 
