@@ -43,7 +43,7 @@ namespace PacketStudio
         // Unsaved changes members
         private bool _unsavedChangesExist = false;
         private bool _askAboutUnsaved;
-        
+
         // Intercept key press in tree view (for shift-right expanding)
         private bool _interceptingKeyDown = false;
 
@@ -78,7 +78,7 @@ namespace PacketStudio
 
         // Mapping the tab pages and their Packet Define Controls
         private Dictionary<TabPage, PacketDefineControl> _tabToPdc = new Dictionary<TabPage, PacketDefineControl>();
-        
+
         CancellationTokenSource _tokenSource;
 
         // Colors fot the status panel
@@ -208,32 +208,32 @@ namespace PacketStudio
                int last_index = 0;
 
                if (tsharkTask.IsCanceled) // task was canceled
-                    return;
+                   return;
 
                if (tsharkTask.IsFaulted)
                {
                    if (token.IsCancellationRequested)
                    {
-                        // We dont care because the task was cancelled.
-                        return;
+                       // We dont care because the task was cancelled.
+                       return;
                    }
 
-                    // Show the exit code + errors
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
+                   // Show the exit code + errors
+                   livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
                    livePreviewTextBox.Text = tsharkTask.Exception?.Flatten().Message ?? "Unknown errors";
                    return;
                }
 
                if (token.IsCancellationRequested)
                {
-                    // We got cancelled while checking the task results...
-                    return;
+                   // We got cancelled while checking the task results...
+                   return;
                }
 
                livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, goodGradient);
 
-                // Get the parsed TShark's response, base of proto tree
-                TSharkCombinedResults results = tsharkTask.Result;
+               // Get the parsed TShark's response, base of proto tree
+               TSharkCombinedResults results = tsharkTask.Result;
                XElement packetElement = results.Pdml;
                JObject packetJson = results.JsonRaw;
                IEnumerable<JProperty> jProps = packetJson?.DescendantsAndSelf().Where(jtoken => jtoken is JProperty).Cast<JProperty>() ?? Enumerable.Empty<JProperty>();
@@ -241,8 +241,8 @@ namespace PacketStudio
 
                TreeView tree = packetTreeView;
 
-                // Get all CURRENTLY expanded nodes in the tree (from the OLD packet)
-                IEnumerable<TreeNode> topNodes = tree.Nodes.OfType<TreeNode>();
+               // Get all CURRENTLY expanded nodes in the tree (from the OLD packet)
+               IEnumerable<TreeNode> topNodes = tree.Nodes.OfType<TreeNode>();
                IEnumerable<TreeNode> nextGroup = topNodes;
                List<TreeNode> allNodes = new List<TreeNode>();
                allNodes.AddRange(nextGroup);
@@ -260,27 +260,27 @@ namespace PacketStudio
                        moreFound |= subNodes.Any();
                    }
                }
-                // Some fields start with a bitmaps instead of the actual name, we try and skip the bitmask
-                // e.g. ..01 1010 Packet Type: 0x1A
-                // This LINQ also cuts the field name (removing bitmaps and value)
-                // e.g. "Src Port: 2442" ----> "Src Port"
-                char[] suspiciousChars = new char[] { '.', '0', '1' };
+               // Some fields start with a bitmaps instead of the actual name, we try and skip the bitmask
+               // e.g. ..01 1010 Packet Type: 0x1A
+               // This LINQ also cuts the field name (removing bitmaps and value)
+               // e.g. "Src Port: 2442" ----> "Src Port"
+               char[] suspiciousChars = new char[] { '.', '0', '1' };
                var expandedNodes = (from node in allNodes
                                     where node.IsExpanded
                                     where node.Text.Any() // No nodes with empty names pl0x
-                                     let nodeName = node.Text
+                                    let nodeName = node.Text
                                     let suspiciousNameStart = suspiciousChars.Contains(nodeName[0])
                                     let nodeNameStart = suspiciousNameStart ? nodeName.IndexOf(" ") : 0
                                     let firstColonIndex = nodeName.IndexOf(':')
                                     let nodeNameEnd = firstColonIndex != -1 ? firstColonIndex : nodeName.Length
                                     select nodeName.Substring(nodeNameStart, nodeNameEnd - nodeNameStart)).ToList();
 
-                // Removing OLD packet from the tree view
-                tree.Nodes.Clear();
+               // Removing OLD packet from the tree view
+               tree.Nodes.Clear();
 
 
-                // Parsing TShark response and adding nodes accordingly
-                Queue<Tuple<TreeNode, XElement>> stack = new Queue<Tuple<TreeNode, XElement>>();
+               // Parsing TShark response and adding nodes accordingly
+               Queue<Tuple<TreeNode, XElement>> stack = new Queue<Tuple<TreeNode, XElement>>();
                stack.Enqueue(new Tuple<TreeNode, XElement>(null, packetElement));
                while (stack.Count != 0)
                {
@@ -290,53 +290,53 @@ namespace PacketStudio
                    {
                        XElement nextSub = sub;
                        TreeNode nextNode = null;
-                        // Check if this node hidden in wireshark's GUI
-                        var hideAttr = sub.Attribute(XName.Get("hide"));
+                       // Check if this node hidden in wireshark's GUI
+                       var hideAttr = sub.Attribute(XName.Get("hide"));
                        if (hideAttr != null && hideAttr.Value.Equals("yes", StringComparison.InvariantCultureIgnoreCase))
                            continue;
 
-                        // Get 'Show name' and 'name'
-                        // 'Show name' should be the text displayed in wireshark's tree. We want to show that as well (e.g. "User Datagram Protocol, Src Port: 4, Dst Port: 5")
-                        // Fallback - Use 'name' which is the wireshark filter (e.g. 'udp.srcport')
-                        string showName = sub.Attribute(XName.Get(PDML_SHOWNAME_ATTR))?.Value ??
-                                         sub.Attribute(XName.Get("name"))?.Value ?? "UNKNOWN FIELD!";
+                       // Get 'Show name' and 'name'
+                       // 'Show name' should be the text displayed in wireshark's tree. We want to show that as well (e.g. "User Datagram Protocol, Src Port: 4, Dst Port: 5")
+                       // Fallback - Use 'name' which is the wireshark filter (e.g. 'udp.srcport')
+                       string showName = sub.Attribute(XName.Get(PDML_SHOWNAME_ATTR))?.Value ??
+                                        sub.Attribute(XName.Get("name"))?.Value ?? "UNKNOWN FIELD!";
                        string name = sub.Attribute(XName.Get("name"))?.Value ?? "UNKNOWN FIELD!";
 
                        if (showName == "data" && sub.Name == "field" && next.Item1 == null)
                        {
-                            // Get the bytes count from the inner node called 'data' as well
-                            string bytesCount = ((XElement)sub.FirstNode).Attribute(XName.Get("size"))?.Value ?? "0";
+                           // Get the bytes count from the inner node called 'data' as well
+                           string bytesCount = ((XElement)sub.FirstNode).Attribute(XName.Get("size"))?.Value ?? "0";
                            showName = $"Data ({bytesCount} bytes)"; // replace 'fake-field'wrapper'
-                            nextSub = sub as XElement;
+                           nextSub = sub as XElement;
                            sub.Name = "proto"; // Overriding if set to 'field' so it will be added to the root
-                        }
+                       }
 
-                        // SPECIAL CASE: No showname/filter - happens in some expert nodes/asn.1 nodes
-                        if (String.IsNullOrWhiteSpace(showName) || showName == "fake-field-wrapper")
+                       // SPECIAL CASE: No showname/filter - happens in some expert nodes/asn.1 nodes
+                       if (String.IsNullOrWhiteSpace(showName) || showName == "fake-field-wrapper")
                        {
-                            // We add the children to the stack and indicating the parent is THIS NODE's parent (essentially skipping this node)
-                            stack.Enqueue(new Tuple<TreeNode, XElement>(next.Item1, sub));
+                           // We add the children to the stack and indicating the parent is THIS NODE's parent (essentially skipping this node)
+                           stack.Enqueue(new Tuple<TreeNode, XElement>(next.Item1, sub));
                            continue;
                        }
 
-                        // Create the new tree node
-                        nextNode = new TreeNode(showName);
+                       // Create the new tree node
+                       nextNode = new TreeNode(showName);
                        nextNode.Name = name;
 
-                        // Hide position + size in HEX within the 'tool tip text'
-                        // Format is: *startIndex*,*length*,*suspicious_flag*
-                        // (both in bytes)
-                        string index = sub.Attribute(XName.Get("pos"))?.Value ?? "0";
+                       // Hide position + size in HEX within the 'tool tip text'
+                       // Format is: *startIndex*,*length*,*suspicious_flag*
+                       // (both in bytes)
+                       string index = sub.Attribute(XName.Get("pos"))?.Value ?? "0";
                        string length = sub.Attribute(XName.Get("size"))?.Value ?? "0";
                        string susFlagStr = string.Empty;
-                        // Check if this node changes our suspicious state
-                        int curr_index = int.Parse(index);
+                       // Check if this node changes our suspicious state
+                       int curr_index = int.Parse(index);
                        if (curr_index < last_index && sub.Name == "proto")
                        {
                            if (name != "_ws.malformed") // Special case - Malformed 'protocol' seems to casually ruin everything good.
-                            {
-                                // Change for this node and ANY OTHER FOLLOWING NODE
-                                suspicious_flag = true;
+                           {
+                               // Change for this node and ANY OTHER FOLLOWING NODE
+                               suspicious_flag = true;
                            }
                        }
                        last_index = curr_index;
@@ -348,18 +348,18 @@ namespace PacketStudio
                                jPropsListed = jProps.ToList();
                            }
                            string expectedJsonName = name + "_raw"; // 'name' is the wireshark filter.
-                            JProperty ourProp = jPropsListed.FirstOrDefault(prop => prop.Name == expectedJsonName);
+                           JProperty ourProp = jPropsListed.FirstOrDefault(prop => prop.Name == expectedJsonName);
                            if (ourProp == null)
                            {
-                                // Well fuck me.
-                                susFlagStr = "0,00";
+                               // Well fuck me.
+                               susFlagStr = "0,00";
                            }
                            else
                            {
                                JArray propValue = ourProp?.Value as JArray;
-                                // Digging further into the object if we have several arrays as a value
-                                // (happens when the same field appears multiple times in the same packet)
-                                bool hasInnerArray = propValue.Children().All(jtoken => jtoken is JArray);
+                               // Digging further into the object if we have several arrays as a value
+                               // (happens when the same field appears multiple times in the same packet)
+                               bool hasInnerArray = propValue.Children().All(jtoken => jtoken is JArray);
                                bool anyLeft = true;
                                if (hasInnerArray)
                                {
@@ -390,44 +390,44 @@ namespace PacketStudio
                        }
                        nextNode.ToolTipText = index + "," + length + "," + susFlagStr;
 
-                        // Add to the stack of nodes to examine (to check for more children)
-                        stack.Enqueue(new Tuple<TreeNode, XElement>(nextNode, nextSub));
+                       // Add to the stack of nodes to examine (to check for more children)
+                       stack.Enqueue(new Tuple<TreeNode, XElement>(nextNode, nextSub));
 
 
-                        // Determine 'parent node' to attach this node to.
+                       // Determine 'parent node' to attach this node to.
 
-                        // SPECIAL CASE: protocol nodes should be attached to the root of the tree (such as Ethernet, IP, UDP)
-                        // Their XML tag is named 'proto
-                        if (sub.Name == "proto")
+                       // SPECIAL CASE: protocol nodes should be attached to the root of the tree (such as Ethernet, IP, UDP)
+                       // Their XML tag is named 'proto
+                       if (sub.Name == "proto")
                        {
                            if (showName.Contains("General information"))
                            {
-                                // We don't want this node
-                                continue;
+                               // We don't want this node
+                               continue;
                            }
 
-                            // Protocol labels should be gray:
-                            nextNode.BackColor = Color.FromArgb(240, 240, 240);
-                            // Special case: Malformed Packet is found in a 'proto' tag as well
-                            if (showName.Contains("Malformed Packet"))
+                           // Protocol labels should be gray:
+                           nextNode.BackColor = Color.FromArgb(240, 240, 240);
+                           // Special case: Malformed Packet is found in a 'proto' tag as well
+                           if (showName.Contains("Malformed Packet"))
                            {
-                                // But malformed labels should be pink!
-                                nextNode.BackColor = ERROR_PINK;
+                               // But malformed labels should be pink!
+                               nextNode.BackColor = ERROR_PINK;
                            }
-                            // Add as a 'lowest level' node to the tree
-                            tree.Nodes.Add(nextNode);
+                           // Add as a 'lowest level' node to the tree
+                           tree.Nodes.Add(nextNode);
                        }
                        else // Any other field
-                        {
-                            // Append to the last node
-                            next.Item1.Nodes.Add(nextNode);
+                       {
+                           // Append to the last node
+                           next.Item1.Nodes.Add(nextNode);
                        }
                    }
                }
 
 
-                // Re-expand previously expanded nodes (based on stored node's names)
-                Stack<TreeNode> nodesToExpand = new Stack<TreeNode>();
+               // Re-expand previously expanded nodes (based on stored node's names)
+               Stack<TreeNode> nodesToExpand = new Stack<TreeNode>();
                foreach (TreeNode baseNode in tree.Nodes)
                {
                    nodesToExpand.Push(baseNode);
@@ -1341,7 +1341,7 @@ namespace PacketStudio
             var currentSelectTab = tabControl.SelectedTab;
             bool isCurrentTabEqualLastTab = currentSelectTab == _lastSelectedPage;
 
-            
+
             if (_lastSelectedPage != null && !isCurrentTabEqualLastTab)
             {
                 // Last tab isn't the current tab
