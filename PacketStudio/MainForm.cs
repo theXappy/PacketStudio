@@ -36,10 +36,30 @@ namespace PacketStudio
         private const string PDML_SHOWNAME_ATTR = "showname";
 #pragma warning restore CRRSP01 // A misspelled word has been found
 
+        enum StatusType
+        {
+            Neutral = 0,
+            Good = 1,
+            Warning = 3,
+            Bad = 2,
+        }
+
         // InterOps
+        private string _longStatus = "";
+        private WiresharkInterop _wiresharkField;
         private TempPacketsSaver _packetSaver = new TempPacketsSaver();
         private TSharkInterop _tshark;
-        private WiresharkInterop _wireshark;
+
+        private WiresharkInterop _wireshark
+        {
+            get => _wiresharkField;
+            set
+            {
+                WiresharkInteropUpdating(_wiresharkField, value);
+                _wiresharkField = value;
+            }
+        }
+
         private CapInfosInterop _capinfos;
 
         // Unsaved changes members
@@ -468,21 +488,22 @@ namespace PacketStudio
            }));
         }
 
-        enum StatusType
-        {
-            Neutral = 0,
-            Good = 1,
-            Warning = 3,
-            Bad = 2,
-        }
 
-        private string _longStatus = "";
         private void UpdateStatus(string status, StatusType statusType)
         {
             _longStatus = status;
 
             statusTextPanel.Text = status.Replace("\r\n"," ");
-            statusTextPanel.ForeColor = Color.White;
+
+            void ChangeStatusItemsForeColor(Color foreColor)
+            {
+                foreach (StatusBarAdvPanel statusBarAdvPanel in statusBar.Panels)
+                {
+                    statusBarAdvPanel.ForeColor = foreColor;
+                }    
+            }
+
+            ChangeStatusItemsForeColor(Color.White);
             switch (statusType)
             {
                 case StatusType.Good:
@@ -490,7 +511,7 @@ namespace PacketStudio
                     break;
                 case StatusType.Warning:
                     statusBar.MetroColor = _warnStatusColror;
-                    statusTextPanel.ForeColor = Color.Black;
+                    ChangeStatusItemsForeColor(Color.Black);
                     break;
                 case StatusType.Bad:
                     statusBar.MetroColor = _badStatusColror;
@@ -1740,9 +1761,10 @@ namespace PacketStudio
             ShowErrorMessageBox(_longStatus, MessageBoxIcon.Information);
         }
 
-        private void statusPanel_Paint(object sender, PaintEventArgs e)
+        private void WiresharkInteropUpdating(WiresharkInterop oldWsInterop, WiresharkInterop newWsInterop)
         {
-
+            string dir = Path.GetDirectoryName(newWsInterop.WiresharkPath);
+            wsVerPanel.Text = $"Wireshark {newWsInterop.Version}, Running from {dir}";
         }
     }
 }

@@ -75,6 +75,7 @@ namespace PacketStudio
             this.toolStripTabItem2 = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.statusBar = new Syncfusion.Windows.Forms.Tools.StatusBarAdv();
             this.statusTextPanel = new Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel();
+            this.wsVerPanel = new Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).BeginInit();
             this.livePreviewPanel.SuspendLayout();
             this.packetTabsPanel.SuspendLayout();
@@ -95,6 +96,7 @@ namespace PacketStudio
             ((System.ComponentModel.ISupportInitialize)(this.statusBar)).BeginInit();
             this.statusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wsVerPanel)).BeginInit();
             this.SuspendLayout();
             // 
             // dockingManager
@@ -284,7 +286,7 @@ namespace PacketStudio
             this.plusTab.Location = new System.Drawing.Point(4, 22);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
-            this.plusTab.Size = new System.Drawing.Size(706, 379);
+            this.plusTab.Size = new System.Drawing.Size(1138, 368);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
             this.plusTab.UseVisualStyleBackColor = true;
@@ -624,6 +626,7 @@ namespace PacketStudio
             this.statusBar.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
             this.statusBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.statusBar.Controls.Add(this.statusTextPanel);
+            this.statusBar.Controls.Add(this.wsVerPanel);
             this.statusBar.CustomLayoutBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.statusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.statusBar.ForeColor = System.Drawing.Color.White;
@@ -639,8 +642,9 @@ namespace PacketStudio
             // 
             // statusTextPanel
             // 
+            this.statusTextPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.statusTextPanel.BackColor = System.Drawing.Color.Transparent;
-            this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(1344, 16);
+            this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(41, 16);
             this.statusTextPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
             this.statusTextPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -648,10 +652,26 @@ namespace PacketStudio
             this.statusTextPanel.Location = new System.Drawing.Point(0, 2);
             this.statusTextPanel.Margin = new System.Windows.Forms.Padding(0);
             this.statusTextPanel.Name = "statusTextPanel";
-            this.statusTextPanel.Size = new System.Drawing.Size(1344, 16);
+            this.statusTextPanel.Size = new System.Drawing.Size(41, 16);
+            this.statusTextPanel.SizeToContent = true;
             this.statusTextPanel.TabIndex = 0;
-            this.statusTextPanel.Text = null;
+            this.statusTextPanel.Text = "Status";
             this.statusTextPanel.Click += new System.EventHandler(this.statusTextPanel_Click);
+            // 
+            // wsVerPanel
+            // 
+            this.wsVerPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.wsVerPanel.BeforeTouchSize = new System.Drawing.Size(48, 16);
+            this.wsVerPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.wsVerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.wsVerPanel.HAlign = Syncfusion.Windows.Forms.Tools.HorzFlowAlign.Right;
+            this.wsVerPanel.Location = new System.Drawing.Point(1339, 2);
+            this.wsVerPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.wsVerPanel.Name = "wsVerPanel";
+            this.wsVerPanel.Size = new System.Drawing.Size(48, 16);
+            this.wsVerPanel.SizeToContent = true;
+            this.wsVerPanel.TabIndex = 1;
+            this.wsVerPanel.Text = "Version";
             // 
             // MainForm
             // 
@@ -695,6 +715,7 @@ namespace PacketStudio
             ((System.ComponentModel.ISupportInitialize)(this.statusBar)).EndInit();
             this.statusBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wsVerPanel)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -738,6 +759,7 @@ namespace PacketStudio
         private System.Windows.Forms.ListBox packetTabsList;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdv statusBar;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel statusTextPanel;
+        private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel wsVerPanel;
     }
 }
 
