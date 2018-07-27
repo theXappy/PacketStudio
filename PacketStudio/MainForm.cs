@@ -14,6 +14,8 @@ using Syncfusion.Windows.Forms.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -81,7 +83,7 @@ namespace PacketStudio
 
         private CancellationTokenSource _tokenSource;
 
-        // Colors fot the status panel
+        // Colors for the status panel
         private BrushInfoColorArrayList _badGradient = new BrushInfoColorArrayList(new[]
         {
             Color.FromArgb(0xEA,0x54,0x55),
@@ -98,6 +100,12 @@ namespace PacketStudio
             Color.FromArgb(251,245,149)
         });
 
+        // Colors for the status bar
+        private Color _neutralStatusColror;
+        private Color _badStatusColror = Color.FromArgb(0xEA, 0x54, 0x55);
+        private Color _goodStatusColror = Color.FromArgb(0x28, 0xC7, 0x6F);
+        private Color _warnStatusColror = Color.FromArgb(241, 194, 107);
+
         private static readonly Color ERROR_PINK = Color.FromArgb(255, 92, 92); // Wireshark's error background color
 
         public MainForm()
@@ -106,7 +114,10 @@ namespace PacketStudio
             InitializeComponent();
             // Removing initial, unaligned, "packet 1" tab.
             tabControl.TabPages.Remove(tabControl.SelectedTab);
+
             _rawFormName = Text;
+            _neutralStatusColror = statusBar.MetroColor;
+
             // Adding new , aligned, "packet 1" tab
             TabControl_SelectedIndexChanged(null, null);
 
@@ -213,8 +224,8 @@ namespace PacketStudio
                    }
 
                    // Show the exit code + errors
-                   livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
-                   livePreviewTextBox.Text = tsharkTask.Exception?.Flatten().Message ?? "Unknown errors";
+                   UpdateStatus(tsharkTask.Exception?.Flatten().Message ?? "Unknown errors", StatusType.Bad);
+
                    return;
                }
 
@@ -224,7 +235,7 @@ namespace PacketStudio
                    return;
                }
 
-               livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _goodGradient);
+               UpdateStatus("OK", StatusType.Good);
 
                // Get the parsed TShark's response, base of proto tree
                TSharkCombinedResults results = tsharkTask.Result;
@@ -456,6 +467,45 @@ namespace PacketStudio
                GC.Collect();
            }));
         }
+
+        enum StatusType
+        {
+            Neutral = 0,
+            Good = 1,
+            Warning = 3,
+            Bad = 2,
+        }
+
+        private string _longStatus = "";
+        private void UpdateStatus(string status, StatusType statusType)
+        {
+            _longStatus = status;
+            livePreviewTextBox.Text = status;
+
+            statusTextPanel.Text = status.Replace("\r\n"," ");
+            statusTextPanel.ForeColor = Color.White;
+            switch (statusType)
+            {
+                case StatusType.Good:
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _goodGradient);
+                    statusBar.MetroColor = _goodStatusColror;
+                    break;
+                case StatusType.Warning:
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _warnGradient);
+                    statusBar.MetroColor = _warnStatusColror;
+                    statusTextPanel.ForeColor = Color.Black;
+                    break;
+                case StatusType.Bad:
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
+                    statusBar.MetroColor = _badStatusColror;
+                    break;
+                case StatusType.Neutral:
+                default:
+                    statusBar.MetroColor = _neutralStatusColror;
+                    break;
+            }
+        }
+
         private void CopyForCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PacketDefineControl pdc = GetCurrentPacketDefineControl();
@@ -993,10 +1043,10 @@ namespace PacketStudio
 
             if (!pdc.IsHexStream)
             {
-                livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _warnGradient);
-                livePreviewTextBox.Text = "Bytes highlighting is only supported for 'clean' hex streams\r\n" +
+                string status = "Bytes highlighting is only supported for 'clean' hex streams\r\n" +
                                           "(no offsets, ASCII representation, 0x's, spaces, etc)\r\n" +
                                           $"You can use \"{refactorDropDownButton.Text}\"→\"{normalizeHexToolStripMenuItem.Text}\" to get a clean hex stream.";
+                UpdateStatus(status, StatusType.Warning);
                 return;
             }
 
@@ -1465,17 +1515,17 @@ namespace PacketStudio
 
             Invoke((Action)(() =>
             {
-                livePrevStatusPanel.BackgroundColor = new BrushInfo(Color.Gray);
+                Stopwatch sw = Stopwatch.StartNew();
+                UpdateStatus(string.Empty, StatusType.Neutral);
                 TabPage tabPage = tabControl.SelectedTab;
                 if (!(tabPage.Controls[0] is PacketDefineControl pdc))
                 {
-                    livePreviewTextBox.Text = "Could not find packet define control...";
+                    UpdateStatus("Could not find packet define control...", StatusType.Bad);
                     return;
                 }
                 if (String.IsNullOrWhiteSpace(pdc.Text))
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
-                    livePreviewTextBox.Text = "Packet contains no bytes.";
+                    UpdateStatus("Packet contains no bytes.", StatusType.Bad);
                     return;
                 }
 
@@ -1486,8 +1536,7 @@ namespace PacketStudio
                 }
                 catch (Exception ex)
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
-                    livePreviewTextBox.Text = "Invalid packet. " + ex.Message;
+                    UpdateStatus("Invalid packet. " + ex.Message, StatusType.Bad);
                     return;
                 }
 
@@ -1498,12 +1547,12 @@ namespace PacketStudio
 
                 if (!File.Exists(tsharkPath))
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Horizontal, _badGradient);
-                    livePreviewTextBox.Text = $"Can't find TShark at:\r\n{tsharkPath}";
+                    UpdateStatus($"Can't find TShark at:\r\n{tsharkPath}", StatusType.Bad);
                     return;
                 }
 
-                livePreviewTextBox.Text = "Working...";
+                Debug.WriteLine(sw.Elapsed);
+                UpdateStatus("Working...", StatusType.Neutral);
 
                 IEnumerable<byte[]> packets;
                 int packetIndex;
@@ -1515,8 +1564,7 @@ namespace PacketStudio
                     }
                     catch (Exception ex)
                     {
-                        livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
-                        livePreviewTextBox.Text = ex.Message;
+                        UpdateStatus(ex.Message, StatusType.Bad);
                         return;
                     }
                     packetIndex = tabControl.SelectedIndex;
@@ -1689,6 +1737,16 @@ namespace PacketStudio
                     _unsavedChangesExist = false;
                 }
             }
+        }
+
+        private void statusTextPanel_Click(object sender, EventArgs e)
+        {
+            ShowErrorMessageBox(_longStatus, MessageBoxIcon.Information);
+        }
+
+        private void statusPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
