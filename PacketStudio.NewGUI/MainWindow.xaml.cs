@@ -87,12 +87,12 @@ namespace ByteArrayToPcap.NewGUI
 
 		private void PacketDefinerPacketChanged(object sender, EventArgs e)
 		{
-			var definer = ((PacketDefiner)sender);
+			PacketDefiner definer = ((PacketDefiner)sender);
 			if (definer.IsValid)
 			{
 				// Update HEX view
 				byte[] bytes = definer.PacketBytes;
-				var converter = new ByteArrayToIndexedHexStringConverter();
+				ByteArrayToIndexedHexStringConverter converter = new ByteArrayToIndexedHexStringConverter();
 				string str = converter.Convert(bytes, typeof(string), "16" /*bytes per line */, CultureInfo.CurrentCulture) as string;
 				hexBox.Text = str;
 				hexBox.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
@@ -136,7 +136,7 @@ namespace ByteArrayToPcap.NewGUI
 
 				//
 				Dictionary<XElement, TreeViewItem> elementNodes = new Dictionary<XElement, TreeViewItem>();
-				var initialNodes = rootElement.Nodes().Where(node => node is XElement).Cast<XElement>();
+				IEnumerable<XElement> initialNodes = rootElement.Nodes().Where(node => node is XElement).Cast<XElement>();
 				Stack<XElement> elements = new Stack<XElement>(initialNodes);
 				while (elements.Count > 0)
 				{

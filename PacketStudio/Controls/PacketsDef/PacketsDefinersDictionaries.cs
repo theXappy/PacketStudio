@@ -14,7 +14,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         static PacketsDefinersDictionaries()
         {
-            var packetDefiners = typeof(PacketsDefinersDictionaries).Assembly.GetTypes()
+            IEnumerable<Type> packetDefiners = typeof(PacketsDefinersDictionaries).Assembly.GetTypes()
                 .Where(classType => classType.IsSubclassOf(typeof(UserControl)))
                 .Where(classType => classType.GetInterface(nameof(IPacketDefiner)) != null);
 

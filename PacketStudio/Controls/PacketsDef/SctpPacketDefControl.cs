@@ -58,7 +58,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
             IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.SCTP };
             SctpPacket sctpPacket = new SctpPacket(1, 1, 0, 0);
-            var dataChunk = new PacketDotNet.Sctp.Chunks.SctpDataChunk(new PacketDotNet.Utils.ByteArraySegment(new byte[]
+            SctpDataChunk dataChunk = new PacketDotNet.Sctp.Chunks.SctpDataChunk(new PacketDotNet.Utils.ByteArraySegment(new byte[]
             {
                 0x00,0x03,0x00,0x14,0x79,0x46,0x08,0xb7,0x00,0x00,0x00,0x17,0x00,0x00,0x00,0x19,0x00,0x00,0x00,0x00
             }), sctpPacket)
@@ -118,7 +118,7 @@ namespace PacketStudio.Controls.PacketsDef
 		public void LoadSaveData(PacketSaveData data)
 		{
 			streamIdTextBox.Text = data.StreamID;
-			var asV2 = data as PacketSaveDataV2;
+			PacketSaveDataV2 asV2 = data as PacketSaveDataV2;
 			if (asV2 != null)
 			{
 				ppidTextBox.Text = asV2.PPID;

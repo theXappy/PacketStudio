@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using PcapngFile;
 
 namespace PacketStudio.DataAccess.Providers
 {
@@ -22,7 +23,7 @@ namespace PacketStudio.DataAccess.Providers
 			try
 			{
 				reader = new PcapngFile.Reader(_fileName);
-				foreach (var packetBlock in reader.EnhancedPacketBlocks)
+				foreach (EnhancedPacketBlock packetBlock in reader.EnhancedPacketBlocks)
 				{
 					byte[] data = packetBlock.Data;
 					yield return new PacketSaveDataV2(data.ToHex(),HexStreamType.RawEthernet,"1","1");

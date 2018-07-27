@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -53,14 +54,14 @@ namespace ByteArrayToPcap.NewGUI
 				throw new ArgumentException("'parameter' must be a string parsable to an integer (numBytesPerRow).");
 			}
 
-			var hexSplit = BitConverter.ToString((byte[])value)
+			List<string> hexSplit = BitConverter.ToString((byte[])value)
 				.Replace('-', ' ')
 				.Trim()
 				.SplitIntoChunks(numBytesPerRow * 3)
 				.ToList();
 
 			int byteAddress = 0;
-			var sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
 			for (int i = 0; i < hexSplit.Count; i++)
 			{
