@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CliWrap.Models;
@@ -11,15 +12,21 @@ namespace PacketStudio.Core
 		private string _wiresharkPath;
 		private TempPacketsSaver _packetsSaver;
 
+	    public string Version { get; private set; }
+
 		public string WiresharkPath
 		{
 			get => _wiresharkPath;
 			set
 			{
-				if (!File.Exists(value))
+                FileInfo fi = new FileInfo(value);
+				if (!fi.Exists)
 				{
 					throw new FileNotFoundException("Couldn't find Wireshark at the given location. Path: " + value);
 				}
+			    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(value);
+			    Version = fvi.ProductVersion;
+                
 				_wiresharkPath = value;
 			}
 		}
