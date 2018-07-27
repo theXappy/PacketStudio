@@ -41,19 +41,19 @@ namespace PacketStudio
         private CapInfosInterop _capinfos;
 
         // Unsaved changes members
-        private bool _unsavedChangesExist = false;
+        private bool _unsavedChangesExist;
         private bool _askAboutUnsaved;
 
         // Intercept key press in tree view (for shift-right expanding)
-        private bool _interceptingKeyDown = false;
+        private bool _interceptingKeyDown;
 
         // Whether we are in the constructor
         private readonly bool _isConstructing;
 
         // The previous selected tab
-        private TabPage _lastSelectedPage = null;
+        private TabPage _lastSelectedPage;
         // Reference to the '+' Tab
-        private TabPage _plusTab = null;
+        private TabPage _plusTab;
 
         // Live Preview members
         bool _livePreviewChecked = true;
@@ -67,32 +67,32 @@ namespace PacketStudio
         private int _nextPacketTabNumber = 1;
 
         // Are we in the middle of loading a capture file
-        private bool _isLoadingFile = false;
+        private bool _isLoadingFile;
 
         // Original form name
         private string _rawFormName;
 
         private Rectangle _rectangle = Rectangle.Empty;
 
-        private TabPage _tabRequestingRename = null;
+        private TabPage _tabRequestingRename;
 
         // Mapping the tab pages and their Packet Define Controls
         private Dictionary<TabPage, PacketDefineControl> _tabToPdc = new Dictionary<TabPage, PacketDefineControl>();
 
-        CancellationTokenSource _tokenSource;
+        private CancellationTokenSource _tokenSource;
 
         // Colors fot the status panel
-        private BrushInfoColorArrayList badGradient = new BrushInfoColorArrayList(new[]
+        private BrushInfoColorArrayList _badGradient = new BrushInfoColorArrayList(new[]
         {
             Color.FromArgb(0xEA,0x54,0x55),
             Color.FromArgb(0xFE,0xB6,0x92)
         });
-        private BrushInfoColorArrayList goodGradient = new BrushInfoColorArrayList(new[]
+        private BrushInfoColorArrayList _goodGradient = new BrushInfoColorArrayList(new[]
         {
             Color.FromArgb(0x28,0xC7,0x6F),
             Color.FromArgb(0x81,0xFB,0xB8)
         });
-        private BrushInfoColorArrayList warnGradient = new BrushInfoColorArrayList(new[]
+        private BrushInfoColorArrayList _warnGradient = new BrushInfoColorArrayList(new[]
         {
             Color.FromArgb(241,194,107),
             Color.FromArgb(251,245,149)
@@ -153,7 +153,7 @@ namespace PacketStudio
 
             // Allow dropping in the background of the form
             // Also recursively register drag-drop events for all controls under the main form, such as the main tab control
-            WireDragDrop(new Control[1] { this });
+            WireDragDrop(new Control[] { this });
             // Allow dropping in the dock manager's panels (i.e. hex view panel, tree view panel)
             WireDragDrop(this.dockingManager.ControlsArray);
 
@@ -219,7 +219,7 @@ namespace PacketStudio
                    }
 
                    // Show the exit code + errors
-                   livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
+                   livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
                    livePreviewTextBox.Text = tsharkTask.Exception?.Flatten().Message ?? "Unknown errors";
                    return;
                }
@@ -230,7 +230,7 @@ namespace PacketStudio
                    return;
                }
 
-               livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, goodGradient);
+               livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _goodGradient);
 
                // Get the parsed TShark's response, base of proto tree
                TSharkCombinedResults results = tsharkTask.Result;
@@ -975,7 +975,7 @@ namespace PacketStudio
 
             if (!pdc.IsHexStream)
             {
-                livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, warnGradient);
+                livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _warnGradient);
                 livePreviewTextBox.Text = "Bytes highlighting is only supported for 'clean' hex streams\r\n" +
                                           "(no offsets, ASCII representation, 0x's, spaces, etc)\r\n" +
                                           $"You can use \"{refactorDropDownButton.Text}\"→\"{normalizeHexToolStripMenuItem.Text}\" to get a clean hex stream.";
@@ -1447,7 +1447,7 @@ namespace PacketStudio
                 }
                 if (String.IsNullOrWhiteSpace(pdc.Text))
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
                     livePreviewTextBox.Text = "Packet contains no bytes.";
                     return;
                 }
@@ -1459,7 +1459,7 @@ namespace PacketStudio
                 }
                 catch (Exception ex)
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
                     livePreviewTextBox.Text = "Invalid packet. " + ex.Message;
                     return;
                 }
@@ -1471,7 +1471,7 @@ namespace PacketStudio
 
                 if (!File.Exists(tsharkPath))
                 {
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Horizontal, badGradient);
+                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Horizontal, _badGradient);
                     livePreviewTextBox.Text = $"Can't find TShark at:\r\n{tsharkPath}";
                     return;
                 }
@@ -1488,7 +1488,7 @@ namespace PacketStudio
                     }
                     catch (Exception ex)
                     {
-                        livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, badGradient);
+                        livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
                         livePreviewTextBox.Text = ex.Message;
                         return;
                     }
