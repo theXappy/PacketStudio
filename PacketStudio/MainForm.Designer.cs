@@ -37,11 +37,14 @@ namespace PacketStudio
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbpacketTabsPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbstatusPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
-            Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable2 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
+            Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
             this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
             this.livePreviewPanel = new System.Windows.Forms.Panel();
             this.packetTreeView = new PacketStudio.Controls.TreeViewWithArrows();
             this.packetTabsPanel = new System.Windows.Forms.Panel();
+            this.greyBorderPanel = new System.Windows.Forms.Panel();
+            this.whiteBackgroundPanel = new System.Windows.Forms.Panel();
+            this.packetTabsList = new System.Windows.Forms.ListBox();
             this.statusPanel = new System.Windows.Forms.Panel();
             this.livePrevStatusPanel = new Syncfusion.Windows.Forms.Tools.GradientPanel();
             this.livePreviewTextBox = new System.Windows.Forms.Label();
@@ -74,12 +77,13 @@ namespace PacketStudio
             this.livePrevToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.exitOfficeButton = new Syncfusion.Windows.Forms.Tools.OfficeButton();
             this.toolStripTabItem2 = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
-            this.greyBorderPanel = new System.Windows.Forms.Panel();
-            this.whiteBackgroundPanel = new System.Windows.Forms.Panel();
-            this.packetTabsList = new System.Windows.Forms.ListBox();
+            this.statusBar = new Syncfusion.Windows.Forms.Tools.StatusBarAdv();
+            this.statusTextPanel = new Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).BeginInit();
             this.livePreviewPanel.SuspendLayout();
             this.packetTabsPanel.SuspendLayout();
+            this.greyBorderPanel.SuspendLayout();
+            this.whiteBackgroundPanel.SuspendLayout();
             this.statusPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.livePrevStatusPanel)).BeginInit();
             this.livePrevStatusPanel.SuspendLayout();
@@ -95,8 +99,9 @@ namespace PacketStudio
             this.wiresharkToolStrip.SuspendLayout();
             this.previewToolStripTabItem.Panel.SuspendLayout();
             this.livePreviewToolStrip.SuspendLayout();
-            this.greyBorderPanel.SuspendLayout();
-            this.whiteBackgroundPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.statusBar)).BeginInit();
+            this.statusBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).BeginInit();
             this.SuspendLayout();
             // 
             // dockingManager
@@ -129,6 +134,7 @@ namespace PacketStudio
             this.dockingManager.SetCustomCaptionButtons(this.packetTabsPanel, ccbpacketTabsPanel);
             this.dockingManager.SetDockLabel(this.statusPanel, "Status");
             this.dockingManager.SetEnableDocking(this.statusPanel, true);
+            this.dockingManager.SetAutoHideOnLoad(this.statusPanel, true);
             ccbstatusPanel.MergeWith(this.dockingManager.CaptionButtons, false);
             this.dockingManager.SetCustomCaptionButtons(this.statusPanel, ccbstatusPanel);
             this.dockingManager.SetDockLabel(this.HexViewPanel, "Hex View");
@@ -142,7 +148,7 @@ namespace PacketStudio
             this.livePreviewPanel.Controls.Add(this.packetTreeView);
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
-            this.livePreviewPanel.Size = new System.Drawing.Size(460, 624);
+            this.livePreviewPanel.Size = new System.Drawing.Size(460, 607);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
@@ -155,7 +161,7 @@ namespace PacketStudio
             this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(460, 624);
+            this.packetTreeView.Size = new System.Drawing.Size(460, 607);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
@@ -167,8 +173,47 @@ namespace PacketStudio
             this.packetTabsPanel.Controls.Add(this.greyBorderPanel);
             this.packetTabsPanel.Location = new System.Drawing.Point(1, 24);
             this.packetTabsPanel.Name = "packetTabsPanel";
-            this.packetTabsPanel.Size = new System.Drawing.Size(210, 855);
+            this.packetTabsPanel.Size = new System.Drawing.Size(210, 832);
             this.packetTabsPanel.TabIndex = 26;
+            // 
+            // greyBorderPanel
+            // 
+            this.greyBorderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+            this.greyBorderPanel.Controls.Add(this.whiteBackgroundPanel);
+            this.greyBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.greyBorderPanel.Location = new System.Drawing.Point(0, 0);
+            this.greyBorderPanel.Name = "greyBorderPanel";
+            this.greyBorderPanel.Padding = new System.Windows.Forms.Padding(1);
+            this.greyBorderPanel.Size = new System.Drawing.Size(210, 832);
+            this.greyBorderPanel.TabIndex = 1;
+            // 
+            // whiteBackgroundPanel
+            // 
+            this.whiteBackgroundPanel.BackColor = System.Drawing.Color.White;
+            this.whiteBackgroundPanel.Controls.Add(this.packetTabsList);
+            this.whiteBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
+            this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
+            this.whiteBackgroundPanel.Name = "whiteBackgroundPanel";
+            this.whiteBackgroundPanel.Size = new System.Drawing.Size(208, 830);
+            this.whiteBackgroundPanel.TabIndex = 1;
+            // 
+            // packetTabsList
+            // 
+            this.packetTabsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.packetTabsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.packetTabsList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.packetTabsList.FormattingEnabled = true;
+            this.packetTabsList.ItemHeight = 19;
+            this.packetTabsList.Location = new System.Drawing.Point(0, 0);
+            this.packetTabsList.Name = "packetTabsList";
+            this.packetTabsList.Size = new System.Drawing.Size(208, 830);
+            this.packetTabsList.Sorted = true;
+            this.packetTabsList.TabIndex = 1;
+            this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
+            this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
+            this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
+            this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PacketTabsList_MouseDown);
             // 
             // statusPanel
             // 
@@ -176,8 +221,9 @@ namespace PacketStudio
             this.statusPanel.Controls.Add(this.livePrevStatusPanel);
             this.statusPanel.Location = new System.Drawing.Point(1, 24);
             this.statusPanel.Name = "statusPanel";
-            this.statusPanel.Size = new System.Drawing.Size(460, 202);
+            this.statusPanel.Size = new System.Drawing.Size(460, 196);
             this.statusPanel.TabIndex = 15;
+            this.statusPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.statusPanel_Paint);
             // 
             // livePrevStatusPanel
             // 
@@ -190,7 +236,7 @@ namespace PacketStudio
             this.livePrevStatusPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.livePrevStatusPanel.Location = new System.Drawing.Point(0, 0);
             this.livePrevStatusPanel.Name = "livePrevStatusPanel";
-            this.livePrevStatusPanel.Size = new System.Drawing.Size(460, 202);
+            this.livePrevStatusPanel.Size = new System.Drawing.Size(460, 196);
             this.livePrevStatusPanel.TabIndex = 9;
             // 
             // livePreviewTextBox
@@ -235,9 +281,9 @@ namespace PacketStudio
             // 
             this.mainPanel.BackColor = System.Drawing.SystemColors.Control;
             this.mainPanel.Controls.Add(this.tabControl);
-            this.mainPanel.Location = new System.Drawing.Point(218, 119);
+            this.mainPanel.Location = new System.Drawing.Point(218, 120);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(714, 428);
+            this.mainPanel.Size = new System.Drawing.Size(714, 405);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
@@ -252,7 +298,7 @@ namespace PacketStudio
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(714, 428);
+            this.tabControl.Size = new System.Drawing.Size(714, 405);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
@@ -265,7 +311,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(706, 402);
+            this.tabPage1.Size = new System.Drawing.Size(706, 379);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -276,7 +322,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(700, 396);
+            this.packetDefineControl1.Size = new System.Drawing.Size(700, 373);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
@@ -284,7 +330,7 @@ namespace PacketStudio
             this.plusTab.Location = new System.Drawing.Point(4, 22);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
-            this.plusTab.Size = new System.Drawing.Size(717, 451);
+            this.plusTab.Size = new System.Drawing.Size(706, 379);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
             this.plusTab.UseVisualStyleBackColor = true;
@@ -304,7 +350,7 @@ namespace PacketStudio
             this.ribbonControl.MenuButtonWidth = 56;
             this.ribbonControl.MenuColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
             this.ribbonControl.Name = "ribbonControl";
-            this.ribbonControl.Office2016ColorTable.Add(office2016ColorTable2);
+            this.ribbonControl.Office2016ColorTable.Add(office2016ColorTable1);
             this.ribbonControl.OfficeColorScheme = Syncfusion.Windows.Forms.Tools.ToolStripEx.ColorScheme.Black;
             // 
             // ribbonControl.OfficeMenu
@@ -320,7 +366,7 @@ namespace PacketStudio
             this.ribbonControl.SelectedTab = this.homeToolStripTabItem;
             this.ribbonControl.ShowQuickItemsDropDownButton = false;
             this.ribbonControl.ShowRibbonDisplayOptionButton = false;
-            this.ribbonControl.Size = new System.Drawing.Size(1396, 119);
+            this.ribbonControl.Size = new System.Drawing.Size(1396, 120);
             this.ribbonControl.SystemText.QuickAccessDialogDropDownName = "Start menu";
             this.ribbonControl.SystemText.RenameDisplayLabelText = "&Display Name:";
             this.ribbonControl.TabIndex = 5;
@@ -365,7 +411,7 @@ namespace PacketStudio
             this.fileToolStrip.Office12Mode = false;
             this.fileToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.fileToolStrip.ShowCaption = false;
-            this.fileToolStrip.Size = new System.Drawing.Size(147, 64);
+            this.fileToolStrip.Size = new System.Drawing.Size(147, 65);
             this.fileToolStrip.TabIndex = 0;
             this.fileToolStrip.Text = "File Tool Strip";
             // 
@@ -376,7 +422,7 @@ namespace PacketStudio
             this.newToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.newToolStripButton.Name = "newToolStripButton";
             this.SetShortcut(this.newToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N))));
-            this.newToolStripButton.Size = new System.Drawing.Size(36, 55);
+            this.newToolStripButton.Size = new System.Drawing.Size(36, 56);
             this.newToolStripButton.Text = "New";
             this.newToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.newToolStripButton.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
@@ -388,7 +434,7 @@ namespace PacketStudio
             this.openToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.openToolStripButton.Name = "openToolStripButton";
             this.SetShortcut(this.openToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O))));
-            this.openToolStripButton.Size = new System.Drawing.Size(40, 55);
+            this.openToolStripButton.Size = new System.Drawing.Size(40, 56);
             this.openToolStripButton.Text = "Open";
             this.openToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.openToolStripButton.Click += new System.EventHandler(this.LoadFileToolStripMenuItem_Click);
@@ -400,7 +446,7 @@ namespace PacketStudio
             this.saveToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveToolStripButton.Name = "saveToolStripButton";
             this.SetShortcut(this.saveToolStripButton, ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S))));
-            this.saveToolStripButton.Size = new System.Drawing.Size(36, 55);
+            this.saveToolStripButton.Size = new System.Drawing.Size(36, 56);
             this.saveToolStripButton.Text = "Save";
             this.saveToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.saveToolStripButton.Click += new System.EventHandler(this.SaveFileToolStripMenuItem_Click);
@@ -425,7 +471,7 @@ namespace PacketStudio
             this.copyToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.copyToolStrip.ShowCaption = false;
             this.copyToolStrip.ShowLauncher = false;
-            this.copyToolStrip.Size = new System.Drawing.Size(155, 64);
+            this.copyToolStrip.Size = new System.Drawing.Size(155, 65);
             this.copyToolStrip.TabIndex = 1;
             this.copyToolStrip.Text = "Copy Tool Strip";
             // 
@@ -435,7 +481,7 @@ namespace PacketStudio
             this.csharpCopyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.csharpCopyToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.csharpCopyToolStripButton.Name = "csharpCopyToolStripButton";
-            this.csharpCopyToolStripButton.Size = new System.Drawing.Size(74, 55);
+            this.csharpCopyToolStripButton.Size = new System.Drawing.Size(74, 56);
             this.csharpCopyToolStripButton.Text = "Copy For C#";
             this.csharpCopyToolStripButton.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.csharpCopyToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -449,7 +495,7 @@ namespace PacketStudio
             this.refactorDropDownButton.Image = global::PacketStudio.Properties.Resources.hammer500;
             this.refactorDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refactorDropDownButton.Name = "refactorDropDownButton";
-            this.refactorDropDownButton.Size = new System.Drawing.Size(72, 56);
+            this.refactorDropDownButton.Size = new System.Drawing.Size(72, 57);
             this.refactorDropDownButton.Text = "Refactor...";
             this.refactorDropDownButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -485,7 +531,7 @@ namespace PacketStudio
             this.wiresharkToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.wiresharkToolStrip.ShowCaption = false;
             this.wiresharkToolStrip.ShowLauncher = false;
-            this.wiresharkToolStrip.Size = new System.Drawing.Size(177, 64);
+            this.wiresharkToolStrip.Size = new System.Drawing.Size(177, 65);
             this.wiresharkToolStrip.TabIndex = 2;
             this.wiresharkToolStrip.Text = "Wireshark Tool Strip";
             // 
@@ -496,7 +542,7 @@ namespace PacketStudio
             this.pcapToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.pcapToolStripButton.Name = "pcapToolStripButton";
             this.pcapToolStripButton.Padding = new System.Windows.Forms.Padding(11, 0, 11, 0);
-            this.pcapToolStripButton.Size = new System.Drawing.Size(60, 55);
+            this.pcapToolStripButton.Size = new System.Drawing.Size(60, 56);
             this.pcapToolStripButton.Text = "Pcap!";
             this.pcapToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.pcapToolStripButton.Click += new System.EventHandler(this.GeneratePcapButton_Click);
@@ -506,7 +552,7 @@ namespace PacketStudio
             this.locateWsToolStripButton.Image = global::PacketStudio.Properties.Resources.ws_dir1;
             this.locateWsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.locateWsToolStripButton.Name = "locateWsToolStripButton";
-            this.locateWsToolStripButton.Size = new System.Drawing.Size(99, 56);
+            this.locateWsToolStripButton.Size = new System.Drawing.Size(99, 57);
             this.locateWsToolStripButton.Text = "Locate Wireshark";
             this.locateWsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.locateWsToolStripButton.Click += new System.EventHandler(this.LocateWireshark_Click);
@@ -617,44 +663,41 @@ namespace PacketStudio
             this.toolStripTabItem2.Size = new System.Drawing.Size(127, 30);
             this.toolStripTabItem2.Text = "toolStripTabItem2";
             // 
-            // greyBorderPanel
+            // statusBar
             // 
-            this.greyBorderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-            this.greyBorderPanel.Controls.Add(this.whiteBackgroundPanel);
-            this.greyBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.greyBorderPanel.Location = new System.Drawing.Point(0, 0);
-            this.greyBorderPanel.Name = "greyBorderPanel";
-            this.greyBorderPanel.Padding = new System.Windows.Forms.Padding(1);
-            this.greyBorderPanel.Size = new System.Drawing.Size(210, 855);
-            this.greyBorderPanel.TabIndex = 1;
+            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.BeforeTouchSize = new System.Drawing.Size(1396, 22);
+            this.statusBar.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusBar.Controls.Add(this.statusTextPanel);
+            this.statusBar.CustomLayoutBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.statusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.statusBar.ForeColor = System.Drawing.Color.White;
+            this.statusBar.Location = new System.Drawing.Point(2, 977);
+            this.statusBar.MetroColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.Name = "statusBar";
+            this.statusBar.Padding = new System.Windows.Forms.Padding(3);
+            this.statusBar.Size = new System.Drawing.Size(1396, 22);
+            this.statusBar.SizingGrip = false;
+            this.statusBar.Spacing = new System.Drawing.Size(2, 2);
+            this.statusBar.Style = Syncfusion.Windows.Forms.Tools.StatusbarStyle.Metro;
+            this.statusBar.TabIndex = 26;
             // 
-            // whiteBackgroundPanel
+            // statusTextPanel
             // 
-            this.whiteBackgroundPanel.BackColor = System.Drawing.Color.White;
-            this.whiteBackgroundPanel.Controls.Add(this.packetTabsList);
-            this.whiteBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
-            this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
-            this.whiteBackgroundPanel.Name = "whiteBackgroundPanel";
-            this.whiteBackgroundPanel.Size = new System.Drawing.Size(208, 853);
-            this.whiteBackgroundPanel.TabIndex = 1;
-            // 
-            // packetTabsList
-            // 
-            this.packetTabsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.packetTabsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.packetTabsList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.packetTabsList.FormattingEnabled = true;
-            this.packetTabsList.ItemHeight = 19;
-            this.packetTabsList.Location = new System.Drawing.Point(0, 0);
-            this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(208, 853);
-            this.packetTabsList.Sorted = true;
-            this.packetTabsList.TabIndex = 1;
-            this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
-            this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
-            this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
-            this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PacketTabsList_MouseDown);
+            this.statusTextPanel.BackColor = System.Drawing.Color.Transparent;
+            this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(1344, 16);
+            this.statusTextPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusTextPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusTextPanel.ForeColor = System.Drawing.Color.White;
+            this.statusTextPanel.Location = new System.Drawing.Point(0, 2);
+            this.statusTextPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.statusTextPanel.Name = "statusTextPanel";
+            this.statusTextPanel.Size = new System.Drawing.Size(1344, 16);
+            this.statusTextPanel.TabIndex = 0;
+            this.statusTextPanel.Text = null;
+            this.statusTextPanel.Click += new System.EventHandler(this.statusTextPanel_Click);
             // 
             // MainForm
             // 
@@ -662,9 +705,11 @@ namespace PacketStudio
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1400, 1000);
             this.ColorScheme = Syncfusion.Windows.Forms.Tools.RibbonForm.ColorSchemeType.Black;
+            this.Controls.Add(this.statusBar);
             this.Controls.Add(this.ribbonControl);
             this.Controls.Add(this.mainPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(500, 280);
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(1, 0, 1, 1);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -674,6 +719,8 @@ namespace PacketStudio
             ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).EndInit();
             this.livePreviewPanel.ResumeLayout(false);
             this.packetTabsPanel.ResumeLayout(false);
+            this.greyBorderPanel.ResumeLayout(false);
+            this.whiteBackgroundPanel.ResumeLayout(false);
             this.statusPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.livePrevStatusPanel)).EndInit();
             this.livePrevStatusPanel.ResumeLayout(false);
@@ -695,8 +742,9 @@ namespace PacketStudio
             this.previewToolStripTabItem.Panel.ResumeLayout(false);
             this.livePreviewToolStrip.ResumeLayout(false);
             this.livePreviewToolStrip.PerformLayout();
-            this.greyBorderPanel.ResumeLayout(false);
-            this.whiteBackgroundPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.statusBar)).EndInit();
+            this.statusBar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -741,6 +789,8 @@ namespace PacketStudio
         private System.Windows.Forms.Panel greyBorderPanel;
         private System.Windows.Forms.Panel whiteBackgroundPanel;
         private System.Windows.Forms.ListBox packetTabsList;
+        private Syncfusion.Windows.Forms.Tools.StatusBarAdv statusBar;
+        private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel statusTextPanel;
     }
 }
 
