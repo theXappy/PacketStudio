@@ -202,7 +202,7 @@ namespace PacketStudio.Core
                 XElement packetElement =
 					skippedHeaderNode.Elements("packet").ElementAt(packetIndex); // Getting the x-th 'packet' node
 				
-				var singlePacketXml = packetElement.ToString();
+				string singlePacketXml = packetElement.ToString();
 				XElement elem = XElement.Parse(singlePacketXml);
 				
 				// Hoping GC will get the cue

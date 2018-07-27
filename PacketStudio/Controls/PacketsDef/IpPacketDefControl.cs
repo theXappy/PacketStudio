@@ -77,7 +77,7 @@ namespace PacketStudio.Controls.PacketsDef
 		public void LoadSaveData(PacketSaveData data)
 		{
 			streamIdTextBox.Text = data.StreamID;
-			var asV2 = data as PacketSaveDataV2;
+			PacketSaveDataV2 asV2 = data as PacketSaveDataV2;
 			if (asV2 != null)
 			{
 				nextProtoTextBox.Text = asV2.Text;

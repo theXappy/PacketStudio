@@ -142,14 +142,14 @@ namespace ByteArrayToPcap.NewGUI
 					default:
 						return rawBytes;
 				    case 1: // UDP
-						var parsedUdpId = int.Parse(streamIdTextbox.Text);
+						int parsedUdpId = int.Parse(streamIdTextbox.Text);
 						return _udpPacketFactory.GetPacket(rawBytes, parsedUdpId);
 					case 2: // SCPT
 						string sctpStreamId = streamIdTextbox.Text;
-						var parsedSctpId = sctpStreamId.StartsWith("0x")
+						int parsedSctpId = sctpStreamId.StartsWith("0x")
 							? Convert.ToInt32(sctpStreamId.Substring(2), 16) // Parse as HEX
 							: int.Parse(sctpStreamId); // Parse as Decimal
-						var parsedPpid = int.Parse(ppidTextbox.Text);
+						int parsedPpid = int.Parse(ppidTextbox.Text);
 						return _sctpPacketFactory.GetPacket(rawBytes, parsedSctpId, parsedPpid);
 				}
 			}
@@ -345,7 +345,7 @@ namespace ByteArrayToPcap.NewGUI
 			}
 			IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.SCTP };
 			SctpPacket sctpPacket = new SctpPacket(1, 1, 0, 0);
-			var dataChunk = new PacketDotNet.Sctp.Chunks.SctpDataChunk(new PacketDotNet.Utils.ByteArraySegment(new byte[]
+			SctpDataChunk dataChunk = new PacketDotNet.Sctp.Chunks.SctpDataChunk(new PacketDotNet.Utils.ByteArraySegment(new byte[]
 			{
 				0x00,0x03,0x00,0x14,0x79,0x46,0x08,0xb7,0x00,0x00,0x00,0x17,0x00,0x00,0x00,0x19,0x00,0x00,0x00,0x00
 			}), sctpPacket)
