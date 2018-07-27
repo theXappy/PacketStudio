@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -60,23 +62,58 @@ namespace PacketStudio.Core
 				token.ThrowIfCancellationRequested();
 
 				CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
-				Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync($"-r {pcapPath} -2 -T pdml", token);
-				tsharkTask.Wait();
+                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, $"-r {pcapPath} -2 -T pdml --enable-heuristic fp_udp");
+			    psi.UseShellExecute = false;
+			    psi.RedirectStandardError = true;
+			    psi.RedirectStandardOutput = true;
+			    psi.CreateNoWindow = true;
+			    psi.WindowStyle = ProcessWindowStyle.Minimized;
+                Process p = Process.Start(psi);
 
-				if (tsharkTask.IsCanceled) // task was canceled
-					throw new TaskCanceledException();
+			    StreamReader errorStream = p.StandardError;
+			    StreamReader standardStream = p.StandardOutput;
+			    bool xmlTagSeen = false;
+			    StringBuilder output = new StringBuilder();
+			    StringBuilder error = new StringBuilder();
+                while (!errorStream.EndOfStream || !standardStream.EndOfStream)
+                {
+                    output.Append(standardStream.ReadToEnd());
+                    error.Append(errorStream.ReadToEnd());
+                }
 
-				ExecutionOutput res = tsharkTask.Result;
-				if (res.ExitCode != 0) // TShark returned an error exit code
-				{
-					// If we are cancelled, we don't actually care about the exit code
-					token.ThrowIfCancellationRequested();
+                // TODO: Using CliWrap seems to hang if TShark complains about config in the Standard Error stream 
+                // (maybe? For the 'NPF error' it doesn't?)
+                // Uncomment when solved
 
-					// Show the exit code + errors
-					throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{tsharkTask.Result.StandardError}");
-				}
+                //ExecutionOutput a = cli.Execute(new ExecutionInput($"-r {pcapPath} -2 -T pdml --enable-heuristic fp_udp"));
 
-				string xml = res.StandardOutput;
+				// ExecutionOutput res = a;
+				//if (res.ExitCode != 0) // TShark returned an error exit code
+				//{
+					//// If we are cancelled, we don't actually care about the exit code
+					//token.ThrowIfCancellationRequested();
+
+					//// Show the exit code + errors
+					//throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
+				//}
+
+				//string xml = res.StandardOutput;
+
+			    if (p.ExitCode != 0 )
+			    {
+			        if (output.Length > 0)
+			        {
+			            // Exit code isn't 0 but we have output so dismissing for now...
+			        }
+			        else 
+			        {
+                        // No output, show exit code and error
+			            throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                    }
+
+                }
+
+			    string xml = output.ToString();
 
 				XElement element = ParsePdmlAsync(xml, packetIndex, token).Result;
 				xml = null; //Hoping GC will get the que
@@ -104,13 +141,15 @@ namespace PacketStudio.Core
 
 		public Task<JObject> GetJsonRawAsync(IEnumerable<byte[]> packets, int packetIndex, CancellationToken token)
 		{
+		    return Task.FromResult<JObject>(null);
+
 			return Task.Run((() =>
 			{
 				string pcapPath = _packetsSaver.WritePackets(packets);
 				token.ThrowIfCancellationRequested();
 
 				CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
-				Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync($"-r {pcapPath} -2 -T jsonraw --no-duplicate-keys", token);
+				Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync($"-r {pcapPath} -2 -T jsonraw --no-duplicate-keys --enable-heuristic fp_udp", token);
 				bool timedOut = !tsharkTask.Wait(5_000);
 
                 if(timedOut)
@@ -151,10 +190,17 @@ namespace PacketStudio.Core
 
 				token.ThrowIfCancellationRequested();
 
-				// Get the right packet according to the given index (parameter)
-				var skippedHeaderNode =
-					((XContainer)xdoc.FirstNode.NextNode.NextNode); // First few tags are declerations present in any pdml, skipping
-				XElement packetElement =
+                // Get the right packet according to the given index (parameter)
+
+                // New PDML Style
+			    var skippedHeaderNode = ((XContainer)xdoc.FirstNode?.NextNode?.NextNode); 
+			    if (skippedHeaderNode  == null)
+			    {
+                    // Old PDML Style
+			        skippedHeaderNode = ((XContainer)xdoc.FirstNode);
+                }
+
+                XElement packetElement =
 					skippedHeaderNode.Elements("packet").ElementAt(packetIndex); // Getting the x-th 'packet' node
 				
 				var singlePacketXml = packetElement.ToString();
