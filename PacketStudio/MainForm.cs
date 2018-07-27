@@ -206,7 +206,7 @@ namespace PacketStudio
         {
             if (token.IsCancellationRequested)
                 return;
-            livePreviewTextBox.Invoke((Action)(() =>
+            this.Invoke((Action)(() =>
            {
 
                bool suspiciousFlag = false;
@@ -463,7 +463,7 @@ namespace PacketStudio
                    nodesToExpand = nextNodesToExpand;
                } while (nextNodesToExpand.Any());
 
-               livePreviewTextBox.Text = "Done.";
+               UpdateStatus("OK", StatusType.Good);
                GC.Collect();
            }));
         }
@@ -480,23 +480,19 @@ namespace PacketStudio
         private void UpdateStatus(string status, StatusType statusType)
         {
             _longStatus = status;
-            livePreviewTextBox.Text = status;
 
             statusTextPanel.Text = status.Replace("\r\n"," ");
             statusTextPanel.ForeColor = Color.White;
             switch (statusType)
             {
                 case StatusType.Good:
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _goodGradient);
                     statusBar.MetroColor = _goodStatusColror;
                     break;
                 case StatusType.Warning:
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _warnGradient);
                     statusBar.MetroColor = _warnStatusColror;
                     statusTextPanel.ForeColor = Color.Black;
                     break;
                 case StatusType.Bad:
-                    livePrevStatusPanel.BackgroundColor = new BrushInfo(GradientStyle.Vertical, _badGradient);
                     statusBar.MetroColor = _badStatusColror;
                     break;
                 case StatusType.Neutral:
@@ -1264,7 +1260,7 @@ namespace PacketStudio
             }
 
             _tokenSource = new CancellationTokenSource();
-            livePreviewTextBox.Text = string.Empty;
+            UpdateStatus(String.Empty, StatusType.Neutral);
 
             // Assert live preview is on
             if (_livePreviewChecked)
