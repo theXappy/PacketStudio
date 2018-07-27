@@ -136,7 +136,7 @@ namespace PacketStudio
             this.livePreviewPanel.Controls.Add(this.packetTreeView);
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
-            this.livePreviewPanel.Size = new System.Drawing.Size(460, 832);
+            this.livePreviewPanel.Size = new System.Drawing.Size(1144, 201);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
@@ -149,7 +149,7 @@ namespace PacketStudio
             this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(460, 832);
+            this.packetTreeView.Size = new System.Drawing.Size(1144, 201);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
@@ -161,7 +161,7 @@ namespace PacketStudio
             this.packetTabsPanel.Controls.Add(this.greyBorderPanel);
             this.packetTabsPanel.Location = new System.Drawing.Point(1, 24);
             this.packetTabsPanel.Name = "packetTabsPanel";
-            this.packetTabsPanel.Size = new System.Drawing.Size(210, 832);
+            this.packetTabsPanel.Size = new System.Drawing.Size(244, 832);
             this.packetTabsPanel.TabIndex = 26;
             // 
             // greyBorderPanel
@@ -172,7 +172,7 @@ namespace PacketStudio
             this.greyBorderPanel.Location = new System.Drawing.Point(0, 0);
             this.greyBorderPanel.Name = "greyBorderPanel";
             this.greyBorderPanel.Padding = new System.Windows.Forms.Padding(1);
-            this.greyBorderPanel.Size = new System.Drawing.Size(210, 832);
+            this.greyBorderPanel.Size = new System.Drawing.Size(244, 832);
             this.greyBorderPanel.TabIndex = 1;
             // 
             // whiteBackgroundPanel
@@ -183,7 +183,7 @@ namespace PacketStudio
             this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
             this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
             this.whiteBackgroundPanel.Name = "whiteBackgroundPanel";
-            this.whiteBackgroundPanel.Size = new System.Drawing.Size(208, 830);
+            this.whiteBackgroundPanel.Size = new System.Drawing.Size(242, 830);
             this.whiteBackgroundPanel.TabIndex = 1;
             // 
             // packetTabsList
@@ -195,7 +195,7 @@ namespace PacketStudio
             this.packetTabsList.ItemHeight = 19;
             this.packetTabsList.Location = new System.Drawing.Point(0, 0);
             this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(208, 830);
+            this.packetTabsList.Size = new System.Drawing.Size(242, 830);
             this.packetTabsList.Sorted = true;
             this.packetTabsList.TabIndex = 1;
             this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
@@ -209,7 +209,7 @@ namespace PacketStudio
             this.HexViewPanel.Controls.Add(this.hexViewBox);
             this.HexViewPanel.Location = new System.Drawing.Point(1, 24);
             this.HexViewPanel.Name = "HexViewPanel";
-            this.HexViewPanel.Size = new System.Drawing.Size(712, 423);
+            this.HexViewPanel.Size = new System.Drawing.Size(1144, 204);
             this.HexViewPanel.TabIndex = 12;
             // 
             // hexViewBox
@@ -225,7 +225,7 @@ namespace PacketStudio
             this.hexViewBox.ReadOnly = true;
             this.hexViewBox.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
             this.hexViewBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexViewBox.Size = new System.Drawing.Size(712, 423);
+            this.hexViewBox.Size = new System.Drawing.Size(1144, 204);
             this.hexViewBox.TabIndex = 0;
             this.hexViewBox.UseFixedBytesPerLine = true;
             this.hexViewBox.VScrollBarVisible = true;
@@ -235,9 +235,9 @@ namespace PacketStudio
             // 
             this.mainPanel.BackColor = System.Drawing.SystemColors.Control;
             this.mainPanel.Controls.Add(this.tabControl);
-            this.mainPanel.Location = new System.Drawing.Point(218, 120);
+            this.mainPanel.Location = new System.Drawing.Point(252, 120);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(714, 405);
+            this.mainPanel.Size = new System.Drawing.Size(1146, 394);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
@@ -252,7 +252,7 @@ namespace PacketStudio
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(714, 405);
+            this.tabControl.Size = new System.Drawing.Size(1146, 394);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
@@ -265,7 +265,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(706, 379);
+            this.tabPage1.Size = new System.Drawing.Size(1138, 368);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -276,7 +276,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(700, 373);
+            this.packetDefineControl1.Size = new System.Drawing.Size(1132, 362);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
