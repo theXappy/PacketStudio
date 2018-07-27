@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using Be.Windows.Forms;
+﻿using Be.Windows.Forms;
 using Humanizer;
 using Humanizer.Bytes;
 using Newtonsoft.Json.Linq;
@@ -22,6 +11,17 @@ using PacketStudio.Properties;
 using PacketStudio.Utils;
 using Syncfusion.Drawing;
 using Syncfusion.Windows.Forms.Tools;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Linq;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
 // ReSharper disable StringIndexOfIsCultureSpecific.1
@@ -98,6 +98,8 @@ namespace PacketStudio
             Color.FromArgb(251,245,149)
         });
 
+        private static readonly Color ERROR_PINK = Color.FromArgb(255, 92, 92); // Wireshark's error background color
+
         public MainForm()
         {
             _timer = new System.Threading.Timer(UpdateLivePreview);
@@ -106,7 +108,7 @@ namespace PacketStudio
             tabControl.TabPages.Remove(tabControl.SelectedTab);
             _rawFormName = Text;
             // Adding new , aligned, "packet 1" tab
-            tabControl_SelectedIndexChanged(null, null);
+            TabControl_SelectedIndexChanged(null, null);
 
             _askAboutUnsaved = Settings.Default.lastAskToSaveSetting;
 
@@ -142,7 +144,7 @@ namespace PacketStudio
                     ShowErrorMessageBox("Wireshark path not saved in the settings and couldn't be found in any of the default paths.\r\n\r\n" +
                         "Please select the location in the next dialog", MessageBoxIcon.Exclamation);
                     _isConstructing = true;
-                    locateWireshark_Click(null, null);
+                    LocateWireshark_Click(null, null);
                     _isConstructing = false;
                 }
             }
@@ -162,9 +164,9 @@ namespace PacketStudio
         private TabPage AddNewTab(PacketSaveData saveData)
         {
             TabPage newPage = new TabPage("Packet " + (_nextPacketTabNumber));
-            newPage.ContextMenu = new ContextMenu(new MenuItem[1]
+            newPage.ContextMenu = new ContextMenu(new MenuItem[]
             {
-                new MenuItem("Rename",tabPage_onRenameRequested)
+                new MenuItem("Rename",TabPage_onRenameRequested)
             });
 
             _nextPacketTabNumber++;
@@ -189,14 +191,6 @@ namespace PacketStudio
             return newPage;
         }
 
-        private void askToSaveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _askAboutUnsaved = !_askAboutUnsaved;
-            Settings.Default.lastAskToSaveSetting = _askAboutUnsaved;
-            Settings.Default.Save();
-            //askToSaveToolStripMenuItem.Checked = _askAboutUnsaved;
-        }
-
         private void ContinueTsharkTask(Task<TSharkCombinedResults> tsharkTask, CancellationToken token)
         {
             if (token.IsCancellationRequested)
@@ -204,8 +198,8 @@ namespace PacketStudio
             livePreviewTextBox.Invoke((Action)(() =>
            {
 
-               bool suspicious_flag = false;
-               int last_index = 0;
+               bool suspiciousFlag = false;
+               int lastIndex = 0;
 
                if (tsharkTask.IsCanceled) // task was canceled
                    return;
@@ -236,7 +230,10 @@ namespace PacketStudio
                TSharkCombinedResults results = tsharkTask.Result;
                XElement packetElement = results.Pdml;
                JObject packetJson = results.JsonRaw;
-               IEnumerable<JProperty> jProps = packetJson?.DescendantsAndSelf().Where(jtoken => jtoken is JProperty).Cast<JProperty>() ?? Enumerable.Empty<JProperty>();
+               IEnumerable<JProperty> jProps = packetJson?.DescendantsAndSelf()
+                                                          .Where(jtoken => jtoken is JProperty)
+                                                          .Cast<JProperty>()
+                                               ?? Enumerable.Empty<JProperty>();
                List<JProperty> jPropsListed = null;
 
                TreeView tree = packetTreeView;
@@ -245,14 +242,18 @@ namespace PacketStudio
                IEnumerable<TreeNode> topNodes = tree.Nodes.OfType<TreeNode>();
                IEnumerable<TreeNode> nextGroup = topNodes;
                List<TreeNode> allNodes = new List<TreeNode>();
+
+               // Resharper complains about possible enumerations of 'nextGroup'. This time, it's wrong.
+               // disabling the warning with the 'comment scope' below
+               // ReSharper disable PossibleMultipleEnumeration
                allNodes.AddRange(nextGroup);
                bool moreFound = true;
                while (moreFound)
                {
                    moreFound = false;
-                   var currentGroupCopy = nextGroup;
+                   IEnumerable<TreeNode> currentGroupCopy = nextGroup;
                    nextGroup = new List<TreeNode>();
-                   foreach (var node in currentGroupCopy)
+                   foreach (TreeNode node in currentGroupCopy)
                    {
                        List<TreeNode> subNodes = node.Nodes.OfType<TreeNode>().ToList();
                        nextGroup = nextGroup.Concat(subNodes);
@@ -260,20 +261,22 @@ namespace PacketStudio
                        moreFound |= subNodes.Any();
                    }
                }
+               // ReSharper restore PossibleMultipleEnumeration
+
                // Some fields start with a bitmaps instead of the actual name, we try and skip the bitmask
                // e.g. ..01 1010 Packet Type: 0x1A
                // This LINQ also cuts the field name (removing bitmaps and value)
                // e.g. "Src Port: 2442" ----> "Src Port"
-               char[] suspiciousChars = new char[] { '.', '0', '1' };
-               var expandedNodes = (from node in allNodes
-                                    where node.IsExpanded
-                                    where node.Text.Any() // No nodes with empty names pl0x
-                                    let nodeName = node.Text
-                                    let suspiciousNameStart = suspiciousChars.Contains(nodeName[0])
-                                    let nodeNameStart = suspiciousNameStart ? nodeName.IndexOf(" ") : 0
-                                    let firstColonIndex = nodeName.IndexOf(':')
-                                    let nodeNameEnd = firstColonIndex != -1 ? firstColonIndex : nodeName.Length
-                                    select nodeName.Substring(nodeNameStart, nodeNameEnd - nodeNameStart)).ToList();
+               char[] suspiciousChars = { '.', '0', '1' };
+               List<string> expandedNodes = (from node in allNodes
+                                             where node.IsExpanded
+                                             where node.Text.Any() // No nodes with empty names please
+                                             let nodeName = node.Text
+                                             let suspiciousNameStart = suspiciousChars.Contains(nodeName[0])
+                                             let nodeNameStart = suspiciousNameStart ? nodeName.IndexOf(" ") : 0
+                                             let firstColonIndex = nodeName.IndexOf(':')
+                                             let nodeNameEnd = firstColonIndex != -1 ? firstColonIndex : nodeName.Length
+                                             select nodeName.Substring(nodeNameStart, nodeNameEnd - nodeNameStart)).ToList();
 
                // Removing OLD packet from the tree view
                tree.Nodes.Clear();
@@ -284,14 +287,13 @@ namespace PacketStudio
                stack.Enqueue(new Tuple<TreeNode, XElement>(null, packetElement));
                while (stack.Count != 0)
                {
-                   var next = stack.Dequeue();
+                   Tuple<TreeNode, XElement> next = stack.Dequeue();
                    XContainer asContainer = next.Item2;
                    foreach (XElement sub in asContainer.Elements())
                    {
                        XElement nextSub = sub;
-                       TreeNode nextNode = null;
                        // Check if this node hidden in wireshark's GUI
-                       var hideAttr = sub.Attribute(XName.Get("hide"));
+                       XAttribute hideAttr = sub.Attribute(XName.Get("hide"));
                        if (hideAttr != null && hideAttr.Value.Equals("yes", StringComparison.InvariantCultureIgnoreCase))
                            continue;
 
@@ -307,7 +309,7 @@ namespace PacketStudio
                            // Get the bytes count from the inner node called 'data' as well
                            string bytesCount = ((XElement)sub.FirstNode).Attribute(XName.Get("size"))?.Value ?? "0";
                            showName = $"Data ({bytesCount} bytes)"; // replace 'fake-field'wrapper'
-                           nextSub = sub as XElement;
+                           nextSub = sub;
                            sub.Name = "proto"; // Overriding if set to 'field' so it will be added to the root
                        }
 
@@ -320,31 +322,31 @@ namespace PacketStudio
                        }
 
                        // Create the new tree node
-                       nextNode = new TreeNode(showName);
-                       nextNode.Name = name;
+                       TreeNode nextNode = new TreeNode(showName) { Name = name };
 
                        // Hide position + size in HEX within the 'tool tip text'
                        // Format is: *startIndex*,*length*,*suspicious_flag*
                        // (both in bytes)
                        string index = sub.Attribute(XName.Get("pos"))?.Value ?? "0";
                        string length = sub.Attribute(XName.Get("size"))?.Value ?? "0";
-                       string susFlagStr = string.Empty;
+                       string susFlagStr;
                        // Check if this node changes our suspicious state
-                       int curr_index = int.Parse(index);
-                       if (curr_index < last_index && sub.Name == "proto")
+                       int currIndex = int.Parse(index);
+                       if (currIndex < lastIndex && sub.Name == "proto")
                        {
                            if (name != "_ws.malformed") // Special case - Malformed 'protocol' seems to casually ruin everything good.
                            {
                                // Change for this node and ANY OTHER FOLLOWING NODE
-                               suspicious_flag = true;
+                               suspiciousFlag = true;
                            }
                        }
-                       last_index = curr_index;
+                       lastIndex = currIndex;
 
-                       if (suspicious_flag)
+                       if (suspiciousFlag)
                        {
                            if (jPropsListed == null)
                            {
+                               // ReSharper disable once PossibleMultipleEnumeration
                                jPropsListed = jProps.ToList();
                            }
                            string expectedJsonName = name + "_raw"; // 'name' is the wireshark filter.
@@ -363,7 +365,7 @@ namespace PacketStudio
                                bool anyLeft = true;
                                if (hasInnerArray)
                                {
-                                   var temp = propValue.ElementAt(0) as JArray;
+                                   JArray temp = propValue.ElementAt(0) as JArray;
                                    propValue.RemoveAt(0);
                                    anyLeft = propValue.HasValues;
                                    propValue = temp;
@@ -454,7 +456,7 @@ namespace PacketStudio
                GC.Collect();
            }));
         }
-        private void copyForCToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CopyForCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PacketDefineControl pdc = GetCurrentPacketDefineControl();
             byte[] data;
@@ -470,13 +472,13 @@ namespace PacketStudio
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("new byte[]");
             sb.AppendLine("{");
-            IEnumerable<string> with0xs = data.Select(b => $"0x{b:X2}");
-            sb.AppendLine(string.Join(",", with0xs));
+            IEnumerable<string> withHexPrefixes = data.Select(b => $"0x{b:X2}");
+            sb.AppendLine(string.Join(",", withHexPrefixes));
             sb.AppendLine("};");
             Clipboard.SetText(sb.ToString());
         }
 
-        void ctl_DragDrop(object sender, DragEventArgs e)
+        private void Control_DragDrop(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -495,7 +497,7 @@ namespace PacketStudio
             // Ask about unsaved changes
             if (_unsavedChangesExist)
             {
-                var res = MessageBox.Show(this, $"Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
+                DialogResult res = MessageBox.Show(this, "Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
                 switch (res)
                 {
                     case DialogResult.Cancel:
@@ -516,9 +518,12 @@ namespace PacketStudio
             LoadFile(file);
         }
 
-        void ctl_DragEnter(object sender, DragEventArgs e)
+        private void Control_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
         }
 
         private void DrawTreeNodeLikeWireshark(object sender, DrawTreeNodeEventArgs e)
@@ -529,21 +534,21 @@ namespace PacketStudio
             bool isMalformed = e.Node.BackColor == ERROR_PINK;
 
             // This expands the blue selection background to the end of the control (like in ws)
-            var newWidth = packetTreeView.Width - 4 - e.Bounds.X;
-            var newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y, newWidth, e.Bounds.Height);
+            int newWidth = packetTreeView.Width - 4 - e.Bounds.X;
+            Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y, newWidth, e.Bounds.Height);
             Font font = e.Node.NodeFont ?? e.Node.TreeView.Font;
             if (e.Node == e.Node.TreeView.SelectedNode)
             {
-                var smaller = newBounds;
-                var color = isMalformed ? Color.FromArgb(204, 102, 125) : Color.FromArgb(192, 220, 243);
+                Rectangle smaller = newBounds;
+                Color color = isMalformed ? Color.FromArgb(204, 102, 125) : Color.FromArgb(192, 220, 243);
                 // This color is the blue color used for selection in wireshark
                 e.Graphics.FillRectangle(new SolidBrush(color), smaller);
                 TextRenderer.DrawText(e.Graphics, e.Node.Text, font, smaller, Color.Black, color, TextFormatFlags.GlyphOverhangPadding);
             }
             else
             {
-                var smaller = newBounds;
-                var color = isProto ? Color.FromArgb(240, 240, 240) : Color.White;
+                Rectangle smaller = newBounds;
+                Color color = isProto ? Color.FromArgb(240, 240, 240) : Color.White;
                 if (isMalformed)
                 {
                     color = ERROR_PINK;
@@ -554,12 +559,12 @@ namespace PacketStudio
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void flattenProtocolStackToolStripMenuItem_Click_1(object sender, EventArgs e)
+        private void FlattenProtocolStackToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             PacketDefineControl pdc = GetCurrentPacketDefineControl();
             try
@@ -583,6 +588,7 @@ namespace PacketStudio
             // Docking manager will KEEP RESETTING to TRUE no matter what I set in the designer mode or underlying code
             // So every time the load forms, Setting to FALSE *here* seems to solve this.
             dockingManager.AnimateAutoHiddenWindow = false;
+
             // Also, I can't choose 'no caption buttons' (will add ALL of them if I try) so I clear it here
             // I Changed my mind, commented out.
             //dockingManager1.CaptionButtons.Clear();
@@ -621,16 +627,15 @@ namespace PacketStudio
             return tabControl.SelectedTab.Controls.Cast<Control>().Single(c => c is PacketDefineControl) as PacketDefineControl;
         }
 
-        private void hexViewBox_Copied(object sender, EventArgs e)
+        private void HexViewBox_Copied(object sender, EventArgs e)
         {
-            var hexBox = sender as HexBox;
+            HexBox hexBox = sender as HexBox;
             hexBox?.CopyHex();
         }
 
-        private void livePreviewDelayBox_TextChanged(object sender, EventArgs e)
+        private void LivePreviewDelayBox_TextChanged(object sender, EventArgs e)
         {
-            int newVal;
-            if (int.TryParse(livePrevToolStripTextBox.Text, out newVal))
+            if (int.TryParse(livePrevToolStripTextBox.Text, out int newVal))
             {
                 _delayMs = newVal;
                 livePrevToolStripTextBox.BackColor = Color.White;
@@ -643,9 +648,9 @@ namespace PacketStudio
             }
         }
 
-        private void livePreviewToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LivePreviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newValue = !_livePreviewChecked;
+            bool newValue = !_livePreviewChecked;
             _livePreviewChecked = newValue;
             previewtoolStripButton.Checked = newValue;
             Settings.Default.livePreviewActive = newValue;
@@ -655,13 +660,15 @@ namespace PacketStudio
             QueueLivePreviewUpdate();
         }
 
-        private void loadFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "All Capture Files|*.b2p;*.pcap;*.pcapng|" +
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "All Capture Files|*.b2p;*.pcap;*.pcapng|" +
                          "ByteArrayToPcap file (*.b2p)|*.b2p|" +
-                         "Wireshark Capture files (*.pcap,*.pcapng)|*.pcap;*.pcapng";
-            var res = ofd.ShowDialog();
+                         "Wireshark Capture files (*.pcap,*.pcapng)|*.pcap;*.pcapng"
+            };
+            DialogResult res = ofd.ShowDialog();
 
             if (res != DialogResult.Yes && res != DialogResult.OK)
             {
@@ -677,7 +684,7 @@ namespace PacketStudio
             _isLoadingFile = true;
 
 
-            tabControl.SelectedIndexChanged -= tabControl_SelectedIndexChanged;
+            tabControl.SelectedIndexChanged -= TabControl_SelectedIndexChanged;
 
             TabPage localPlusTab = null;
 
@@ -718,9 +725,9 @@ namespace PacketStudio
             }
             if (!anyPacketsFound)
             {
-                ShowErrorMessageBox($"Error reading packets from file.\r\n" +
-                                    $"No packets found.\t\n" +
-                                    $"(This could also be a result of failure to open the file)", MessageBoxIcon.Error);
+                ShowErrorMessageBox("Error reading packets from file.\r\n" +
+                                    "No packets found.\t\n" +
+                                    "(This could also be a result of failure to open the file)", MessageBoxIcon.Error);
             }
 
 
@@ -734,8 +741,8 @@ namespace PacketStudio
                 }
             }
 
-            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
-            tabControl_SelectedIndexChanged(null, null);
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
+            TabControl_SelectedIndexChanged(null, null);
 
             _isLoadingFile = false;
             UpdatePacketListBox();
@@ -743,10 +750,12 @@ namespace PacketStudio
             return anyPacketsFound;
         }
 
-        private void locateWireshark_Click(object sender, EventArgs e)
+        private void LocateWireshark_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Wireshark.exe|Wireshark.exe";
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "Wireshark.exe|Wireshark.exe"
+            };
             try
             {
                 ofd.InitialDirectory = Path.GetDirectoryName(Settings.Default.lastWiresharkPath);
@@ -755,14 +764,13 @@ namespace PacketStudio
             {
                 // IDK...
             }
-            var res = ofd.ShowDialog();
+            DialogResult res = ofd.ShowDialog();
             if (res == DialogResult.OK)
             {
                 if (ofd.CheckFileExists)
                 {
                     string dirPath = Path.GetDirectoryName(ofd.FileName);
-                    WiresharkDirectory wsDir;
-                    if (SharksFinder.TryGetByPath(dirPath, out wsDir))
+                    if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
                     {
                         Settings.Default.lastWiresharkPath = ofd.FileName;
                         Settings.Default.Save();
@@ -794,10 +802,9 @@ namespace PacketStudio
                 bool anyPacketsFound = false;
                 foreach (TabPage tab in tabControl.TabPages)
                 {
-                    foreach (var control in tab.Controls)
+                    foreach (object control in tab.Controls)
                     {
-                        PacketDefineControl casted = control as PacketDefineControl;
-                        if (casted != null)
+                        if (control is PacketDefineControl casted)
                         {
                             bool containsPackeText = !String.IsNullOrWhiteSpace(casted.Text);
                             anyPacketsFound |= containsPackeText;
@@ -811,7 +818,7 @@ namespace PacketStudio
 
                 if (_unsavedChangesExist)
                 {
-                    var res = MessageBox.Show(this, $"Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
+                    DialogResult res = MessageBox.Show(this, "Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
                     switch (res)
                     {
                         case DialogResult.Cancel:
@@ -832,11 +839,11 @@ namespace PacketStudio
             }
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_unsavedChangesExist)
             {
-                var res = MessageBox.Show(this, $"Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
+                DialogResult res = MessageBox.Show(this, "Want to save your changes?", Text, MessageBoxButtons.YesNoCancel);
                 switch (res)
                 {
                     case DialogResult.Cancel:
@@ -866,7 +873,7 @@ namespace PacketStudio
                 toRemove.Add(tabPage);
             }
 
-            tabControl.SelectedIndexChanged -= tabControl_SelectedIndexChanged;
+            tabControl.SelectedIndexChanged -= TabControl_SelectedIndexChanged;
 
             foreach (TabPage tabPage in toRemove)
             {
@@ -875,18 +882,22 @@ namespace PacketStudio
 
             _nextPacketTabNumber = 1;
 
+            if (localPlusTab == null)
+            {
+                throw new Exception("Couldn't find the Plus Tab in the tabs under the tab control.");
+            }
             tabControl.TabPages.Add(localPlusTab);
 
             // Adding new , aligned, "packet 1" tab
-            tabControl_SelectedIndexChanged(null, null);
+            TabControl_SelectedIndexChanged(null, null);
 
-            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             // Remove any old filename from the form's title
             Text = _rawFormName;
         }
 
-        private void normalizeHexToolStripMenuItem_Click_1(object sender, EventArgs e)
+        private void NormalizeHexToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             PacketDefineControl pdc = GetCurrentPacketDefineControl();
             try
@@ -903,24 +914,24 @@ namespace PacketStudio
 
         }
 
-        private void packetTabsList_DrawItem(object sender, DrawItemEventArgs e)
+        private void PacketTabsList_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();
             e.DrawFocusRectangle();
-            var newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y + 1, e.Bounds.Width, e.Bounds.Height);
+            Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y + 1, e.Bounds.Width, e.Bounds.Height);
             e.Graphics.DrawString(
-                (string)packetTabsList.Items[e.Index].ToString(),
+                packetTabsList.Items[e.Index].ToString(),
                 e.Font,
                 new SolidBrush(e.ForeColor),
                 newBounds);
         }
 
-        private void packetTabsList_MeasureItem(object sender, MeasureItemEventArgs e)
+        private void PacketTabsList_MeasureItem(object sender, MeasureItemEventArgs e)
         {
             e.ItemHeight = 15;
         }
 
-        private void packetTabsList_MouseDown(object sender, MouseEventArgs e)
+        private void PacketTabsList_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -930,31 +941,38 @@ namespace PacketStudio
                 if (pointedItem != null)
                 {
                     packetTabsList.SelectedItem = pointedItem;
-                    _tabRequestingRename = pointedItem?.Page;
-                    pointedItem?.Page.ContextMenu.Show(packetTabsList, e.Location);
+                    _tabRequestingRename = pointedItem.Page;
+                    pointedItem.Page.ContextMenu.Show(packetTabsList, e.Location);
                 }
             }
         }
 
-        private void packetTabsList_SelectedIndexChanged(object sender, EventArgs e)
+        private void PacketTabsList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TabPacketListItem tpli = packetTabsList.SelectedItem as TabPacketListItem;
-            if (tpli != null)
+            if (packetTabsList.SelectedItem is TabPacketListItem tpli)
             {
                 tabControl.SelectTab(tpli.Page);
             }
         }
 
-        private void packetTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        private void PacketTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             string rawInstructions = packetTreeView.SelectedNode.ToolTipText;
             string[] split = rawInstructions.Split(',');
+
+            // ReSharper disable InlineOutVariableDeclaration
             int index; // in BYTES!
             int length; // in BYTES!
             int susFlagValue;
+            // ReSharper restore InlineOutVariableDeclaration
+
             bool suspicious = false;
             string hex = null;
-            if (split.Length < 2 || !int.TryParse(split[0], out index) || !int.TryParse(split[1], out length) || !int.TryParse(split[2], out susFlagValue))
+            // Parse index,length and flag from tooltip text string
+            if (split.Length < 2 ||
+                !int.TryParse(split[0], out index) ||
+                !int.TryParse(split[1], out length) ||
+                !int.TryParse(split[2], out susFlagValue))
             {
                 return;
             }
@@ -969,8 +987,8 @@ namespace PacketStudio
             hexViewBox.Select(index, length);
 
             // Update Packet Define Control (Only if it contains a 'hex stream'!!)
-            var tab = tabControl.SelectedTab;
-            var pdc = tab.Controls.OfType<PacketDefineControl>().First();
+            TabPage tab = tabControl.SelectedTab;
+            PacketDefineControl pdc = tab.Controls.OfType<PacketDefineControl>().First();
             pdc.SetSelection(0, 0); // Clear any old Selection
 
             if (!pdc.IsHexStream)
@@ -989,7 +1007,7 @@ namespace PacketStudio
             }
             else
             {
-                var inputHex = String.Join("", pdc.GetPacket().Select(x => x.ToString("x2")));
+                string inputHex = String.Join(string.Empty, pdc.GetPacket().Select(x => x.ToString("x2")));
                 int nibbleIndex = index * 2;
                 int nibblesCountExpected = hex.Length;
                 string candidate = inputHex.Substring(nibbleIndex, nibblesCountExpected);
@@ -1046,71 +1064,73 @@ namespace PacketStudio
         }
 
 
-        private void packetTreeView_MouseClick(object sender, MouseEventArgs e)
+        private void PacketTreeView_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            TreeNode node = packetTreeView.GetNodeAt(e.Location);
+            if (node == null)
+                return;
+
+            packetTreeView.SelectedNode = node;
+
+            ContextMenuStrip cms = new ContextMenuStrip();
+            ExpandingToolStripButton tsb = new ExpandingToolStripButton("Expand Subtrees");
+            tsb.Width = 110;
+            tsb.TextAlign = ContentAlignment.MiddleLeft;
+            cms.Items.Add(tsb);
+            cms.AutoClose = true;
+
+            ToolStripItemClickedEventHandler expandHandler = (obj, arg) =>
             {
-                var node = packetTreeView.GetNodeAt(e.Location);
-                if (node == null)
-                    return;
-
-                packetTreeView.SelectedNode = node;
-
-                ContextMenuStrip cms = new ContextMenuStrip();
-                ExpandingToolStripButton tsb = new ExpandingToolStripButton("Expand Subtrees");
-                tsb.Width = 110;
-                tsb.TextAlign = ContentAlignment.MiddleLeft;
-                cms.Items.Add(tsb);
-                cms.AutoClose = true;
-
-                ToolStripItemClickedEventHandler expandHandler = (obj, arg) =>
+                if (arg.ClickedItem == tsb)
                 {
-                    if (arg.ClickedItem == tsb)
-                    {
-                        node.ExpandAll();
-                    }
-                };
-                ToolStripDropDownClosedEventHandler cleanUpHandler = null;
-                cleanUpHandler = (o, args) =>
-                {
-                    cms.Items.Remove(tsb);
-                    tsb.Dispose();
-                    cms.Closed -= cleanUpHandler; // Is this even required? am I crazy?
-                };
-                cms.Closed += cleanUpHandler;
-                cms.ItemClicked += expandHandler;
-                cms.AutoSize = true;
-                var pref = tsb.GetPreferredSize(packetTreeView.Size);
-                pref.Width = tsb.Width;
-                cms.MinimumSize = pref;
-                cms.Size = pref;
-                cms.ShowCheckMargin = false;
-                cms.ShowImageMargin = false;
-                cms.Show(packetTreeView, e.Location);
-            }
-        }
-
-        private void packetTreeView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.KeyCode == Keys.Right)
-            {
-                var selectedNode = packetTreeView.SelectedNode;
-                if (selectedNode != null)
-                {
-                    if (e.Shift)
-                    {
-                        selectedNode.ExpandAll();
-                        // Keeping this node in view by de-selecting and re-selecting it
-                        packetTreeView.SelectedNode = null;
-                        packetTreeView.SelectedNode = selectedNode;
-                        // Signals to packetTreeView_KeyDown that this key press should be intercepted
-                        _interceptingKeyDown = true;
-                    }
+                    node.ExpandAll();
                 }
+            };
+            ToolStripDropDownClosedEventHandler cleanUpHandler = null;
+            cleanUpHandler = (o, args) =>
+            {
+                cms.Items.Remove(tsb);
+                tsb.Dispose();
+                cms.Closed -= cleanUpHandler; // Is this even required? am I crazy?
+            };
+            cms.Closed += cleanUpHandler;
+            cms.ItemClicked += expandHandler;
+            cms.AutoSize = true;
+            Size pref = tsb.GetPreferredSize(packetTreeView.Size);
+            pref.Width = tsb.Width;
+            cms.MinimumSize = pref;
+            cms.Size = pref;
+            cms.ShowCheckMargin = false;
+            cms.ShowImageMargin = false;
+            cms.Show(packetTreeView, e.Location);
+        }
+
+        private void PacketTreeView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode != Keys.Right)
+            {
+                return;
+            }
+
+            TreeNode selectedNode = packetTreeView.SelectedNode;
+            if (selectedNode == null) return;
+
+            // Check if this is a 'Shit right' click (to expand all sub trees) or just normal right click
+            if (e.Shift)
+            {
+                selectedNode.ExpandAll();
+                // Keeping this node in view by de-selecting and re-selecting it
+                packetTreeView.SelectedNode = null;
+                packetTreeView.SelectedNode = selectedNode;
+                // Signals to packetTreeView_KeyDown that this key press should be intercepted
+                _interceptingKeyDown = true;
             }
         }
 
-        private void packetTreeView_KeyDown(object sender, KeyEventArgs e)
+        private void PacketTreeView_KeyDown(object sender, KeyEventArgs e)
         {
             if (_interceptingKeyDown)
             {
@@ -1129,7 +1149,7 @@ namespace PacketStudio
 
         private void previewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newVal = !_livePreviewInContext;
+            bool newVal = !_livePreviewInContext;
             _livePreviewInContext = newVal;
             previewContextToolStripButton.Checked = newVal;
             Settings.Default.livePreviewInContext = newVal;
@@ -1139,15 +1159,18 @@ namespace PacketStudio
 
         private DialogResult PromptUserToSave()
         {
-            Dictionary<int, Action<string>> _filterIndexToSaveFunc = new Dictionary<int, Action<string>>()
+            Dictionary<int, Action<string>> filterIndexToSaveFunc = new Dictionary<int, Action<string>>()
             {
-                {1,SaveAsB2p},
+                {1,SaveAsB2P},
                 {2,SaveAsPcap},
             };
 
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "ByteArrayToPcap file|*.b2p|Wireshark/tcpdump/... -pcap|*.pcap";
-            var res = sfd.ShowDialog();
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "ByteArrayToPcap file|*.b2p|" +
+                         "Wireshark/tcpdump/... -pcap|*.pcap"
+            };
+            DialogResult res = sfd.ShowDialog();
 
             if (res != DialogResult.Yes && res != DialogResult.OK)
             {
@@ -1159,10 +1182,9 @@ namespace PacketStudio
             bool anyPacketsFound = false;
             foreach (TabPage tab in tabControl.TabPages)
             {
-                foreach (var control in tab.Controls)
+                foreach (object control in tab.Controls)
                 {
-                    PacketDefineControl casted = control as PacketDefineControl;
-                    if (casted != null)
+                    if (control is PacketDefineControl)
                     {
                         anyPacketsFound = true;
                     }
@@ -1175,7 +1197,7 @@ namespace PacketStudio
                 return DialogResult.OK;
             }
 
-            Action<string> saveFunc = _filterIndexToSaveFunc[sfd.FilterIndex];
+            Action<string> saveFunc = filterIndexToSaveFunc[sfd.FilterIndex];
             saveFunc(sfd.FileName);
 
             return DialogResult.OK;
@@ -1202,24 +1224,33 @@ namespace PacketStudio
 
         }
 
-        private void SaveAsB2p(string path)
+        private void SaveAsB2P(string path)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("P0NTI4K");
             foreach (TabPage tab in tabControl.TabPages)
             {
-                foreach (var control in tab.Controls)
+                foreach (object control in tab.Controls)
                 {
-                    PacketDefineControl casted = control as PacketDefineControl;
-                    if (casted != null)
+                    if (control is PacketDefineControl casted)
                     {
-                        PacketSaveDataV2 psd = casted.GetSaveData() as PacketSaveDataV2;
-                        sb.AppendLine(psd.ToString());
+                        PacketSaveData psd = casted.GetSaveData();
+                        if (psd is PacketSaveDataV2 psdV2)
+                        {
+                            sb.AppendLine(psdV2.ToString());
+                        }
+                        else
+                        {
+                            throw new FormatException(
+                                $"Expected the {nameof(PacketDefineControl)} to return " +
+                                $"a {nameof(PacketSaveDataV2)} instance but it " +
+                                $"was a {psd.GetType().FullName} instead");
+                        }
                     }
                 }
             }
 
-            var outputFile = File.OpenWrite(path);
+            FileStream outputFile = File.OpenWrite(path);
             StreamWriter sw = new StreamWriter(outputFile);
             sw.Write(sb.ToString());
             sw.Dispose();
@@ -1232,7 +1263,7 @@ namespace PacketStudio
             File.Move(tempFilePath, path);
         }
 
-        private void saveFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult res = PromptUserToSave();
 
@@ -1248,7 +1279,7 @@ namespace PacketStudio
         }
 
 
-        private void tabControl_DragDrop(object sender, DragEventArgs e)
+        private void TabControl_DragDrop(object sender, DragEventArgs e)
         {
             if (_plusTab != null)
             {
@@ -1258,7 +1289,7 @@ namespace PacketStudio
             // Update packet list to represent new order after tab dragging is finished
             UpdatePacketListBox();
         }
-        private void tabControl_DragEnter(object sender, DragEventArgs e)
+        private void TabControl_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -1288,12 +1319,12 @@ namespace PacketStudio
             }
         }
 
-        private void tabControl_MouseClick(object sender, MouseEventArgs e)
+        private void TabControl_MouseClick(object sender, MouseEventArgs e)
         {
-            var tabs = tabControl.TabPages;
+            TabControl.TabPageCollection tabs = tabControl.TabPages;
 
             // Getting tab control which was clicked based on the mouse's location
-            var pointedTab = tabs.Cast<TabPage>()
+            TabPage pointedTab = tabs.Cast<TabPage>()
                 .Where((t, i) => tabControl.GetTabRect(i).Contains(e.Location))
                 .FirstOrDefault();
 
@@ -1315,7 +1346,7 @@ namespace PacketStudio
                 }
 
                 // If we are removing the currently selected tab, reselect the previous tab
-                if (tabControl.SelectedTab == pointedTab && pointedTab?.TabIndex > 1)
+                if (tabControl.SelectedTab == pointedTab && pointedTab.TabIndex > 1)
                 {
                     tabControl.SelectedIndex = pointedTab.TabIndex - 1;
                 }
@@ -1336,9 +1367,9 @@ namespace PacketStudio
             }
         }
 
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var currentSelectTab = tabControl.SelectedTab;
+            TabPage currentSelectTab = tabControl.SelectedTab;
             bool isCurrentTabEqualLastTab = currentSelectTab == _lastSelectedPage;
 
 
@@ -1355,12 +1386,12 @@ namespace PacketStudio
             if (tabControl.SelectedTab.IsPlusTab())
             {
                 // The selected tab is the special 'Plus Tab' - we should create a new packet
-                TabPage plusTab = tabControl.SelectedTab;
-                tabControl.TabPages.Remove(plusTab);
+                TabPage localPlusTab = tabControl.SelectedTab;
+                tabControl.TabPages.Remove(localPlusTab);
                 TabPage newPage = AddNewTab(null);
-                tabControl.TabPages.Add(plusTab);
+                tabControl.TabPages.Add(localPlusTab);
                 tabControl.SelectedTab = newPage;
-                tabControl_SelectedIndexChanged(null, null);
+                TabControl_SelectedIndexChanged(null, null);
             }
             else
             {
@@ -1369,8 +1400,7 @@ namespace PacketStudio
 
                 if (tab == null)
                     return;
-                PacketDefineControl pdc;
-                if (!_tabToPdc.TryGetValue(tab, out pdc))
+                if (!_tabToPdc.TryGetValue(tab, out PacketDefineControl pdc))
                 {
                     // Catastrophic error
                     return;
@@ -1389,10 +1419,9 @@ namespace PacketStudio
             Pdc_ContentChanged(null, null);
         }
 
-        private void tabPage_onRenameRequested(object sender, EventArgs eventArgs)
+        private void TabPage_onRenameRequested(object sender, EventArgs eventArgs)
         {
-            Control tab = _tabRequestingRename as Control;
-            if (tab == null)
+            if (!(_tabRequestingRename is Control tab))
             {
                 // Something bad happened
                 return;
@@ -1409,8 +1438,7 @@ namespace PacketStudio
 
         private void UpdateHexView(object sender)
         {
-            PacketDefineControl pdc = sender as PacketDefineControl;
-            if (pdc != null)
+            if (sender is PacketDefineControl pdc)
             {
                 hexViewBox.ForeColor = Color.DarkGray;
                 byte[] packet;
@@ -1438,9 +1466,8 @@ namespace PacketStudio
             Invoke((Action)(() =>
             {
                 livePrevStatusPanel.BackgroundColor = new BrushInfo(Color.Gray);
-                var tabPage = tabControl.SelectedTab;
-                PacketDefineControl pdc = tabPage.Controls[0] as PacketDefineControl;
-                if (pdc == null)
+                TabPage tabPage = tabControl.SelectedTab;
+                if (!(tabPage.Controls[0] is PacketDefineControl pdc))
                 {
                     livePreviewTextBox.Text = "Could not find packet define control...";
                     return;
@@ -1476,7 +1503,7 @@ namespace PacketStudio
                     return;
                 }
 
-                livePreviewTextBox.Text = $"Working...";
+                livePreviewTextBox.Text = "Working...";
 
                 IEnumerable<byte[]> packets;
                 int packetIndex;
@@ -1499,13 +1526,13 @@ namespace PacketStudio
                     packets = new[] { packet };
                     packetIndex = 0;
                 }
-                var _token = _tokenSource.Token;
-                var tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, _token);
+                CancellationToken token = _tokenSource.Token;
+                Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token);
 
                 tsharkTask.ContinueWith((task) =>
                 {
                     packets = null; // Hoping GC will get the que
-                    ContinueTsharkTask(task, _token);
+                    ContinueTsharkTask(task, token);
                 }, _tokenSource.Token);
             }));
         }
@@ -1534,13 +1561,11 @@ namespace PacketStudio
             foreach (Control ctl in ctls)
             {
                 ctl.AllowDrop = true;
-                ctl.DragEnter += ctl_DragEnter;
-                ctl.DragDrop += ctl_DragDrop;
+                ctl.DragEnter += Control_DragEnter;
+                ctl.DragDrop += Control_DragDrop;
                 WireDragDrop(ctl.Controls);
             }
         }
-
-        private static Color ERROR_PINK => Color.FromArgb(255, 92, 92); // Wireshark's error background color
 
         public List<byte[]> GetAllDefinedPackets()
         {
@@ -1550,8 +1575,7 @@ namespace PacketStudio
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
 
-                PacketDefineControl pdc = null;
-                _tabToPdc.TryGetValue(tabPage, out pdc);
+                _tabToPdc.TryGetValue(tabPage, out PacketDefineControl pdc);
                 if (pdc == null)
                 {
                     throw new Exception($"Could not find Packet Define Control in tab \"{tabPage.Text}\"");
@@ -1602,7 +1626,7 @@ namespace PacketStudio
                                               $"The file contains {packetsCount:##,###} packets, it's recommended you work file files with less than {MAX_RECOMMENDED_PACKETS_COUNT} packets\r\n\r\n" +
                                               "Are you sure you want to load this file?";
 
-                        var res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo,
+                        DialogResult res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo,
                             MessageBoxIcon.Warning);
                         if (res == DialogResult.No)
                         {
@@ -1615,11 +1639,11 @@ namespace PacketStudio
                 {
                     string errorMessage = $"The file you are trying to load is quite large ({humanizedByteSize})\r\n" +
                                           $"Also an error prevented {_rawFormName} from getting the packets count in this capture.\r\n" +
-                                          $"The error message is:\r\n" +
-                                          $"{e.ToString()}\r\n\r\n" +
+                                           "The error message is:\r\n" +
+                                          $"{e}\r\n\r\n" +
                                            "Are you sure you want to load this file?";
 
-                    var res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    DialogResult res = MessageBox.Show(errorMessage, _rawFormName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (res == DialogResult.No)
                     {
                         // Abort loading of large file

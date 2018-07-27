@@ -48,7 +48,6 @@ namespace PacketStudio.Controls.PacketsDef
                 if (isSupported)
                 {
                     // Supported  - Add to list box
-                    Debug.WriteLine(hexStreamType);
                     HexTypeWrapper wrapper = new HexTypeWrapper(hexStreamType);
                     packetTypeListBox.Items.Add(wrapper);
                 }
