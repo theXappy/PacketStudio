@@ -72,7 +72,6 @@ namespace PacketStudio.Core
 
 			    StreamReader errorStream = p.StandardError;
 			    StreamReader standardStream = p.StandardOutput;
-			    bool xmlTagSeen = false;
 			    StringBuilder output = new StringBuilder();
 			    StringBuilder error = new StringBuilder();
                 while (!errorStream.EndOfStream || !standardStream.EndOfStream)
@@ -141,8 +140,6 @@ namespace PacketStudio.Core
 
 		public Task<JObject> GetJsonRawAsync(IEnumerable<byte[]> packets, int packetIndex, CancellationToken token)
 		{
-		    return Task.FromResult<JObject>(null);
-
 			return Task.Run((() =>
 			{
 				string pcapPath = _packetsSaver.WritePackets(packets);
@@ -258,7 +255,7 @@ namespace PacketStudio.Core
 			    {
 			        pdml = pdmlTask.Result;
                 }
-			    catch (Exception e)
+			    catch (Exception)
 			    {
 			        // Don't care
 			    }
@@ -266,7 +263,7 @@ namespace PacketStudio.Core
 			    {
 			        json = jsonTask.Result;
                 }
-			    catch (Exception e)
+			    catch (Exception)
 			    {
 			        // Don't care
 			    }
