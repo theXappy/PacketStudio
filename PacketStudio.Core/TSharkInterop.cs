@@ -111,6 +111,8 @@ namespace PacketStudio.Core
                     output.Append(standardStream.ReadToEnd());
                     error.Append(errorStream.ReadToEnd());
                 }
+                output.Append(standardStream.ReadToEnd());
+                error.Append(errorStream.ReadToEnd());
                 int x = 0;
 
                 // TODO: Using CliWrap seems to hang if TShark complains about config in the Standard Error stream 
