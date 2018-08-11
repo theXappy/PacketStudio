@@ -37,6 +37,7 @@ namespace PacketStudio
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbpacketTabsPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
+            Syncfusion.Windows.Forms.Tools.TouchStyleColorTable touchStyleColorTable1 = new Syncfusion.Windows.Forms.Tools.TouchStyleColorTable();
             this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
             this.livePreviewPanel = new System.Windows.Forms.Panel();
             this.packetTreeView = new PacketStudio.Controls.TreeViewWithArrows();
@@ -138,7 +139,8 @@ namespace PacketStudio
             this.livePreviewPanel.Controls.Add(this.packetTreeView);
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
-            this.livePreviewPanel.Size = new System.Drawing.Size(1144, 201);
+            this.livePreviewPanel.Padding = new System.Windows.Forms.Padding(0, 0, 5, 5);
+            this.livePreviewPanel.Size = new System.Drawing.Size(469, 832);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
@@ -151,7 +153,7 @@ namespace PacketStudio
             this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(1144, 201);
+            this.packetTreeView.Size = new System.Drawing.Size(464, 827);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
@@ -163,6 +165,7 @@ namespace PacketStudio
             this.packetTabsPanel.Controls.Add(this.greyBorderPanel);
             this.packetTabsPanel.Location = new System.Drawing.Point(1, 24);
             this.packetTabsPanel.Name = "packetTabsPanel";
+            this.packetTabsPanel.Padding = new System.Windows.Forms.Padding(5, 0, 0, 5);
             this.packetTabsPanel.Size = new System.Drawing.Size(244, 832);
             this.packetTabsPanel.TabIndex = 26;
             // 
@@ -171,10 +174,10 @@ namespace PacketStudio
             this.greyBorderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
             this.greyBorderPanel.Controls.Add(this.whiteBackgroundPanel);
             this.greyBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.greyBorderPanel.Location = new System.Drawing.Point(0, 0);
+            this.greyBorderPanel.Location = new System.Drawing.Point(5, 0);
             this.greyBorderPanel.Name = "greyBorderPanel";
             this.greyBorderPanel.Padding = new System.Windows.Forms.Padding(1);
-            this.greyBorderPanel.Size = new System.Drawing.Size(244, 832);
+            this.greyBorderPanel.Size = new System.Drawing.Size(239, 827);
             this.greyBorderPanel.TabIndex = 1;
             // 
             // whiteBackgroundPanel
@@ -185,7 +188,7 @@ namespace PacketStudio
             this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
             this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
             this.whiteBackgroundPanel.Name = "whiteBackgroundPanel";
-            this.whiteBackgroundPanel.Size = new System.Drawing.Size(242, 830);
+            this.whiteBackgroundPanel.Size = new System.Drawing.Size(237, 825);
             this.whiteBackgroundPanel.TabIndex = 1;
             // 
             // packetTabsList
@@ -197,7 +200,7 @@ namespace PacketStudio
             this.packetTabsList.ItemHeight = 19;
             this.packetTabsList.Location = new System.Drawing.Point(0, 0);
             this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(242, 830);
+            this.packetTabsList.Size = new System.Drawing.Size(237, 825);
             this.packetTabsList.Sorted = true;
             this.packetTabsList.TabIndex = 1;
             this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
@@ -211,7 +214,8 @@ namespace PacketStudio
             this.HexViewPanel.Controls.Add(this.hexViewBox);
             this.HexViewPanel.Location = new System.Drawing.Point(1, 24);
             this.HexViewPanel.Name = "HexViewPanel";
-            this.HexViewPanel.Size = new System.Drawing.Size(1144, 204);
+            this.HexViewPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.HexViewPanel.Size = new System.Drawing.Size(669, 311);
             this.HexViewPanel.TabIndex = 12;
             // 
             // hexViewBox
@@ -227,7 +231,7 @@ namespace PacketStudio
             this.hexViewBox.ReadOnly = true;
             this.hexViewBox.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
             this.hexViewBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexViewBox.Size = new System.Drawing.Size(1144, 204);
+            this.hexViewBox.Size = new System.Drawing.Size(669, 306);
             this.hexViewBox.TabIndex = 0;
             this.hexViewBox.UseFixedBytesPerLine = true;
             this.hexViewBox.VScrollBarVisible = true;
@@ -239,7 +243,7 @@ namespace PacketStudio
             this.mainPanel.Controls.Add(this.tabControl);
             this.mainPanel.Location = new System.Drawing.Point(252, 120);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(1146, 394);
+            this.mainPanel.Size = new System.Drawing.Size(671, 517);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
@@ -254,7 +258,7 @@ namespace PacketStudio
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1146, 394);
+            this.tabControl.Size = new System.Drawing.Size(671, 517);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
@@ -267,7 +271,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1138, 368);
+            this.tabPage1.Size = new System.Drawing.Size(663, 491);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -278,7 +282,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(1132, 362);
+            this.packetDefineControl1.Size = new System.Drawing.Size(657, 485);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
@@ -319,6 +323,87 @@ namespace PacketStudio
             this.ribbonControl.QuickPanelImageLayout = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.ribbonControl.RibbonHeaderImage = Syncfusion.Windows.Forms.Tools.RibbonHeaderImage.None;
             this.ribbonControl.RibbonStyle = Syncfusion.Windows.Forms.Tools.RibbonStyle.TouchStyle;
+            touchStyleColorTable1.ActiveToolStripTabItemBackColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            touchStyleColorTable1.BackStageButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.BackStageCaptionColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageCloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            touchStyleColorTable1.BackStageCloseButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
+            touchStyleColorTable1.BackStageCloseButtonHoverForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageCloseButtonPressedForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageMaximizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
+            touchStyleColorTable1.BackStageMaximizeButtonHoverForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageMaximizeButtonPressedForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageMinimizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
+            touchStyleColorTable1.BackStageMinimizeButtonHoverForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageMinimizeButtonPressedForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageNavigationButtonBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            touchStyleColorTable1.BackStageNavigationButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageRestoreButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198)))));
+            touchStyleColorTable1.BackStageRestoreButtonHoverForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageRestoreButtonPressedForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageSysytemButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.BackStageTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.BackStageTabForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.BackStageTabHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.BottomToolStripBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ButtonCheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            touchStyleColorTable1.ButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242)))));
+            touchStyleColorTable1.ButtonPressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            touchStyleColorTable1.CheckBoxForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(66)))), ((int)(((byte)(139)))));
+            touchStyleColorTable1.CheckedToolstripTabItemForeColor = System.Drawing.Color.Black;
+            touchStyleColorTable1.CloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            touchStyleColorTable1.CloseButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.CloseButtonHoverForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.CloseButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(61)))), ((int)(((byte)(61)))));
+            touchStyleColorTable1.CloseButtonPressedForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.DropDownBodyColor = System.Drawing.Color.White;
+            touchStyleColorTable1.DropDownMenuItemBackground = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.DropDownSelectedTextForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.DropDownTextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.DropDownTitleBackground = System.Drawing.Color.White;
+            touchStyleColorTable1.HeaderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.HoverTabBackColor = System.Drawing.Color.White;
+            touchStyleColorTable1.HoverTabForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ImageMargin = System.Drawing.Color.White;
+            touchStyleColorTable1.InActiveToolStripTabItemBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.MaximizeButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.MaximizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.MaximizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.MenuButtonArrowColor = System.Drawing.Color.White;
+            touchStyleColorTable1.MenuButtonHoverArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.MinimizeButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.MinimizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.MinimizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.OverFlowArrowColor = System.Drawing.Color.White;
+            touchStyleColorTable1.QATButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242)))));
+            touchStyleColorTable1.QATDownArrowColor = System.Drawing.Color.White;
+            touchStyleColorTable1.RestoreButtonForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.RestoreButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.RestoreButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.RibbonPanelBackColor = System.Drawing.Color.White;
+            touchStyleColorTable1.SplitButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.SplitButtonSelected = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201)))));
+            touchStyleColorTable1.SystemButtonBackground = System.Drawing.Color.White;
+            touchStyleColorTable1.SystemButtonPressed = System.Drawing.Color.White;
+            touchStyleColorTable1.TabGroupColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(203)))), ((int)(((byte)(29)))));
+            touchStyleColorTable1.TabScrollArrowColor = System.Drawing.Color.White;
+            touchStyleColorTable1.TitleColor = System.Drawing.Color.White;
+            touchStyleColorTable1.ToolstripActiveTabItemForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolStripArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolStripBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolstripButtonPressedBorder = System.Drawing.Color.Black;
+            touchStyleColorTable1.ToolStripDropDownBackColor = System.Drawing.Color.White;
+            touchStyleColorTable1.ToolStripDropDownButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(247)))), ((int)(((byte)(247)))));
+            touchStyleColorTable1.ToolStripDropDownButtonSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            touchStyleColorTable1.ToolstripSelectedTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolStripSpliterColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolstripTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            touchStyleColorTable1.ToolstripTabItemCheckedGradientBegin = System.Drawing.Color.Empty;
+            touchStyleColorTable1.ToolstripTabItemForeColor = System.Drawing.Color.White;
+            touchStyleColorTable1.ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty;
+            this.ribbonControl.RibbonTouchStyleColorTable.Add(touchStyleColorTable1);
             this.ribbonControl.SelectedTab = this.homeToolStripTabItem;
             this.ribbonControl.ShowQuickItemsDropDownButton = false;
             this.ribbonControl.ShowRibbonDisplayOptionButton = false;
@@ -548,7 +633,7 @@ namespace PacketStudio
             this.livePreviewToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.livePreviewToolStrip.ShowCaption = false;
             this.livePreviewToolStrip.ShowLauncher = false;
-            this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 64);
+            this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 65);
             this.livePreviewToolStrip.TabIndex = 3;
             this.livePreviewToolStrip.Text = "Live Preview Tool Strip";
             // 
@@ -560,7 +645,7 @@ namespace PacketStudio
             this.previewtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.previewtoolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.previewtoolStripButton.Name = "previewtoolStripButton";
-            this.previewtoolStripButton.Size = new System.Drawing.Size(88, 55);
+            this.previewtoolStripButton.Size = new System.Drawing.Size(88, 56);
             this.previewtoolStripButton.Text = "Enable Preview";
             this.previewtoolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewtoolStripButton.Click += new System.EventHandler(this.LivePreviewToolStripMenuItem_Click);
@@ -573,7 +658,7 @@ namespace PacketStudio
             this.previewContextToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.previewContextToolStripButton.Margin = new System.Windows.Forms.Padding(2);
             this.previewContextToolStripButton.Name = "previewContextToolStripButton";
-            this.previewContextToolStripButton.Size = new System.Drawing.Size(106, 55);
+            this.previewContextToolStripButton.Size = new System.Drawing.Size(106, 56);
             this.previewContextToolStripButton.Text = "Preview In Context";
             this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
@@ -582,7 +667,7 @@ namespace PacketStudio
             // 
             this.prevDelayToolStripLabel.Margin = new System.Windows.Forms.Padding(2);
             this.prevDelayToolStripLabel.Name = "prevDelayToolStripLabel";
-            this.prevDelayToolStripLabel.Size = new System.Drawing.Size(80, 55);
+            this.prevDelayToolStripLabel.Size = new System.Drawing.Size(80, 56);
             this.prevDelayToolStripLabel.Text = "Preview Delay:";
             // 
             // livePrevToolStripTextBox
@@ -590,7 +675,7 @@ namespace PacketStudio
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
-            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 55);
+            this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 56);
             this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.LivePreviewDelayBox_TextChanged);
             // 
             // exitOfficeButton
@@ -621,9 +706,9 @@ namespace PacketStudio
             // 
             // statusBar
             // 
-            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.statusBar.BeforeTouchSize = new System.Drawing.Size(1396, 22);
-            this.statusBar.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.statusBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.statusBar.Controls.Add(this.statusTextPanel);
             this.statusBar.Controls.Add(this.wsVerPanel);
@@ -631,7 +716,7 @@ namespace PacketStudio
             this.statusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.statusBar.ForeColor = System.Drawing.Color.White;
             this.statusBar.Location = new System.Drawing.Point(2, 977);
-            this.statusBar.MetroColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusBar.MetroColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.statusBar.Name = "statusBar";
             this.statusBar.Padding = new System.Windows.Forms.Padding(3);
             this.statusBar.Size = new System.Drawing.Size(1396, 22);
@@ -646,7 +731,7 @@ namespace PacketStudio
             this.statusTextPanel.BackColor = System.Drawing.Color.Transparent;
             this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(41, 16);
             this.statusTextPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.statusTextPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.statusTextPanel.ForeColor = System.Drawing.Color.White;
             this.statusTextPanel.Location = new System.Drawing.Point(0, 2);
@@ -662,7 +747,7 @@ namespace PacketStudio
             // 
             this.wsVerPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.wsVerPanel.BeforeTouchSize = new System.Drawing.Size(48, 16);
-            this.wsVerPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123)))));
+            this.wsVerPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.wsVerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.wsVerPanel.HAlign = Syncfusion.Windows.Forms.Tools.HorzFlowAlign.Right;
             this.wsVerPanel.Location = new System.Drawing.Point(1339, 2);
