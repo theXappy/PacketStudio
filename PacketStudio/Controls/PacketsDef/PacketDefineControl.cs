@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.Controls.PacketsDef
 {
@@ -54,7 +55,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
 
             hexBox.Text = data?.Text ?? "";
-            HexStreamType type = data?.Type ?? HexStreamType.RawEthernet;
+            HexStreamType type = data?.Type ?? HexStreamType.Raw;
             HexTypeWrapper wrapped = new HexTypeWrapper(type);
             packetTypeListBox.SelectedItem = wrapped;
             PacketType = wrapped;
@@ -67,7 +68,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
         }
 
-        public byte[] GetPacket()
+        public TempPacketSaveData GetPacket()
         {
             byte[] bytes;
             string rawHex = hexBox.Text;
@@ -83,7 +84,10 @@ namespace PacketStudio.Controls.PacketsDef
 
             IPacketDefiner definer = GetCurrentDefiner();
 
-            return definer.Generate(bytes);
+            byte[] data =  definer.Generate(bytes);
+            LinkLayerType llt = definer.LinkLayer;
+            TempPacketSaveData output = new TempPacketSaveData(data, (byte)llt);
+            return output;
         }
 
         public PacketSaveData GetSaveData()
@@ -206,7 +210,7 @@ namespace PacketStudio.Controls.PacketsDef
             byte[] bytes;
             try
             {
-                bytes = GetPacket();
+                bytes = GetPacket().Data;
             }
             catch (Exception ex)
             {
@@ -219,7 +223,7 @@ namespace PacketStudio.Controls.PacketsDef
                 sb.Append($"{b:x2}");
             }
             string finalHex = sb.ToString();
-            this.PacketType = HexStreamType.RawEthernet;
+            this.PacketType = HexStreamType.Raw;
             this.hexBox.Text = finalHex;
         }
     }

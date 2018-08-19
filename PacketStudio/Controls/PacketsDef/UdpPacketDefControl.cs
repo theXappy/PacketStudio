@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using PacketDotNet;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.Controls.PacketsDef
 {
@@ -16,6 +17,7 @@ namespace PacketStudio.Controls.PacketsDef
 
 		public event EventHandler PacketChanged;
 	    public HexStreamType StreamType => HexStreamType.UdpPayload;
+	    public LinkLayerType LinkLayer => LinkLayerType.Ethernet;
 	    public int HeadersLength => 42;
 	    public bool IsValid => int.TryParse(streamIdTextBox.Text, out _);
 
@@ -55,7 +57,8 @@ namespace PacketStudio.Controls.PacketsDef
 
 		public PacketSaveData GetSaveData(string packetHex)
 		{
-			return new PacketSaveDataV2(packetHex,HexStreamType.UdpPayload, streamIdTextBox.Text,"");
+		    return PacketSaveDataFactory.GetPacketSaveData(packetHex, HexStreamType.UdpPayload, LinkLayerType.Ethernet,
+		        streamIdTextBox.Text, "");
 		}
 
 		public void LoadSaveData(PacketSaveData data)

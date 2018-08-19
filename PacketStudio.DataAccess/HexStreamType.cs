@@ -4,8 +4,8 @@ namespace PacketStudio.DataAccess
 {
     public enum HexStreamType
     {
-        [Description("Raw Ethernet")]
-        RawEthernet,
+        [Description("Raw")]
+        Raw = 0,
         [Description("IP Payload")]
         IpPayload,
         [Description("UDP Payload")]

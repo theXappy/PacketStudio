@@ -1,5 +1,6 @@
 using System;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.Controls.PacketsDef
 {
@@ -8,6 +9,7 @@ namespace PacketStudio.Controls.PacketsDef
 		event EventHandler PacketChanged;
 
 	    HexStreamType StreamType { get; }
+	    LinkLayerType LinkLayer { get; }
         int HeadersLength { get; }
         bool IsValid { get; }
 		string Error { get; }

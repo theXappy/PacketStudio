@@ -37,7 +37,7 @@ namespace PacketStudio.Core
 			_packetsSaver = new TempPacketsSaver();
 		}
 
-		public Task<ExecutionOutput> ExportToWsAsync(IEnumerable<byte[]> packets)
+		public Task<ExecutionOutput> ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
 		{
 			string savedPcapPath = _packetsSaver.WritePackets(packets);
 			// Running wireshark
@@ -46,7 +46,7 @@ namespace PacketStudio.Core
 			CliWrap.Cli wsCli = new CliWrap.Cli(WiresharkPath);
 			return wsCli.ExecuteAsync(savedPcapPath);
 		}
-		public void ExportToWs(IEnumerable<byte[]> packets)
+		public void ExportToWs(IEnumerable<TempPacketSaveData> packets)
 		{
 			try
 			{

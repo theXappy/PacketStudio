@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
 using PacketStudio.Core;
+using PacketStudio.DataAccess;
 using Syncfusion.Windows.Tools.Controls;
 using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -91,7 +92,7 @@ namespace ByteArrayToPcap.NewGUI
 			if (definer.IsValid)
 			{
 				// Update HEX view
-				byte[] bytes = definer.PacketBytes;
+				byte[] bytes = definer.PacketBytes.Data;
 				ByteArrayToIndexedHexStringConverter converter = new ByteArrayToIndexedHexStringConverter();
 				string str = converter.Convert(bytes, typeof(string), "16" /*bytes per line */, CultureInfo.CurrentCulture) as string;
 				hexBox.Text = str;
@@ -113,7 +114,7 @@ namespace ByteArrayToPcap.NewGUI
 
 		private void ShowLivePreview()
 		{
-			byte[] packetBytes = null;
+			TempPacketSaveData packetBytes = null;
 			AutoResetEvent are = new AutoResetEvent(false);
 			this.Dispatcher.Invoke(() =>
 			{
@@ -121,7 +122,7 @@ namespace ByteArrayToPcap.NewGUI
 				are.Set();
 			});
 			are.WaitOne();
-			if(packetBytes.Length == 0)
+			if(packetBytes.Data.Length == 0)
 				return;
 			XElement a = _tSharkInterop.GetPdmlAsync(packetBytes).Result;
 			PopulateLivePreview(a);
@@ -285,7 +286,7 @@ namespace ByteArrayToPcap.NewGUI
 
 			if (packetValid)
 			{
-				byte[] packet = CurrentShowingDefiner.PacketBytes;
+				byte[] packet = CurrentShowingDefiner.PacketBytes.Data;
 				IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
 				string combinedString = string.Join(", ", bytesAsStrings);
 				Clipboard.SetText(combinedString);
@@ -302,7 +303,7 @@ namespace ByteArrayToPcap.NewGUI
 
 			if (packetValid)
 			{
-				byte[] packet = CurrentShowingDefiner.PacketBytes;
+				byte[] packet = CurrentShowingDefiner.PacketBytes.Data;
 				IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
 				string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
 				Clipboard.SetText(combinedString);

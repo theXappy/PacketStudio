@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using PacketStudio.DataAccess.SaveData;
 using PcapngFile;
 
 namespace PacketStudio.DataAccess.Providers
@@ -23,10 +24,18 @@ namespace PacketStudio.DataAccess.Providers
 			try
 			{
 				reader = new PcapngFile.Reader(_fileName);
+			    int interfaceId = 0;
+			    Dictionary<int, LinkType> interfaceIdToLinkLayer = new Dictionary<int, LinkType>();
+                foreach (InterfaceDescriptionBlock readerInterfaceDescriptionBlock in reader.InterfaceDescriptionBlocks)
+                {
+                    interfaceIdToLinkLayer.Add(interfaceId,readerInterfaceDescriptionBlock.LinkType);
+                }
 				foreach (EnhancedPacketBlock packetBlock in reader.EnhancedPacketBlocks)
 				{
+				    LinkType linkType = interfaceIdToLinkLayer[packetBlock.InterfaceID];
+				    string linkTypeStr = ((byte) linkType).ToString();
 					byte[] data = packetBlock.Data;
-					yield return new PacketSaveDataV2(data.ToHex(),HexStreamType.RawEthernet,"1","1");
+					yield return new PacketSaveDataV3(data.ToHex(),HexStreamType.Raw,linkTypeStr,"1","1","");
 				}
 			}
 			finally

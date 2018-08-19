@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using PacketStudio.DataAccess.SaveData;
 using SharpPcap;
 using SharpPcap.LibPcap;
 
@@ -23,10 +24,11 @@ namespace PacketStudio.DataAccess.Providers
 				cfrd = new CaptureFileReaderDevice(_fileName);
 				cfrd.Open();
 				RawCapture nextPacket;
-				while ((nextPacket = cfrd.GetNextPacket()) != null)
+			    string linkType = ((byte) cfrd.LinkType).ToString();
+                while ((nextPacket = cfrd.GetNextPacket()) != null)
 				{
 					byte[] arr = nextPacket.Data;
-					yield return new PacketSaveDataV2(arr.ToHex(),HexStreamType.RawEthernet,"1","1");
+					yield return new PacketSaveDataV3(arr.ToHex(),HexStreamType.Raw,linkType,"1","1","");
 				}
 
 			}

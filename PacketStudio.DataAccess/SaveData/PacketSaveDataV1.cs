@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Linq;
+using PcapngFile;
 
-namespace PacketStudio.DataAccess
+namespace PacketStudio.DataAccess.SaveData
 {
 	[Obsolete]
 	[Serializable]
 	public class PacketSaveDataV1 : PacketSaveData
 	{
-		private readonly string _text;
+        public const string MAGIC_WORD = "M4G1C";
+	    public override string MagicWord => MAGIC_WORD;
+        private readonly string _text;
 		private bool _udpPayload;
 		private readonly string _streamId;
 
 		public override string Text => _text;
-		public override HexStreamType Type => UdpPayload ? HexStreamType.UdpPayload : HexStreamType.RawEthernet;
-		public bool UdpPayload => _udpPayload;
+		public override HexStreamType Type => UdpPayload ? HexStreamType.UdpPayload : HexStreamType.Raw;
+	    public override string LinkLayerType => ((byte) LinkType.Ethernet).ToString();
+	    public bool UdpPayload => _udpPayload;
 		public override string StreamID => _streamId;
+        public override string PayloadProtoId => "";
 
-		public PacketSaveDataV1(string text, bool udpPayload, string streamId)
+        public PacketSaveDataV1(string text, bool udpPayload, string streamId)
 		{
 			_text = text;
 			_udpPayload = udpPayload;
