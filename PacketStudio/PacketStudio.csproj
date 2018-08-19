@@ -143,6 +143,9 @@
     <Compile Include="Controls\TreeViewWithArrows.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="Controls\PacketsDef\RawPacketDefControl.resx">
+      <DependentUpon>RawPacketDefControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PacketsDef\SctpPacketDefControl.resx">
       <DependentUpon>SctpPacketDefControl.cs</DependentUpon>
       <SubType>Designer</SubType>

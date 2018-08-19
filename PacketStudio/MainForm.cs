@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using PacketStudio.DataAccess.SaveData;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
 // ReSharper disable StringIndexOfIsCultureSpecific.1
@@ -529,7 +530,7 @@ namespace PacketStudio
             byte[] data;
             try
             {
-                data = pdc.GetPacket();
+                data = pdc.GetPacket().Data;
             }
             catch (Exception ex)
             {
@@ -675,7 +676,7 @@ namespace PacketStudio
                 return;
             }
 
-            List<byte[]> packets;
+            List<TempPacketSaveData> packets;
             try
             {
                 packets = GetAllDefinedPackets();
@@ -1074,7 +1075,7 @@ namespace PacketStudio
             }
             else
             {
-                string inputHex = String.Join(string.Empty, pdc.GetPacket().Select(x => x.ToString("x2")));
+                string inputHex = String.Join(string.Empty, pdc.GetPacket().Data.Select(x => x.ToString("x2")));
                 int nibbleIndex = index * 2;
                 int nibblesCountExpected = hex.Length;
                 string candidate = inputHex.Substring(nibbleIndex, nibblesCountExpected);
@@ -1212,6 +1213,7 @@ namespace PacketStudio
             Control maybePdc = tabControl.SelectedTab.Controls.Cast<Control>().FirstOrDefault(control => control is PacketDefineControl);
             UpdateHexView(maybePdc);
             QueueLivePreviewUpdate();
+            UpdatePacketListBox();
         }
 
         private void previewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1294,7 +1296,7 @@ namespace PacketStudio
         private void SaveAsB2P(string path)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("P0NTI4K");
+            bool first = true;
             foreach (TabPage tab in tabControl.TabPages)
             {
                 foreach (object control in tab.Controls)
@@ -1302,17 +1304,15 @@ namespace PacketStudio
                     if (control is PacketDefineControl casted)
                     {
                         PacketSaveData psd = casted.GetSaveData();
-                        if (psd is PacketSaveDataV2 psdV2)
+                        if (first)
                         {
-                            sb.AppendLine(psdV2.ToString());
+                            // For the first packet, append the PSD magic word (so it's in the .b2p's first line
+                            sb.AppendLine(psd.MagicWord);
                         }
-                        else
-                        {
-                            throw new FormatException(
-                                $"Expected the {nameof(PacketDefineControl)} to return " +
-                                $"a {nameof(PacketSaveDataV2)} instance but it " +
-                                $"was a {psd.GetType().FullName} instead");
-                        }
+                        sb.AppendLine(psd.ToString());
+
+                        // Move to next TabPage (break controls loop)
+                        break;
                     }
                 }
             }
@@ -1325,7 +1325,7 @@ namespace PacketStudio
 
         private void SaveAsPcap(string path)
         {
-            List<byte[]> packets = GetAllDefinedPackets();
+            List<TempPacketSaveData> packets = GetAllDefinedPackets();
             string tempFilePath = _packetSaver.WritePackets(packets);
             File.Move(tempFilePath, path);
         }
@@ -1511,7 +1511,7 @@ namespace PacketStudio
                 byte[] packet;
                 try
                 {
-                    packet = pdc.GetPacket();
+                    packet = pdc.GetPacket().Data;
                 }
                 catch (Exception)
                 {
@@ -1546,7 +1546,7 @@ namespace PacketStudio
                     return;
                 }
 
-                byte[] packet;
+                TempPacketSaveData packet;
                 try
                 {
                     packet = pdc.GetPacket();
@@ -1571,7 +1571,7 @@ namespace PacketStudio
                 Debug.WriteLine(sw.Elapsed);
                 UpdateStatus("Working...", StatusType.Neutral);
 
-                IEnumerable<byte[]> packets;
+                IEnumerable<TempPacketSaveData> packets;
                 int packetIndex;
                 if (_livePreviewInContext)
                 {
@@ -1604,6 +1604,20 @@ namespace PacketStudio
 
         private void UpdatePacketListBox()
         {
+            List<TempPacketSaveData> packets;
+            string[] packetsTextLines = null;
+
+            // TODO:
+            //try
+            //{
+            //    packets = GetAllDefinedPackets();
+            //    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
+            //}
+            //catch (Exception ex)
+            //{
+            //    packetsTextLines = null;
+            //}
+
             packetTabsList.Items.Clear();
             int count = tabControl.TabPages.Count;
             int padding = (int)Math.Log10(count);
@@ -1614,7 +1628,13 @@ namespace PacketStudio
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
 
-                TabPacketListItem tpli = new TabPacketListItem(index.ToString().PadLeft(digitsRequired, '0'), tabPage);
+                string line = index.ToString().PadLeft(digitsRequired, '0');
+                if (packetsTextLines != null)
+                {
+                    line = packetsTextLines[index - 1];
+                }
+                //TabPacketListItem tpli = new TabPacketListItem(, tabPage);
+                TabPacketListItem tpli = new TabPacketListItem(line, tabPage);
                 index++;
 
                 packetTabsList.Items.Add(tpli);
@@ -1632,9 +1652,9 @@ namespace PacketStudio
             }
         }
 
-        public List<byte[]> GetAllDefinedPackets()
+        public List<TempPacketSaveData> GetAllDefinedPackets()
         {
-            List<byte[]> packets = new List<byte[]>();
+            List<TempPacketSaveData> packets = new List<TempPacketSaveData>();
             foreach (TabPage tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
@@ -1647,7 +1667,7 @@ namespace PacketStudio
                 }
                 try
                 {
-                    byte[] nextPacket = pdc.GetPacket();
+                    TempPacketSaveData nextPacket = pdc.GetPacket();
                     packets.Add(nextPacket);
                 }
                 catch (Exception ex)

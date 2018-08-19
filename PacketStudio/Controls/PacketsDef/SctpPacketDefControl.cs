@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using PacketDotNet;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.Controls.PacketsDef
 {
@@ -18,7 +19,8 @@ namespace PacketStudio.Controls.PacketsDef
 
 		public event EventHandler PacketChanged;
 	    public HexStreamType StreamType => HexStreamType.SctpPayload;
-	    public int HeadersLength => 62;
+	    public LinkLayerType LinkLayer => LinkLayerType.Ethernet;
+        public int HeadersLength => 62;
 	    public bool IsValid => int.TryParse(streamIdTextBox.Text, out _) && TryParsePPID(ppidTextBox.Text,out _);
 
 		public string Error => IsValid == false
@@ -104,25 +106,25 @@ namespace PacketStudio.Controls.PacketsDef
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to parse SCTP PPID. Must be an integer OR hexadecimal number starting with '0x', was: '{ppidTextBox.Text}'. Inner error: {ex.Message}");
+                throw new Exception($"Failed to parse SCTP PPID. Must be an integer OR hexadecimal number starting with '0x', was: '{txt}'. Inner error: {ex.Message}");
             }
 
             return proto;
         }
 
         public PacketSaveData GetSaveData(string packetHex)
-		{
-			return new PacketSaveDataV2(packetHex, HexStreamType.SctpPayload, streamIdTextBox.Text,ppidTextBox.Text);
-		}
+        {
+            return PacketSaveDataFactory.GetPacketSaveData(packetHex, HexStreamType.SctpPayload, LinkLayerType.Ethernet,
+                streamIdTextBox.Text, ppidTextBox.Text);
+        }
 
 		public void LoadSaveData(PacketSaveData data)
 		{
 			streamIdTextBox.Text = data.StreamID;
-			PacketSaveDataV2 asV2 = data as PacketSaveDataV2;
-			if (asV2 != null)
-			{
-				ppidTextBox.Text = asV2.PPID;
-			}
+		    if (!String.IsNullOrWhiteSpace(data.PayloadProtoId))
+		    {
+		        ppidTextBox.Text = data.PayloadProtoId;
+		    }
 		}
 
 		private void streamIdTextBox_TextChanged(object sender, EventArgs e)

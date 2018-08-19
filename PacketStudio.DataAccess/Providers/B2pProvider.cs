@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.DataAccess.Providers
 {
@@ -29,14 +30,23 @@ namespace PacketStudio.DataAccess.Providers
 				magicWordLine = sr.ReadLine();
 				switch (magicWordLine)
 				{
-					case "M4G1C":
-					case "P0NTI4K":
+#pragma warning disable 612 // Disable obsolete warnings
+				    case PacketSaveDataV1.MAGIC_WORD:
+				    case PacketSaveDataV2.MAGIC_WORD:
+#pragma warning restore 612
+                    case PacketSaveDataV3.MAGIC_WORD:
 						break;
 					default:
-						throw new Exception($"ERROR: Unkown file format. Support magics: M4G1C, P0NTI4K. Read magic: {magicWordLine}");
+#pragma warning disable 612 // Disable obsolete warnings
+                        throw new Exception($"ERROR: Unkown file format. Support magics: " +
+                                            $"({PacketSaveDataV1.MAGIC_WORD}," +
+                                            $"{PacketSaveDataV2.MAGIC_WORD}," +
+                                            $"{PacketSaveDataV3.MAGIC_WORD})." +
+                                            $" Read magic: {magicWordLine}");
+#pragma warning restore 612
 
-				}
-				if (sr.EndOfStream)
+                }
+                if (sr.EndOfStream)
 				{
 					throw new Exception("ERROR: File is empty.");
 				}

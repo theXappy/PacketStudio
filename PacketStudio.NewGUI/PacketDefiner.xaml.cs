@@ -9,6 +9,7 @@ using System.Windows.Input;
 using PacketDotNet;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.Core;
+using PacketStudio.DataAccess;
 
 namespace ByteArrayToPcap.NewGUI
 {
@@ -127,31 +128,33 @@ namespace ByteArrayToPcap.NewGUI
 			}
 		}
 
-		public byte[] PacketBytes
+		public TempPacketSaveData PacketBytes
 		{
 			get
 
 			{
-				if (!IsValid)
-					return new byte[0];
+                // TODO
+				//if (!IsValid)
+				//	return new byte[0];
 
-				byte[] rawBytes = _deserializer.Deserialize(this.hexTextBox.Text);
-				switch (packetTypeCombo.SelectedIndex)
-				{
-					case 0: // Raw Ethernet
-					default:
-						return rawBytes;
-				    case 1: // UDP
-						int parsedUdpId = int.Parse(streamIdTextbox.Text);
-						return _udpPacketFactory.GetPacket(rawBytes, parsedUdpId);
-					case 2: // SCPT
-						string sctpStreamId = streamIdTextbox.Text;
-						int parsedSctpId = sctpStreamId.StartsWith("0x")
-							? Convert.ToInt32(sctpStreamId.Substring(2), 16) // Parse as HEX
-							: int.Parse(sctpStreamId); // Parse as Decimal
-						int parsedPpid = int.Parse(ppidTextbox.Text);
-						return _sctpPacketFactory.GetPacket(rawBytes, parsedSctpId, parsedPpid);
-				}
+				//byte[] rawBytes = _deserializer.Deserialize(this.hexTextBox.Text);
+				//switch (packetTypeCombo.SelectedIndex)
+				//{
+				//	case 0: // Raw Ethernet
+				//	default:
+				//		return rawBytes;
+				//    case 1: // UDP
+				//		int parsedUdpId = int.Parse(streamIdTextbox.Text);
+				//		return _udpPacketFactory.GetPacket(rawBytes, parsedUdpId);
+				//	case 2: // SCPT
+				//		string sctpStreamId = streamIdTextbox.Text;
+				//		int parsedSctpId = sctpStreamId.StartsWith("0x")
+				//			? Convert.ToInt32(sctpStreamId.Substring(2), 16) // Parse as HEX
+				//			: int.Parse(sctpStreamId); // Parse as Decimal
+				//		int parsedPpid = int.Parse(ppidTextbox.Text);
+				//		return _sctpPacketFactory.GetPacket(rawBytes, parsedSctpId, parsedPpid);
+				//}
+			    return null;
 			}
 		}
 

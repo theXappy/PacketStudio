@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using PacketDotNet;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.Controls.PacketsDef
 {
@@ -16,6 +17,7 @@ namespace PacketStudio.Controls.PacketsDef
 
 		public event EventHandler PacketChanged;
 	    public HexStreamType StreamType => HexStreamType.IpPayload;
+	    public LinkLayerType LinkLayer => LinkLayerType.Ethernet;
 	    public int HeadersLength => 34;
 	    public bool IsValid => int.TryParse(streamIdTextBox.Text, out _);
 
@@ -71,17 +73,17 @@ namespace PacketStudio.Controls.PacketsDef
 
 		public PacketSaveData GetSaveData(string packetHex)
 		{
-			return new PacketSaveDataV2(packetHex,HexStreamType.IpPayload, streamIdTextBox.Text,nextProtoTextBox.Text);
+		    return PacketSaveDataFactory.GetPacketSaveData(packetHex, HexStreamType.IpPayload, LinkLayerType.Ethernet,
+		        streamIdTextBox.Text, nextProtoTextBox.Text);
 		}
 
 		public void LoadSaveData(PacketSaveData data)
 		{
 			streamIdTextBox.Text = data.StreamID;
-			PacketSaveDataV2 asV2 = data as PacketSaveDataV2;
-			if (asV2 != null)
-			{
-				nextProtoTextBox.Text = asV2.Text;
-			}
+		    if (!String.IsNullOrWhiteSpace(data.PayloadProtoId))
+		    {
+		        nextProtoTextBox.Text = data.PayloadProtoId;
+		    }
 		}
 
 		private void streamIdTextBox_TextChanged(object sender, EventArgs e)

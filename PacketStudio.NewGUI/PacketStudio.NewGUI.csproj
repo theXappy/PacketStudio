@@ -132,6 +132,10 @@
       <Project>{e7558b32-25c1-4175-97e5-ca1bffe951f8}</Project>
       <Name>PacketStudio.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj">
+      <Project>{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}</Project>
+      <Name>PacketStudio.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PacketStudio\PacketStudio.csproj">
       <Project>{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}</Project>
       <Name>PacketStudio</Name>

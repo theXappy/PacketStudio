@@ -70,23 +70,23 @@ namespace PacketStudio.Core
             _packetsSaver = new TempPacketsSaver();
         }
 
-        public async Task<XElement> GetPdmlAsync(byte[] packetBytes)
+        public async Task<XElement> GetPdmlAsync(TempPacketSaveData packetSaveData)
         {
-            return await GetPdmlAsync(packetBytes, CancellationToken.None);
+            return await GetPdmlAsync(packetSaveData, CancellationToken.None);
         }
 
-        public async Task<XElement> GetPdmlAsync(IEnumerable<byte[]> packets, int packetIndex)
+        public async Task<XElement> GetPdmlAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex)
         {
             return await GetPdmlAsync(packets, packetIndex, CancellationToken.None);
         }
 
 
-        public async Task<XElement> GetPdmlAsync(byte[] packetBytes, CancellationToken token)
+        public async Task<XElement> GetPdmlAsync(TempPacketSaveData packetSaveData, CancellationToken token)
         {
-            return await GetPdmlAsync(new List<byte[]>() { packetBytes }, 0, token);
+            return await GetPdmlAsync(new List<TempPacketSaveData>() { packetSaveData }, 0, token);
         }
 
-        public Task<XElement> GetPdmlAsync(IEnumerable<byte[]> packets, int packetIndex, CancellationToken token)
+        public Task<XElement> GetPdmlAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
         {
             return Task.Run((() =>
             {
@@ -113,7 +113,6 @@ namespace PacketStudio.Core
                 }
                 output.Append(standardStream.ReadToEnd());
                 error.Append(errorStream.ReadToEnd());
-                int x = 0;
 
                 // TODO: Using CliWrap seems to hang if TShark complains about config in the Standard Error stream 
                 // (maybe? For the 'NPF error' it doesn't?)
@@ -158,6 +157,54 @@ namespace PacketStudio.Core
             }), token);
         }
 
+        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
+        {
+            return Task.Run((() =>
+            {
+                string pcapPath = _packetsSaver.WritePackets(packets);
+                token.ThrowIfCancellationRequested();
+
+                string args = GetTextOutputArgs(pcapPath);
+                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
+                psi.UseShellExecute = false;
+                psi.RedirectStandardError = true;
+                psi.RedirectStandardOutput = true;
+                psi.CreateNoWindow = true;
+                psi.WindowStyle = ProcessWindowStyle.Minimized;
+                Process p = Process.Start(psi);
+
+                StreamReader errorStream = p.StandardError;
+                StreamReader standardStream = p.StandardOutput;
+                StringBuilder output = new StringBuilder();
+                StringBuilder error = new StringBuilder();
+                while (!p.WaitForExit(1000))
+                {
+                    output.Append(standardStream.ReadToEnd());
+                    error.Append(errorStream.ReadToEnd());
+                }
+                output.Append(standardStream.ReadToEnd());
+                error.Append(errorStream.ReadToEnd());
+
+                if (p.ExitCode != 0)
+                {
+                    if (output.Length > 0)
+                    {
+                        // Exit code isn't 0 but we have output so dismissing for now...
+                    }
+                    else
+                    {
+                        // No output, show exit code and error
+                        throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                    }
+
+                }
+
+                string rawStdOut = output.ToString();
+
+                return rawStdOut.Split('\n');
+            }), token);
+        }
+
         private string GetPdmlArgs(string pcapPath)
         {
             string oldVersionArgs = $"-r {pcapPath} -T pdml";
@@ -182,24 +229,36 @@ namespace PacketStudio.Core
             return false;
         }
 
+        private string GetTextOutputArgs(string pcapPath)
+        {
+            string oldVersionArgs = $"-r {pcapPath}";
+            string newVersionArgs = $"-r {pcapPath} -2 --enable-heuristic fp_udp";
 
-        public async Task<JObject> GetJsonRawAsync(byte[] packetBytes)
+            if (isNewVersion())
+            {
+                return newVersionArgs;
+            }
+            return oldVersionArgs;
+        }
+        
+
+        public async Task<JObject> GetJsonRawAsync(TempPacketSaveData packetBytes)
         {
             return await GetJsonRawAsync(packetBytes, CancellationToken.None);
         }
 
-        public async Task<JObject> GetJsonRawAsync(IEnumerable<byte[]> packets, int packetIndex)
+        public async Task<JObject> GetJsonRawAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex)
         {
             return await GetJsonRawAsync(packets, packetIndex, CancellationToken.None);
         }
 
 
-        public async Task<JObject> GetJsonRawAsync(byte[] packetBytes, CancellationToken token)
+        public async Task<JObject> GetJsonRawAsync(TempPacketSaveData packetBytes, CancellationToken token)
         {
-            return await GetJsonRawAsync(new List<byte[]>() { packetBytes }, 0, token);
+            return await GetJsonRawAsync(new List<TempPacketSaveData>() { packetBytes }, 0, token);
         }
 
-        public Task<JObject> GetJsonRawAsync(IEnumerable<byte[]> packets, int packetIndex, CancellationToken token)
+        public Task<JObject> GetJsonRawAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
         {
             if (!isNewVersion())
             {
@@ -306,7 +365,7 @@ namespace PacketStudio.Core
             }), token);
         }
 
-        public Task<TSharkCombinedResults> GetPdmlAndJsonAsync(IEnumerable<byte[]> packets, int packetIndex,
+        public Task<TSharkCombinedResults> GetPdmlAndJsonAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex,
             CancellationToken token)
         {
             Task<XElement> pdmlTask = GetPdmlAsync(packets, packetIndex, token);
