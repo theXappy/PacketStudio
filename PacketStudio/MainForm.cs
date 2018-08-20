@@ -999,19 +999,31 @@ namespace PacketStudio
 
         private void PacketTabsList_DrawItem(object sender, DrawItemEventArgs e)
         {
+            Color backColor = Color.White;
+            if (e.State.HasFlag(DrawItemState.Selected))
+            {
+                backColor = Color.FromArgb(240, 240, 240);
+            }
+            if (e.State.HasFlag(DrawItemState.Focus))
+            {
+                backColor = Color.FromArgb(205, 232, 255);
+            }
+
+
             e.DrawBackground();
+            e.Graphics.FillRectangle(new SolidBrush(backColor),e.Bounds );
             e.DrawFocusRectangle();
-            Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y + 1, e.Bounds.Width, e.Bounds.Height);
+            Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
             e.Graphics.DrawString(
                 packetTabsList.Items[e.Index].ToString(),
                 e.Font,
-                new SolidBrush(e.ForeColor),
+                new SolidBrush(Color.Black),
                 newBounds);
         }
 
         private void PacketTabsList_MeasureItem(object sender, MeasureItemEventArgs e)
         {
-            e.ItemHeight = 15;
+            e.ItemHeight = 17;
         }
 
         private void PacketTabsList_MouseDown(object sender, MouseEventArgs e)
@@ -1228,7 +1240,7 @@ namespace PacketStudio
             Control maybePdc = tabControl.SelectedTab.Controls.Cast<Control>().FirstOrDefault(control => control is PacketDefineControl);
             UpdateHexView(maybePdc);
             QueueLivePreviewUpdate();
-            UpdatePacketListBox();
+            //UpdatePacketListBox();
         }
 
         private void previewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1622,34 +1634,36 @@ namespace PacketStudio
             List<TempPacketSaveData> packets;
             string[] packetsTextLines = null;
 
-            // TODO:
-            //try
-            //{
-            //    packets = GetAllDefinedPackets();
-            //    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    packetsTextLines = null;
-            //}
+            try
+            {
+                packets = GetAllDefinedPackets();
+                packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
+            }
+            catch (Exception ex)
+            {
+                packetsTextLines = null;
+            }
 
             packetTabsList.Items.Clear();
+            
             int count = tabControl.TabPages.Count;
             int padding = (int)Math.Log10(count);
             int digitsRequired = 1 + padding;
             int index = 1;
+            TabPacketListItem lastItem = null;
             foreach (TabPage tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
 
-                string line = index.ToString().PadLeft(digitsRequired, '0');
+                string line = index.ToString().PadLeft(digitsRequired, '0')+".";
                 if (packetsTextLines != null)
                 {
-                    line = packetsTextLines[index - 1];
+                    line = packetsTextLines[index - 1] +"\t";
                 }
                 //TabPacketListItem tpli = new TabPacketListItem(, tabPage);
                 TabPacketListItem tpli = new TabPacketListItem(line, tabPage);
+                lastItem = tpli;
                 index++;
 
                 packetTabsList.Items.Add(tpli);

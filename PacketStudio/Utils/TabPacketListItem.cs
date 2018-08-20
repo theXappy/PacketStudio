@@ -14,7 +14,7 @@ namespace PacketStudio.Utils
 		}
 		public override string ToString()
 		{
-			return $"{_prefix}. {Page.Text}";
+			return $"{_prefix} [Tab Name: {Page.Text}]";
 		}
 	}
 }
