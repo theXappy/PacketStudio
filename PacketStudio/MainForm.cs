@@ -592,6 +592,21 @@ namespace PacketStudio
             {
                 e.Effect = DragDropEffects.Copy;
             }
+            else if (e.Data.GetDataPresent(typeof(TabPage)))
+            {
+                // User is dragging tabs outside of the tab control, we restore the plus tab since dropping here
+                // won't trigger the 'drop' function for tabs
+                if (!(sender is TabControl || sender is TabPage))
+                {
+                    if (_plusTab != null)
+                    {
+                        tabControl.TabPages.Add(_plusTab);
+                        _plusTab = null;
+                    }
+                    Console.WriteLine("Effect changed to copy");
+                    e.Effect = DragDropEffects.Copy;
+                }
+            }
         }
 
         private void DrawTreeNodeLikeWireshark(object sender, DrawTreeNodeEventArgs e)
