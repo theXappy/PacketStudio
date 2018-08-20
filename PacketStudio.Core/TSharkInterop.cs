@@ -175,14 +175,17 @@ namespace PacketStudio.Core
 
                 StreamReader errorStream = p.StandardError;
                 StreamReader standardStream = p.StandardOutput;
+                Stream rawStdStream = standardStream.BaseStream;
+                StreamReader unicodeReader = new StreamReader(rawStdStream, Encoding.UTF8);
+
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
                 while (!p.WaitForExit(1000))
                 {
-                    output.Append(standardStream.ReadToEnd());
+                    output.Append(unicodeReader.ReadToEnd());
                     error.Append(errorStream.ReadToEnd());
                 }
-                output.Append(standardStream.ReadToEnd());
+                output.Append(unicodeReader.ReadToEnd());
                 error.Append(errorStream.ReadToEnd());
 
                 if (p.ExitCode != 0)
