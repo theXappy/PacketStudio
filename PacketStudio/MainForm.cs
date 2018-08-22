@@ -1331,23 +1331,30 @@ namespace PacketStudio
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach (TabPage tab in tabControl.TabPages)
+            foreach (TabPage tabPage in tabControl.TabPages)
             {
-                foreach (object control in tab.Controls)
-                {
-                    if (control is PacketDefineControl casted)
-                    {
-                        PacketSaveData psd = casted.GetSaveData();
-                        if (first)
-                        {
-                            // For the first packet, append the PSD magic word (so it's in the .b2p's first line
-                            sb.AppendLine(psd.MagicWord);
-                        }
-                        sb.AppendLine(psd.ToString());
+                if (tabPage.IsPlusTab()) // plus tab is a special case
+                    continue;
 
-                        // Move to next TabPage (break controls loop)
-                        break;
+                _tabToPdc.TryGetValue(tabPage, out PacketDefineControl pdc);
+                if (pdc == null)
+                {
+                    throw new Exception($"Could not find Packet Define Control in tab \"{tabPage.Text}\"");
+                }
+                try
+                {
+                    PacketSaveData psd = pdc.GetSaveData();
+                    if (first)
+                    {
+                        // For the first packet, append the PSD magic word (so it's in the .b2p's first line
+                        sb.AppendLine(psd.MagicWord);
+                        first = false;
                     }
+                    sb.AppendLine(psd.ToString());
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error when getting save data for packet.\r\nTab: \"{tabPage.Text}\"\r\nError: {ex.Message}", ex);
                 }
             }
 
