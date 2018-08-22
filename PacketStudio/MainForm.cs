@@ -1,4 +1,4 @@
-﻿using Be.Windows.Forms;
+using Be.Windows.Forms;
 using Humanizer;
 using Humanizer.Bytes;
 using Newtonsoft.Json.Linq;
@@ -453,8 +453,17 @@ namespace PacketStudio
                        }
                        else // Any other field
                        {
-                           // Append to the last node
-                           next.Item1.Nodes.Add(nextNode);
+                           if (next.Item1 == null)
+                           {
+                               // This case is dissector who add NON 'proto' items directly to the root tree
+                               // (e.g. USB URB)
+                               tree.Nodes.Add(nextNode);
+
+                           }
+                           else
+                           {
+                               next.Item1.Nodes.Add(nextNode);
+                           }
                        }
                    }
                }
@@ -603,8 +612,6 @@ namespace PacketStudio
                         tabControl.TabPages.Add(_plusTab);
                         _plusTab = null;
                     }
-                    Console.WriteLine("Effect changed to copy");
-                    e.Effect = DragDropEffects.Copy;
                 }
             }
         }
@@ -1677,7 +1684,16 @@ namespace PacketStudio
                 ctl.AllowDrop = true;
                 ctl.DragEnter += Control_DragEnter;
                 ctl.DragDrop += Control_DragDrop;
+                ctl.DragLeave += CtlOnDragLeave;
                 WireDragDrop(ctl.Controls);
+            }
+        }
+
+        private void CtlOnDragLeave(object sender, EventArgs eventArgs)
+        {
+            if (!(sender is TabControl || sender is TabPage))
+            {
+                Console.WriteLine("DRAG LEFT "+sender.ToString());
             }
         }
 
