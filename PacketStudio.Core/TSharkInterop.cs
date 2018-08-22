@@ -234,8 +234,8 @@ namespace PacketStudio.Core
 
         private string GetTextOutputArgs(string pcapPath)
         {
-            string oldVersionArgs = $"-r {pcapPath}";
-            string newVersionArgs = $"-r {pcapPath} -2 --enable-heuristic fp_udp";
+            string oldVersionArgs = $"-r {pcapPath} -T tabs";
+            string newVersionArgs = $"-r {pcapPath} -T tabs -2 --enable-heuristic fp_udp";
 
             if (isNewVersion())
             {
