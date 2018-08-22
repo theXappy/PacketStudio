@@ -1647,11 +1647,13 @@ namespace PacketStudio
         {
             List<TempPacketSaveData> packets;
             string[] packetsTextLines = null;
+            int maxLine = 0;
 
             try
             {
                 packets = GetAllDefinedPackets();
                 packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
+                maxLine = packetsTextLines.Max(s => s.Length);
             }
             catch (Exception ex)
             {
@@ -1670,10 +1672,20 @@ namespace PacketStudio
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
 
-                string line = index.ToString().PadLeft(digitsRequired, '0')+".";
+                string line;
                 if (packetsTextLines != null)
                 {
-                    line = packetsTextLines[index - 1] +"\t";
+                    line = packetsTextLines[index - 1];
+                    if (line.Length < maxLine)
+                    {
+                        line = line.PadRight(maxLine, ' ');
+                    }
+                    line += '\t';
+                }
+                else
+                {
+                    // Fallback, just number the packets in the list 
+                    line = index.ToString().PadLeft(digitsRequired, '0') + ".";
                 }
                 //TabPacketListItem tpli = new TabPacketListItem(, tabPage);
                 TabPacketListItem tpli = new TabPacketListItem(line, tabPage);
