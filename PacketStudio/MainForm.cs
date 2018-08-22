@@ -495,6 +495,9 @@ namespace PacketStudio
 
                UpdateStatus("OK", StatusType.Good);
                GC.Collect();
+
+               // Tryigger packets list update
+               UpdatePacketListBox();
            }));
         }
 
