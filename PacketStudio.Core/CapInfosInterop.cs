@@ -31,7 +31,7 @@ namespace PacketStudio.Core
         {
             CliWrap.Cli cli = new CliWrap.Cli(_capinfosPath);
 
-            ExecutionOutput res = cli.Execute($"{captureFile} -c");
+            ExecutionOutput res = cli.Execute($"\"{captureFile}\" -c");
             if (res.ExitCode != 0) // Capinfos returned an error exit code
             {
                 // Show the exit code + errors
