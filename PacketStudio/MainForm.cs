@@ -1764,7 +1764,7 @@ namespace PacketStudio
             ByteSize bsize = finfo.Length.Bytes();
             // Get the file size as a string e.g. "20 MB", "5 KB" etc...
             string humanizedByteSize = $"{bsize.LargestWholeNumberValue:F2}{bsize.LargestWholeNumberSymbol}";
-            if (isCapinfoSupported && bsize.Megabytes > 1) // More than 1 MB
+            if (isCapinfoSupported && bsize.Kilobytes > 500) // More than 500 KB
             {
                 // Found a large pcap/pcapng, check if it has a large amount of packets
                 try
