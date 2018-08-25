@@ -63,6 +63,7 @@ namespace PacketStudio
             this.refactorDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.normalizeHexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flattenProtocolStackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insertAsciiToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.wiresharkToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.pcapToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.locateWsToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -506,14 +507,15 @@ namespace PacketStudio
             this.copyToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.copyToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.csharpCopyToolStripButton,
-            this.refactorDropDownButton});
+            this.refactorDropDownButton,
+            this.insertAsciiToolStripButton});
             this.copyToolStrip.Location = new System.Drawing.Point(149, 1);
             this.copyToolStrip.Name = "copyToolStrip";
             this.copyToolStrip.Office12Mode = false;
             this.copyToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.copyToolStrip.ShowCaption = false;
             this.copyToolStrip.ShowLauncher = false;
-            this.copyToolStrip.Size = new System.Drawing.Size(155, 65);
+            this.copyToolStrip.Size = new System.Drawing.Size(229, 65);
             this.copyToolStrip.TabIndex = 1;
             this.copyToolStrip.Text = "Copy Tool Strip";
             // 
@@ -555,6 +557,16 @@ namespace PacketStudio
             this.flattenProtocolStackToolStripMenuItem.Text = "Flatten Protocol Stack";
             this.flattenProtocolStackToolStripMenuItem.Click += new System.EventHandler(this.FlattenProtocolStackToolStripMenuItem_Click_1);
             // 
+            // insertAsciiToolStripButton
+            // 
+            this.insertAsciiToolStripButton.Image = global::PacketStudio.Properties.Resources.text_box;
+            this.insertAsciiToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.insertAsciiToolStripButton.Name = "insertAsciiToolStripButton";
+            this.insertAsciiToolStripButton.Size = new System.Drawing.Size(69, 49);
+            this.insertAsciiToolStripButton.Text = "Insert ASCII";
+            this.insertAsciiToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.insertAsciiToolStripButton.Click += new System.EventHandler(this.insertAsciiToolStripButton_Click);
+            // 
             // wiresharkToolStrip
             // 
             this.wiresharkToolStrip.AutoSize = false;
@@ -567,7 +579,7 @@ namespace PacketStudio
             this.wiresharkToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pcapToolStripButton,
             this.locateWsToolStripButton});
-            this.wiresharkToolStrip.Location = new System.Drawing.Point(306, 1);
+            this.wiresharkToolStrip.Location = new System.Drawing.Point(380, 1);
             this.wiresharkToolStrip.Name = "wiresharkToolStrip";
             this.wiresharkToolStrip.Office12Mode = false;
             this.wiresharkToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
@@ -846,6 +858,7 @@ namespace PacketStudio
         private Syncfusion.Windows.Forms.Tools.StatusBarAdv statusBar;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel statusTextPanel;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel wsVerPanel;
+        private System.Windows.Forms.ToolStripButton insertAsciiToolStripButton;
     }
 }
 

@@ -110,6 +110,12 @@
     <Compile Include="Controls\PacketsDef\UdpPacketDefControl.Designer.cs">
       <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="AsciiDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AsciiDialog.Designer.cs">
+      <DependentUpon>AsciiDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -143,6 +149,9 @@
     <Compile Include="Controls\TreeViewWithArrows.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="AsciiDialog.resx">
+      <DependentUpon>AsciiDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PacketsDef\RawPacketDefControl.resx">
       <DependentUpon>RawPacketDefControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -186,6 +195,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NewAgeIcons\text-box.png" />
     <None Include="NewAgeIcons\icons8-open-96.png" />
     <None Include="NewAgeIcons\icons8-save-96.png" />
     <None Include="NewAgeIcons\icons8-eye-96.png" />

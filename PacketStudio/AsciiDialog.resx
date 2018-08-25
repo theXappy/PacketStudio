@@ -117,44 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="na_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-add-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="na_open" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-open-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="na_save" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-save-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="preview" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-eye-96.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="preview_cntx" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-share-500.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="csharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\icons8-cs-100.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="WS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\WS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ws_dir1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\ws_dir.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ps_icon_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\ps_icon_new.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ps_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\ps_white.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hammer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\hammer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hammer500" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\hammer500.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="text_box" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\NewAgeIcons\text-box.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>

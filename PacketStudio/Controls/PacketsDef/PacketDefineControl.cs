@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using Be.Windows.Forms;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
@@ -18,7 +21,21 @@ namespace PacketStudio.Controls.PacketsDef
 
         public event EventHandler<EventArgs> ContentChanged;
 
-        public override string Text => hexBox.Text;
+        public override string Text
+        {
+            get => hexBox.Text;
+            set => hexBox.Text = value;
+        }
+
+        public int CaretPosition
+        {
+            set
+            {
+                hexBox.Select(value,0);
+            }
+        }
+
+        public (int start, int len) GetSelection => (hexBox.SelectionStart, hexBox.SelectionLength);
 
         public HexTypeWrapper PacketType
         {
@@ -32,6 +49,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         public bool IsHexStream => _deserializer.IsHexStream(Text);
 
+        // Ctor
         public PacketDefineControl() : this(null)
         {
         }
@@ -68,6 +86,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
         }
 
+        // Get data for temp saver
         public TempPacketSaveData GetPacket()
         {
             byte[] bytes;
@@ -90,6 +109,7 @@ namespace PacketStudio.Controls.PacketsDef
             return output;
         }
 
+        // Get data for real saver
         public PacketSaveData GetSaveData()
         {
             IPacketDefiner definer = GetCurrentDefiner();
@@ -97,6 +117,8 @@ namespace PacketStudio.Controls.PacketsDef
             return definer.GetSaveData(hexBox.Text);
         }
 
+
+        
         public void SetSelection(int firstNibbleIndex, int bytesLength)
         {
             // Can only show if this is a hex stream
@@ -122,6 +144,49 @@ namespace PacketStudio.Controls.PacketsDef
             hexBox.Select();
         }
 
+        public void NormalizeHex()
+        {
+            byte[] bytes;
+            string rawHex = hexBox.Text;
+            try
+            {
+                bytes = _deserializer.Deserialize(rawHex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append($"{b:x2}");
+            }
+            string finalHex = sb.ToString();
+            this.hexBox.Text = finalHex;
+        }
+
+        public void FlattenProtoStack()
+        {
+            byte[] bytes;
+            try
+            {
+                bytes = GetPacket().Data;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append($"{b:x2}");
+            }
+            string finalHex = sb.ToString();
+            this.PacketType = HexStreamType.Raw;
+            this.hexBox.Text = finalHex;
+        }
 
         // Hack to allow CTRL+A to select all
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -183,48 +248,5 @@ namespace PacketStudio.Controls.PacketsDef
             return definer;
         }
 
-        public void NormalizeHex()
-        {
-            byte[] bytes;
-            string rawHex = hexBox.Text;
-            try
-            {
-                bytes = _deserializer.Deserialize(rawHex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
-            }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in bytes)
-            {
-                sb.Append($"{b:x2}");
-            }
-            string finalHex = sb.ToString();
-            this.hexBox.Text = finalHex;
-        }
-
-        public void FlattenProtoStack()
-        {
-            byte[] bytes;
-            try
-            {
-                bytes = GetPacket().Data;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed deserializing Input:\r\n{ex.Message}");
-            }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in bytes)
-            {
-                sb.Append($"{b:x2}");
-            }
-            string finalHex = sb.ToString();
-            this.PacketType = HexStreamType.Raw;
-            this.hexBox.Text = finalHex;
-        }
     }
 }

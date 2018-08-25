@@ -1853,5 +1853,48 @@ namespace PacketStudio
             string dir = Path.GetDirectoryName(newWsInterop.WiresharkPath);
             wsVerPanel.Text = $"Wireshark {newWsInterop.Version}, Running from {dir}";
         }
+
+        private void insertAsciiToolStripButton_Click(object sender, EventArgs e)
+        {
+            AsciiDialog asciiDialog = new AsciiDialog();
+            DialogResult diagResult = asciiDialog.ShowDialog();
+            if (diagResult == DialogResult.OK)
+            {
+                string text = asciiDialog.TextToInsert;
+                byte[] textBytes = Encoding.ASCII.GetBytes(text);
+                string textHex = textBytes.ToHex();
+                PacketDefineControl pdc = GetCurrentPacketDefineControl();
+
+                // Get current selection in PDC
+                int selectionStart;
+                int selectionLen;
+                (selectionStart, selectionLen) = pdc.GetSelection;
+
+                // There's a chance that nothing is selected - check selection length
+                bool hasSelection = selectionLen != 0;
+                if (!hasSelection)
+                {
+                    string currentPdcText = pdc.Text;
+                    int currentPdcCaret = selectionStart;
+                    string newText = currentPdcText.Substring(0, currentPdcCaret) + textHex +
+                                     currentPdcText.Substring(currentPdcCaret);
+                    pdc.Text = newText;
+                    pdc.CaretPosition = currentPdcCaret + textHex.Length;
+                }
+                else
+                {
+                    string currentPdcText = pdc.Text;
+                    // Removing the selected text
+                    currentPdcText = currentPdcText.Substring(0, selectionStart) +
+                                     currentPdcText.Substring(selectionStart + selectionLen);
+                    // Inserting converted ASCII instead of removed text
+                    string newText = currentPdcText.Substring(0, selectionStart) + textHex +
+                                     currentPdcText.Substring(selectionStart);
+                    pdc.Text = newText;
+                    pdc.CaretPosition = selectionStart + textHex.Length;
+                }
+
+            }
+        }
     }
 }
