@@ -1009,6 +1009,9 @@ namespace PacketStudio
 
         private void PacketTabsList_DrawItem(object sender, DrawItemEventArgs e)
         {
+            if (e.Index == -1)
+                return;
+
             Color backColor = Color.White;
             if (e.State.HasFlag(DrawItemState.Selected))
             {
