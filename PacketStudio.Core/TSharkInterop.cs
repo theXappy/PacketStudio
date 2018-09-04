@@ -37,7 +37,7 @@ namespace PacketStudio.Core
                     int major = 0;
                     int minor = 0;
                     int.TryParse(splitted[0], out major);
-                    int.TryParse(splitted[0], out minor);
+                    int.TryParse(splitted[1], out minor);
                     VersionMajor = major;
                     VersionMinor = minor;
                 }
