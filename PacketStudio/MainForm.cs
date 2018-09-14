@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using PacketStudio.DataAccess.Json;
 using PacketStudio.DataAccess.SaveData;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
@@ -757,7 +758,8 @@ namespace PacketStudio
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Filter = "All Capture Files|*.b2p;*.pcap;*.pcapng|" +
+                Filter = "All Capture Files|*.pss;*.b2p;*.pcap;*.pcapng|" +
+                         "PacketStudio Session file (*.pss)|*.pss|" +
                          "ByteArrayToPcap file (*.b2p)|*.b2p|" +
                          "Wireshark Capture files (*.pcap,*.pcapng)|*.pcap;*.pcapng"
             };
@@ -1270,13 +1272,15 @@ namespace PacketStudio
         {
             Dictionary<int, Action<string>> filterIndexToSaveFunc = new Dictionary<int, Action<string>>()
             {
-                {1,SaveAsB2P},
-                {2,SaveAsPcap},
+                {1,SaveAsPss},
+                {2,SaveAsB2P},
+                {3,SaveAsPcap},
             };
 
             SaveFileDialog sfd = new SaveFileDialog
             {
-                Filter = "ByteArrayToPcap file|*.b2p|" +
+                Filter = "PacketStudio Session file|*.pss|" +
+                         "ByteArrayToPcap file|*.b2p|" +
                          "Wireshark/tcpdump/... -pcap|*.pcap"
             };
             DialogResult res = sfd.ShowDialog();
@@ -1332,6 +1336,39 @@ namespace PacketStudio
             }
 
         }
+
+        private void SaveAsPss(string path)
+        {
+            List<PacketSaveDataV3> allSaveData = new List<PacketSaveDataV3>(tabControl.TabPages.Count);
+            foreach (TabPage tabPage in tabControl.TabPages)
+            {
+                if (tabPage.IsPlusTab()) // plus tab is a special case
+                    continue;
+
+                _tabToPdc.TryGetValue(tabPage, out PacketDefineControl pdc);
+                if (pdc == null)
+                {
+                    throw new Exception($"Could not find Packet Define Control in tab \"{tabPage.Text}\"");
+                }
+                try
+                {
+                    PacketSaveData psd = pdc.GetSaveData();
+                    if (!(psd is PacketSaveDataV3))
+                    {
+                        throw new Exception("Expecting Packet Define Cotnrols to return PacketSaveDataV3. Can't serialize any other versions to .pss file");
+                    }
+                    allSaveData.Add(psd as PacketSaveDataV3);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error when getting save data for packet.\r\nTab: \"{tabPage.Text}\"\r\nError: {ex.Message}", ex);
+                }
+            }
+
+            PssFileSaver saver = new PssFileSaver();
+            saver.Save(path,allSaveData);
+        }
+
 
         private void SaveAsB2P(string path)
         {
@@ -1661,7 +1698,7 @@ namespace PacketStudio
                 packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
                 maxLine = packetsTextLines.Max(s => s.Length);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 packetsTextLines = null;
             }
@@ -1811,6 +1848,10 @@ namespace PacketStudio
             string ext = Path.GetExtension(path);
             switch (ext)
             {
+                case "pss":
+                case ".pss":
+                    provider = new PssFileProvider(path);
+                    break;
                 case "b2p":
                 case ".b2p":
                     provider = new B2pProvider(path);

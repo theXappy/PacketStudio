@@ -10,26 +10,26 @@ namespace PacketStudio.DataAccess.SaveData
         public override string MagicWord => MAGIC_WORD;
 
         private readonly string _text;
-        private readonly string _linkLayer;
+        private readonly string _linkLayerType;
         private readonly HexStreamType _type;
         private readonly string _streamId;
-        private string _ppid;
+        private string _payloadProtoId;
         private string _extension;
 
         public override string Text => _text;
         public override HexStreamType Type => _type;
-        public override string LinkLayerType => _linkLayer;
+        public override string LinkLayerType => _linkLayerType;
         public override string StreamID => _streamId;
-        public override string PayloadProtoId => _ppid;
+        public override string PayloadProtoId => _payloadProtoId;
         public string Extension => _extension;
 
-        public PacketSaveDataV3(string text, HexStreamType type, string linkLayer, string streamId, string ppid, string extension)
+        public PacketSaveDataV3(string text, HexStreamType type, string linkLayerType, string streamId, string payloadProtoId, string extension)
         {
             _text = text;
-            _linkLayer = linkLayer;
+            _linkLayerType = linkLayerType;
             _type = type;
             _streamId = streamId;
-            _ppid = ppid;
+            _payloadProtoId = payloadProtoId;
             _extension = extension;
         }
 
@@ -61,7 +61,36 @@ namespace PacketStudio.DataAccess.SaveData
             string ppid = new string(Convert.FromBase64String(splitted[4]).Select(b => (char)b).ToArray());
             string ext = new string(Convert.FromBase64String(splitted[5]).Select(b => (char)b).ToArray());
 
-            return new PacketSaveDataV3(text,type, linkLayerType,streamID, ppid, ext);
+            return new PacketSaveDataV3(text, type, linkLayerType, streamID, ppid, ext);
+        }
+
+        protected bool Equals(PacketSaveDataV3 other)
+        {
+            return string.Equals(Text, other.Text) && string.Equals(LinkLayerType, other.LinkLayerType) &&
+                   Type == other.Type && string.Equals(StreamID, other.StreamID) &&
+                   string.Equals(PayloadProtoId, other.PayloadProtoId) && string.Equals(Extension, other.Extension);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((PacketSaveDataV3)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (Text != null ? Text.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (LinkLayerType != null ? LinkLayerType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int)Type;
+                hashCode = (hashCode * 397) ^ (StreamID != null ? StreamID.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (PayloadProtoId != null ? PayloadProtoId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Extension != null ? Extension.GetHashCode() : 0);
+                return hashCode;
+            }
         }
     }
 }
