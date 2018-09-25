@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -377,25 +377,27 @@ namespace PacketStudio.Core
             return Task.Factory.StartNew(() =>
             {
                 XElement pdml = null;
+                Exception pdmlException = null;
                 JObject json = null;
+                Exception jsonException = null;
 
                 try
                 {
                     pdml = pdmlTask.Result;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Don't care
+                    pdmlException = ex;
                 }
                 try
                 {
                     json = jsonTask.Result;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Don't care
+                    jsonException = ex;
                 }
-                return new TSharkCombinedResults(pdml, json);
+                return new TSharkCombinedResults(pdml, json,pdmlException,jsonException);
             }, token);
         }
     }
