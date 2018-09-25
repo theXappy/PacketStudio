@@ -562,7 +562,7 @@ namespace PacketStudio
             this.insertAsciiToolStripButton.Image = global::PacketStudio.Properties.Resources.text_box;
             this.insertAsciiToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.insertAsciiToolStripButton.Name = "insertAsciiToolStripButton";
-            this.insertAsciiToolStripButton.Size = new System.Drawing.Size(69, 49);
+            this.insertAsciiToolStripButton.Size = new System.Drawing.Size(69, 57);
             this.insertAsciiToolStripButton.Text = "Insert ASCII";
             this.insertAsciiToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.insertAsciiToolStripButton.Click += new System.EventHandler(this.insertAsciiToolStripButton_Click);
