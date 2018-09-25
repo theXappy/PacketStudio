@@ -254,6 +254,21 @@ namespace PacketStudio
                    return;
                }
 
+               if (tsharkTask.Result.TotalFailure)
+               {
+                   if (token.IsCancellationRequested)
+                   {
+                       // We dont care because the task was cancelled.
+                       return;
+                   }
+
+                   // Show the exit code + errors
+                   UpdateStatus("PDML retrival exception:"+tsharkTask.Result.PdmlException +"\r\n\r\n" +
+                                "JSON retrival exception:"+tsharkTask.Result.JsonException, StatusType.Bad);
+
+                   return;
+               }
+
                if (token.IsCancellationRequested)
                {
                    // We got cancelled while checking the task results...
