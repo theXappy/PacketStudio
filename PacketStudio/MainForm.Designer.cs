@@ -75,6 +75,7 @@ namespace PacketStudio
             this.livePreviewOptionsToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.previewContextToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.packetListPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.heurDissectorsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.exitOfficeButton = new Syncfusion.Windows.Forms.Tools.OfficeButton();
             this.toolStripTabItem2 = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.statusBar = new Syncfusion.Windows.Forms.Tools.StatusBarAdv();
@@ -248,7 +249,7 @@ namespace PacketStudio
             this.mainPanel.Controls.Add(this.tabControl);
             this.mainPanel.Location = new System.Drawing.Point(252, 120);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(614, 394);
+            this.mainPanel.Size = new System.Drawing.Size(1146, 394);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
@@ -263,7 +264,7 @@ namespace PacketStudio
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(614, 394);
+            this.tabControl.Size = new System.Drawing.Size(1146, 394);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
@@ -276,7 +277,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(606, 368);
+            this.tabPage1.Size = new System.Drawing.Size(1138, 368);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -287,7 +288,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(600, 362);
+            this.packetDefineControl1.Size = new System.Drawing.Size(1132, 362);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
@@ -409,7 +410,7 @@ namespace PacketStudio
             touchStyleColorTable1.ToolstripTabItemForeColor = System.Drawing.Color.White;
             touchStyleColorTable1.ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty;
             this.ribbonControl.RibbonTouchStyleColorTable.Add(touchStyleColorTable1);
-            this.ribbonControl.SelectedTab = this.homeToolStripTabItem;
+            this.ribbonControl.SelectedTab = this.previewToolStripTabItem;
             this.ribbonControl.ShowQuickItemsDropDownButton = false;
             this.ribbonControl.ShowRibbonDisplayOptionButton = false;
             this.ribbonControl.Size = new System.Drawing.Size(1396, 120);
@@ -692,14 +693,15 @@ namespace PacketStudio
             this.livePreviewOptionsToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.livePreviewOptionsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewContextToolStripButton,
-            this.packetListPreviewToolStripButton});
+            this.packetListPreviewToolStripButton,
+            this.heurDissectorsToolStripButton});
             this.livePreviewOptionsToolStrip.Location = new System.Drawing.Point(296, 1);
             this.livePreviewOptionsToolStrip.Name = "livePreviewOptionsToolStrip";
             this.livePreviewOptionsToolStrip.Office12Mode = false;
             this.livePreviewOptionsToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.livePreviewOptionsToolStrip.ShowCaption = false;
             this.livePreviewOptionsToolStrip.ShowLauncher = false;
-            this.livePreviewOptionsToolStrip.Size = new System.Drawing.Size(253, 65);
+            this.livePreviewOptionsToolStrip.Size = new System.Drawing.Size(406, 65);
             this.livePreviewOptionsToolStrip.TabIndex = 3;
             this.livePreviewOptionsToolStrip.Text = "Live Preview Tool Strip";
             // 
@@ -729,6 +731,18 @@ namespace PacketStudio
             this.packetListPreviewToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.packetListPreviewToolStripButton.ToolTipText = "Experimental!";
             this.packetListPreviewToolStripButton.Click += new System.EventHandler(this.packetListPreviewToolStripButton_Click);
+            // 
+            // heurDissectorsToolStripButton
+            // 
+            this.heurDissectorsToolStripButton.Image = global::PacketStudio.Properties.Resources.evidence;
+            this.heurDissectorsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.heurDissectorsToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.heurDissectorsToolStripButton.Name = "heurDissectorsToolStripButton";
+            this.heurDissectorsToolStripButton.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.heurDissectorsToolStripButton.Size = new System.Drawing.Size(116, 56);
+            this.heurDissectorsToolStripButton.Text = "Heuristic Dissectors";
+            this.heurDissectorsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.heurDissectorsToolStripButton.Click += new System.EventHandler(this.heurDissectorsToolStripButton_Click);
             // 
             // exitOfficeButton
             // 
@@ -902,6 +916,7 @@ namespace PacketStudio
         private System.Windows.Forms.ToolStripButton insertAsciiToolStripButton;
         private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewOptionsToolStrip;
         private System.Windows.Forms.ToolStripButton packetListPreviewToolStripButton;
+        private System.Windows.Forms.ToolStripButton heurDissectorsToolStripButton;
     }
 }
 

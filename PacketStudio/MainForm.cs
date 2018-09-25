@@ -14,6 +14,7 @@ using Syncfusion.Windows.Forms.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -51,6 +52,9 @@ namespace PacketStudio
         private WiresharkInterop _wiresharkField;
         private TempPacketsSaver _packetSaver = new TempPacketsSaver();
         private TSharkInterop _tshark;
+
+        // Tshark Heuristic Dissectos
+        private ResetLazy<List<TSharkHeuristicProtocolEntry>> heurDissectorsList;
 
         private WiresharkInterop _wireshark
         {
@@ -135,14 +139,14 @@ namespace PacketStudio
             _timer = new System.Threading.Timer(UpdateLivePreview);
             InitializeComponent();
 
+            // Save default window title ( so we can append file names to it)
+            _rawFormName = Text;
+            _neutralStatusColor = statusBar.MetroColor;
+
             // Removing initial, unaligned, "packet 1" tab.
             tabControl.TabPages.Remove(tabControl.SelectedTab);
             // Adding new , aligned, "packet 1" tab
             TabControl_SelectedIndexChanged(null, null);
-
-            // Save default window title ( so we can append file names to it)
-            _rawFormName = Text;
-            _neutralStatusColor = statusBar.MetroColor;
 
             // Load settings
             _askAboutUnsaved = Settings.Default.lastAskToSaveSetting;
@@ -152,6 +156,17 @@ namespace PacketStudio
             _delayMs = Settings.Default.livePreviewDelayMs;
             livePrevToolStripTextBox.Text = _delayMs.ToString();
 
+
+            _lastUserEnabledHeuristics = 
+                HackyBsae64StringListSerializer.Deserialize(Settings.Default.EnabledHeuristicDissectors);
+            _lastUserDisabledHeuristics =
+                HackyBsae64StringListSerializer.Deserialize(Settings.Default.DisabledHeuristicDissectors);
+            _needToBeEnabledHeuristics =
+                HackyBsae64StringListSerializer.Deserialize(Settings.Default.NeedToBeEnabledDissectors);
+            _needToBeDisabledHeuristics =
+                HackyBsae64StringListSerializer.Deserialize(Settings.Default.NeedToBeDisabledDissectors);
+
+            heurDissectorsList = new ResetLazy<List<TSharkHeuristicProtocolEntry>>(() => _tshark.GetHeurDissectors());
 
             packetTreeView.DrawNode += DrawTreeNodeLikeWireshark;
 
@@ -233,12 +248,12 @@ namespace PacketStudio
                 return;
             this.Invoke((Action)(() =>
            {
-
                bool suspiciousFlag = false;
                int lastIndex = 0;
 
                if (tsharkTask.IsCanceled) // task was canceled
                    return;
+
 
                if (tsharkTask.IsFaulted)
                {
@@ -525,14 +540,14 @@ namespace PacketStudio
         {
             _longStatus = status;
 
-            statusTextPanel.Text = status.Replace("\r\n"," ");
+            statusTextPanel.Text = status.Replace("\r\n", " ");
 
             void ChangeStatusItemsForeColor(Color foreColor)
             {
                 foreach (StatusBarAdvPanel statusBarAdvPanel in statusBar.Panels)
                 {
                     statusBarAdvPanel.ForeColor = foreColor;
-                }    
+                }
             }
 
             ChangeStatusItemsForeColor(Color.White);
@@ -1044,7 +1059,7 @@ namespace PacketStudio
 
 
             e.DrawBackground();
-            e.Graphics.FillRectangle(new SolidBrush(backColor),e.Bounds );
+            e.Graphics.FillRectangle(new SolidBrush(backColor), e.Bounds);
             e.DrawFocusRectangle();
             Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
             e.Graphics.DrawString(
@@ -1384,7 +1399,7 @@ namespace PacketStudio
             }
 
             PssFileSaver saver = new PssFileSaver();
-            saver.Save(path,allSaveData);
+            saver.Save(path, allSaveData);
         }
 
 
@@ -1694,7 +1709,7 @@ namespace PacketStudio
                     packetIndex = 0;
                 }
                 CancellationToken token = _tokenSource.Token;
-                Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token);
+                Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token,_needToBeEnabledHeuristics,_needToBeDisabledHeuristics);
 
                 tsharkTask.ContinueWith((task) =>
                 {
@@ -1725,7 +1740,7 @@ namespace PacketStudio
             }
 
             packetTabsList.Items.Clear();
-            
+
             int count = tabControl.TabPages.Count;
             int padding = (int)Math.Log10(count);
             int digitsRequired = 1 + padding;
@@ -1776,7 +1791,7 @@ namespace PacketStudio
         {
             if (!(sender is TabControl || sender is TabPage))
             {
-                Console.WriteLine("DRAG LEFT "+sender.ToString());
+                Console.WriteLine("DRAG LEFT " + sender.ToString());
             }
         }
 
@@ -1969,6 +1984,117 @@ namespace PacketStudio
                 tsb.Checked = !tsb.Checked;
                 Settings.Default.livePreviewPacketList = tsb.Checked;
                 Settings.Default.Save();
+                QueueLivePreviewUpdate();
+            }
+        }
+
+        private List<string> _lastUserDisabledHeuristics = null;
+        private List<string> _lastUserEnabledHeuristics = null;
+
+        private List<string> _needToBeDisabledHeuristics = new List<string>();
+        private List<string> _needToBeEnabledHeuristics = new List<string>();
+        
+        private async void heurDissectorsToolStripButton_Click(object sender, EventArgs e)
+        {
+            // Async-ly get dissectors list
+            if (!heurDissectorsList.IsValueCreated)
+            {
+                LoadingSplash splash = new LoadingSplash();
+                splash.Show(this);
+                await Task.Run(() => heurDissectorsList.Load());
+                splash.Close();
+                splash.Dispose();
+            }
+
+            List<string> enabled = heurDissectorsList.Value.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+            List<string> disabled = heurDissectorsList.Value.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+
+            bool isDefaultLists = false;
+            if (_lastUserDisabledHeuristics == null)
+            {
+                isDefaultLists = true;
+                _lastUserDisabledHeuristics = disabled;
+            }
+            if (_lastUserEnabledHeuristics == null)
+            {
+                isDefaultLists = true;
+                _lastUserEnabledHeuristics = enabled;
+            }
+
+            DialogResult res;
+            bool retried = false;
+            HeurDissectorsDialog hdd = new HeurDissectorsDialog(_lastUserDisabledHeuristics, _lastUserEnabledHeuristics, isDefaultLists);
+            do
+            {
+                res = hdd.ShowDialog(this);
+                if (res == DialogResult.Retry)
+                {
+                    // User requested reload in the dialog.
+                    heurDissectorsList.Reset();
+                    // Async-ly get dissectors list
+                    Task.Run(() => heurDissectorsList.Load()).Wait();
+
+                    enabled = heurDissectorsList.Value.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+                    disabled = heurDissectorsList.Value.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+
+                    // Keeping old dialog's location
+                    Point oldLocation = hdd.Location;
+                    // Setting new dialog now, in the next loop iteration it will be shown
+                    hdd.Dispose();
+                    hdd = new HeurDissectorsDialog(disabled, enabled, true);
+                    // Forcing new dialog to show where the old dialog was
+                    hdd.StartPosition = FormStartPosition.Manual;
+                    hdd.Location = oldLocation;
+
+                    // Reset all saved lists
+                    _lastUserDisabledHeuristics = null;
+                    _lastUserEnabledHeuristics = null;
+                    _needToBeEnabledHeuristics = null;
+                    _needToBeDisabledHeuristics = null;
+
+                    retried = true;
+                }
+            } while (res == DialogResult.Retry);
+
+            if (res == DialogResult.OK)
+            {
+                _lastUserEnabledHeuristics = hdd.Enabled;
+                HashSet<string> diagEnabledSet = new HashSet<string>(_lastUserEnabledHeuristics);
+                diagEnabledSet.ExceptWith(enabled);
+                _needToBeEnabledHeuristics = diagEnabledSet.ToList();
+
+                _lastUserDisabledHeuristics = hdd.Available;
+                HashSet<string> diagDisabledSet = new HashSet<string>(_lastUserDisabledHeuristics);
+                diagDisabledSet.ExceptWith(disabled);
+                _needToBeDisabledHeuristics = diagDisabledSet.ToList();
+            }
+
+            hdd.Dispose();
+            if (res == DialogResult.OK || retried)
+            {
+                // Save to settings
+                Settings.Default.EnabledHeuristicDissectors = string.Empty;
+                if (_lastUserEnabledHeuristics != null)
+                {
+                    Settings.Default.EnabledHeuristicDissectors = HackyBsae64StringListSerializer.Serialize(_lastUserEnabledHeuristics);
+                }
+                Settings.Default.DisabledHeuristicDissectors = string.Empty;
+                if (_lastUserDisabledHeuristics != null)
+                {
+                    Settings.Default.DisabledHeuristicDissectors = HackyBsae64StringListSerializer.Serialize(_lastUserDisabledHeuristics);
+                }
+                Settings.Default.NeedToBeEnabledDissectors = string.Empty;
+                if (_needToBeEnabledHeuristics != null)
+                {
+                    Settings.Default.NeedToBeEnabledDissectors = HackyBsae64StringListSerializer.Serialize(_needToBeEnabledHeuristics);
+                }
+                Settings.Default.NeedToBeDisabledDissectors = string.Empty;
+                if (_needToBeDisabledHeuristics != null)
+                {
+                    Settings.Default.NeedToBeDisabledDissectors = HackyBsae64StringListSerializer.Serialize(_needToBeDisabledHeuristics);
+                }
+                Settings.Default.Save();
+
                 QueueLivePreviewUpdate();
             }
         }

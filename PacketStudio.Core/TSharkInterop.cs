@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -86,14 +86,14 @@ namespace PacketStudio.Core
             return await GetPdmlAsync(new List<TempPacketSaveData>() { packetSaveData }, 0, token);
         }
 
-        public Task<XElement> GetPdmlAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
+        public Task<XElement> GetPdmlAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             return Task.Run((() =>
             {
                 string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
-                string args = GetPdmlArgs(pcapPath);
+                string args = GetPdmlArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
                 ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
                 psi.UseShellExecute = false;
                 psi.RedirectStandardError = true;
@@ -208,16 +208,32 @@ namespace PacketStudio.Core
             }), token);
         }
 
-        private string GetPdmlArgs(string pcapPath)
+        private string GetPdmlArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             string oldVersionArgs = $"-r {pcapPath} -T pdml";
-            string newVersionArgs = $"-r {pcapPath} -2 -T pdml --enable-heuristic fp_udp";
+            string newVersionArgs = $"-r {pcapPath} -2 -T pdml";
 
+            string selected = oldVersionArgs;
             if (isNewVersion())
             {
-                return newVersionArgs;
+                selected = newVersionArgs;
             }
-            return oldVersionArgs;
+
+            if (toBeEnabledHeurs != null)
+            {
+                foreach (string enabledHeur in toBeEnabledHeurs)
+                {
+                    selected += " --enable-heuristic " + enabledHeur;
+                }
+            }
+            if (toBeDisabledHeurs != null)
+            {
+                foreach (string disabledHeur in toBeDisabledHeurs)
+                {
+                    selected += " --disable-heuristic " + disabledHeur;
+                }
+            }
+            return selected;
         }
 
         private bool isNewVersion()
@@ -232,16 +248,32 @@ namespace PacketStudio.Core
             return false;
         }
 
-        private string GetTextOutputArgs(string pcapPath)
+        private string GetTextOutputArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             string oldVersionArgs = $"-r {pcapPath} -T tabs";
             string newVersionArgs = $"-r {pcapPath} -T tabs -2 --enable-heuristic fp_udp";
 
+            string selected = oldVersionArgs;
             if (isNewVersion())
             {
-                return newVersionArgs;
+                selected = newVersionArgs;
             }
-            return oldVersionArgs;
+
+            if (toBeEnabledHeurs != null)
+            {
+                foreach (string enabledHeur in toBeEnabledHeurs)
+                {
+                    selected += " --enable-heuristic " + enabledHeur;
+                }
+            }
+            if (toBeDisabledHeurs != null)
+            {
+                foreach (string disabledHeur in toBeDisabledHeurs)
+                {
+                    selected += " --disable-heuristic " + disabledHeur;
+                }
+            }
+            return selected;
         }
         
 
@@ -261,7 +293,7 @@ namespace PacketStudio.Core
             return await GetJsonRawAsync(new List<TempPacketSaveData>() { packetBytes }, 0, token);
         }
 
-        public Task<JObject> GetJsonRawAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
+        public Task<JObject> GetJsonRawAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             if (!isNewVersion())
             {
@@ -274,7 +306,8 @@ namespace PacketStudio.Core
                 token.ThrowIfCancellationRequested();
 
                 CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
-                Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync($"-r {pcapPath} -2 -T jsonraw --no-duplicate-keys --enable-heuristic fp_udp", token);
+                string args = GetJsonArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
+                Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync(args, token);
                 bool timedOut = !tsharkTask.Wait(5_000);
 
                 if (timedOut)
@@ -302,6 +335,34 @@ namespace PacketStudio.Core
 
                 return jsonPacket;
             }));
+        }
+
+        private string GetJsonArgs(string pcapPath, List<string> toBeEnabledHeurs, List<string> toBeDisabledHeurs)
+        {
+            string oldVersionArgs = $"-r {pcapPath} -T jsonraw";
+            string newVersionArgs = $"-r {pcapPath} -T jsonraw -2  --no-duplicate-keys";
+
+            string selected = oldVersionArgs;
+            if (isNewVersion())
+            {
+                selected = newVersionArgs;
+            }
+
+            if (toBeEnabledHeurs != null)
+            {
+                foreach (string enabledHeur in toBeEnabledHeurs)
+                {
+                    selected += " --enable-heuristic " + enabledHeur;
+                }
+            }
+            if (toBeDisabledHeurs != null)
+            {
+                foreach (string disabledHeur in toBeDisabledHeurs)
+                {
+                    selected += " --disable-heuristic " + disabledHeur;
+                }
+            }
+            return selected;
         }
 
         private Task<XElement> ParsePdmlAsync(string xml, int packetIndex, CancellationToken token)
@@ -369,10 +430,10 @@ namespace PacketStudio.Core
         }
 
         public Task<TSharkCombinedResults> GetPdmlAndJsonAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex,
-            CancellationToken token)
+            CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            Task<XElement> pdmlTask = GetPdmlAsync(packets, packetIndex, token);
-            Task<JObject> jsonTask = GetJsonRawAsync(packets, packetIndex, token);
+            Task<XElement> pdmlTask = GetPdmlAsync(packets, packetIndex, token,toBeEnabledHeurs,toBeDisabledHeurs);
+            Task<JObject> jsonTask = GetJsonRawAsync(packets, packetIndex, token, toBeEnabledHeurs, toBeDisabledHeurs);
 
             return Task.Factory.StartNew(() =>
             {
@@ -399,6 +460,58 @@ namespace PacketStudio.Core
                 }
                 return new TSharkCombinedResults(pdml, json,pdmlException,jsonException);
             }, token);
+        }
+
+        public List<TSharkHeuristicProtocolEntry> GetHeurDissectors()
+        {
+            string args = "-G heuristic-decodes";
+            ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
+            psi.UseShellExecute = false;
+            psi.RedirectStandardError = true;
+            psi.RedirectStandardOutput = true;
+            psi.CreateNoWindow = true;
+            psi.WindowStyle = ProcessWindowStyle.Minimized;
+            Process p = Process.Start(psi);
+
+            StreamReader errorStream = p.StandardError;
+            StreamReader standardStream = p.StandardOutput;
+            Stream rawStdStream = standardStream.BaseStream;
+            StreamReader unicodeReader = new StreamReader(rawStdStream, Encoding.UTF8);
+
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
+            while (!p.WaitForExit(1000))
+            {
+                output.Append(unicodeReader.ReadToEnd());
+                error.Append(errorStream.ReadToEnd());
+            }
+            output.Append(unicodeReader.ReadToEnd());
+            error.Append(errorStream.ReadToEnd());
+
+            if (p.ExitCode != 0)
+            {
+                if (output.Length > 0)
+                {
+                    // Exit code isn't 0 but we have output so dismissing for now...
+                }
+                else
+                {
+                    // No output, show exit code and error
+                    throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                }
+
+            }
+
+            string rawStdOut = output.ToString();
+            var lines = rawStdOut.Split('\n');
+            var heuristDissectorsEntries = from line in lines
+                let parts = line.Split('\t')
+                where parts.Length >= 3
+                let carryingProto = parts[0]
+                let targetProto = parts[1]
+                let enabled = (parts[2].Trim() == "T")
+                select new TSharkHeuristicProtocolEntry(targetProto, carryingProto, enabled);
+            return  heuristDissectorsEntries.ToList();
         }
     }
 }

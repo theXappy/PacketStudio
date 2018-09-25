@@ -94,5 +94,53 @@ namespace PacketStudio.Properties {
                 this["livePreviewPacketList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EnabledHeuristicDissectors {
+            get {
+                return ((string)(this["EnabledHeuristicDissectors"]));
+            }
+            set {
+                this["EnabledHeuristicDissectors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DisabledHeuristicDissectors {
+            get {
+                return ((string)(this["DisabledHeuristicDissectors"]));
+            }
+            set {
+                this["DisabledHeuristicDissectors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NeedToBeEnabledDissectors {
+            get {
+                return ((string)(this["NeedToBeEnabledDissectors"]));
+            }
+            set {
+                this["NeedToBeEnabledDissectors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NeedToBeDisabledDissectors {
+            get {
+                return ((string)(this["NeedToBeDisabledDissectors"]));
+            }
+            set {
+                this["NeedToBeDisabledDissectors"] = value;
+            }
+        }
     }
 }
