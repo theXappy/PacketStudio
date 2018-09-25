@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="dockingManager.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>409, 17</value>
   </metadata>
   <data name="dockingManager.DockLayoutStream" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
@@ -197,11 +197,11 @@
         BAAAAAQAAAABKgAAAAUAAAAJDAAAAAAAAAACAAAAAS0AAAAbAAAACVgAAAABnf///9z///8FAAAAAAAA
         AAAAAAABnP///6b///8AAAAAAZv////Z////AAAAAAAAAAAAAAAAAAAAAAEuAAAAGwAAAAlYAAAAAZr/
         ///c////BQAAAAAAAAAAAAAAAZn///+m////AAAAAAGY////2f///wAAAAAAAAAAAAAAAAAAAAABLwAA
-        AAUAAAAJaQAAAAEAAAADAAAAATAAAAAFAAAACQwAAAAAAAAAAgAAAAE4AAAABQAAAAkMAAAAAAAAAAAA
+        AAUAAAAJaQAAAAEAAAAEAAAAATAAAAAFAAAACQwAAAAAAAAAAgAAAAE4AAAABQAAAAkMAAAAAAAAAAAA
         AAABOwAAAAUAAAAJawAAAAQAAAAeAAAAATwAAAAFAAAACQwAAAAAAAAACQAAAAE/AAAAGwAAAAlYAAAA
         AZL////c////BQAAAAAAAAAAAAAAAZH///+m////AAAAAAGQ////2f///wAAAAAAAAAAAAAAAAAAAAAB
         QAAAABsAAAAJWAAAAAGP////3P///wUAAAAAAAAAAAAAAAGO////pv///wAAAAABjf///9n///8AAAAA
-        AAAAAAAAAAAAAAAAAUEAAAAFAAAACXQAAAABAAAAAwAAAAFCAAAABQAAAAkMAAAAAAAAAAIAAAABSgAA
+        AAAAAAAAAAAAAAAAAUEAAAAFAAAACXQAAAABAAAABAAAAAFCAAAABQAAAAkMAAAAAAAAAAIAAAABSgAA
         AAUAAAAJDAAAAAAAAAAAAAAAAU0AAAAFAAAACQwAAAAAAAAACgAAAAFOAAAABQAAAAkMAAAAAAAAAAIA
         AAAFTwAAADZTeW5jZnVzaW9uLldpbmRvd3MuRm9ybXMuVG9vbHMuU2l6aW5nQ29udHJvbGxlcldyYXBw
         ZXIGAAAACENoaWxkcmVuBkxheW91dAtPcmllbnRhdGlvbgVTdHlsZQhQcmlvcml0eQ1UcmFuc2llbnRS
@@ -209,8 +209,8 @@
         Z2xlFwAAAC1TeW5jZnVzaW9uLldpbmRvd3MuRm9ybXMuVG9vbHMuRG9ja1ByZWZlcmVuY2UCAAAAK1N5
         bmNmdXNpb24uV2luZG93cy5Gb3Jtcy5Ub29scy5Eb2NraW5nU3R5bGUCAAAACBhTeXN0ZW0uRHJhd2lu
         Zy5SZWN0YW5nbGUXAAAAAgAAAAl2AAAAAYn////Z////AgAAAHgAAAAAAAAAWQMAAAGI////pv///wEA
-        AAABh////9z///8AAAAAAwAAAAGG////2f///wAAAAAAAAAAAAAAAAAAAAABUAAAAE8AAAAJewAAAAGE
-        ////2f///wIAAAB4AAAA+gAAAFkDAAABg////6b///8BAAAAAYL////c////AAAAAAMAAAABgf///9n/
+        AAABh////9z///8AAAAAAgAAAAGG////2f///wAAAAAAAAAAAAAAAAAAAAABUAAAAE8AAAAJewAAAAGE
+        ////2f///wIAAAB4AAAA+gAAAFkDAAABg////6b///8BAAAAAYL////c////AAAAAAIAAAABgf///9n/
         //8AAAAAAAAAAAAAAAAAAAAAAVEAAABPAAAACYAAAAABf////9n////8AAAAAgIAAHoEAADPAQAAAX7/
         //+m////AgAAAAF9////3P///wMAAAACAAAAAXz////Z////AAAAAAAAAAAAAAAAAAAAAAFSAAAABQAA
         AAmFAAAAAQAAAAEAAAABVAAAAAUAAAAJhgAAAAEAAAABAAAAAVYAAAAFAAAACYcAAAABAAAAAQAAABBg
@@ -420,17 +420,14 @@
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="homeToolStripTabItem.TabGroup" type="System.Resources.ResXNullRef, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="previewToolStripTabItem.TabGroup" type="System.Resources.ResXNullRef, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value />
   </metadata>
-  <metadata name="fileToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>288, 17</value>
+  <metadata name="livePreviewBasicToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
-  <metadata name="copyToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>161, 17</value>
-  </metadata>
-  <metadata name="wiresharkToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>566, 17</value>
+  <metadata name="livePreviewOptionsToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>205, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1443,10 +1440,16 @@
   <metadata name="HexViewPanel.DockLabel" xml:space="preserve">
     <value>Hex View</value>
   </metadata>
-  <metadata name="previewToolStripTabItem.TabGroup" type="System.Resources.ResXNullRef, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="homeToolStripTabItem.TabGroup" type="System.Resources.ResXNullRef, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value />
   </metadata>
-  <metadata name="livePreviewToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>405, 17</value>
+  <metadata name="fileToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>680, 17</value>
+  </metadata>
+  <metadata name="copyToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>553, 17</value>
+  </metadata>
+  <metadata name="wiresharkToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>797, 17</value>
   </metadata>
 </root>
