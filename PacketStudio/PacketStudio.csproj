@@ -119,11 +119,25 @@
     <Compile Include="AsciiDialog.Designer.cs">
       <DependentUpon>AsciiDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="HackyBsae64StringListSerializer.cs" />
+    <Compile Include="HeurDissectorsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HeurDissectorsDialog.Designer.cs">
+      <DependentUpon>HeurDissectorsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingSplash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadingSplash.Designer.cs">
+      <DependentUpon>LoadingSplash.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ResetLazy.cs" />
     <Compile Include="Utils\TabPacketListItem.cs" />
     <Compile Include="Utils\TabPageExt.cs" />
     <Compile Include="TabRenameDialog.cs">
@@ -168,6 +182,12 @@
     <EmbeddedResource Include="Controls\PacketsDef\UdpPacketDefControl.resx">
       <DependentUpon>UdpPacketDefControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HeurDissectorsDialog.resx">
+      <DependentUpon>HeurDissectorsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadingSplash.resx">
+      <DependentUpon>LoadingSplash.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -199,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="NewAgeIcons\bulleted-list.png" />
+    <Content Include="NewAgeIcons\evidence.png" />
     <Content Include="NewAgeIcons\text-box.png" />
     <None Include="NewAgeIcons\icons8-open-96.png" />
     <None Include="NewAgeIcons\icons8-save-96.png" />
