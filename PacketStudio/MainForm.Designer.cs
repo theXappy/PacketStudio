@@ -68,11 +68,13 @@ namespace PacketStudio
             this.pcapToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.locateWsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.previewToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
-            this.livePreviewToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
+            this.livePreviewBasicToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.previewtoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.previewContextToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.prevDelayToolStripLabel = new System.Windows.Forms.ToolStripLabel();
             this.livePrevToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.livePreviewOptionsToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
+            this.previewContextToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.packetListPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.exitOfficeButton = new Syncfusion.Windows.Forms.Tools.OfficeButton();
             this.toolStripTabItem2 = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.statusBar = new Syncfusion.Windows.Forms.Tools.StatusBarAdv();
@@ -94,7 +96,8 @@ namespace PacketStudio
             this.copyToolStrip.SuspendLayout();
             this.wiresharkToolStrip.SuspendLayout();
             this.previewToolStripTabItem.Panel.SuspendLayout();
-            this.livePreviewToolStrip.SuspendLayout();
+            this.livePreviewBasicToolStrip.SuspendLayout();
+            this.livePreviewOptionsToolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusBar)).BeginInit();
             this.statusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).BeginInit();
@@ -406,7 +409,7 @@ namespace PacketStudio
             touchStyleColorTable1.ToolstripTabItemForeColor = System.Drawing.Color.White;
             touchStyleColorTable1.ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty;
             this.ribbonControl.RibbonTouchStyleColorTable.Add(touchStyleColorTable1);
-            this.ribbonControl.SelectedTab = this.homeToolStripTabItem;
+            this.ribbonControl.SelectedTab = this.previewToolStripTabItem;
             this.ribbonControl.ShowQuickItemsDropDownButton = false;
             this.ribbonControl.ShowRibbonDisplayOptionButton = false;
             this.ribbonControl.Size = new System.Drawing.Size(1396, 120);
@@ -617,7 +620,8 @@ namespace PacketStudio
             // 
             // ribbonControl.ribbonPanel2
             // 
-            this.previewToolStripTabItem.Panel.Controls.Add(this.livePreviewToolStrip);
+            this.previewToolStripTabItem.Panel.Controls.Add(this.livePreviewBasicToolStrip);
+            this.previewToolStripTabItem.Panel.Controls.Add(this.livePreviewOptionsToolStrip);
             this.previewToolStripTabItem.Panel.Name = "ribbonPanel2";
             this.previewToolStripTabItem.Panel.ScrollPosition = 0;
             this.previewToolStripTabItem.Panel.TabIndex = 4;
@@ -626,29 +630,28 @@ namespace PacketStudio
             this.previewToolStripTabItem.Size = new System.Drawing.Size(89, 29);
             this.previewToolStripTabItem.Text = "Live Preview";
             // 
-            // livePreviewToolStrip
+            // livePreviewBasicToolStrip
             // 
-            this.livePreviewToolStrip.AutoSize = false;
-            this.livePreviewToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.livePreviewToolStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.livePreviewToolStrip.ForeColor = System.Drawing.Color.Black;
-            this.livePreviewToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.livePreviewToolStrip.Image = null;
-            this.livePreviewToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.livePreviewToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.livePreviewBasicToolStrip.AutoSize = false;
+            this.livePreviewBasicToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.livePreviewBasicToolStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.livePreviewBasicToolStrip.ForeColor = System.Drawing.Color.Black;
+            this.livePreviewBasicToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.livePreviewBasicToolStrip.Image = null;
+            this.livePreviewBasicToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.livePreviewBasicToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.previewtoolStripButton,
-            this.previewContextToolStripButton,
             this.prevDelayToolStripLabel,
             this.livePrevToolStripTextBox});
-            this.livePreviewToolStrip.Location = new System.Drawing.Point(0, 1);
-            this.livePreviewToolStrip.Name = "livePreviewToolStrip";
-            this.livePreviewToolStrip.Office12Mode = false;
-            this.livePreviewToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.livePreviewToolStrip.ShowCaption = false;
-            this.livePreviewToolStrip.ShowLauncher = false;
-            this.livePreviewToolStrip.Size = new System.Drawing.Size(404, 65);
-            this.livePreviewToolStrip.TabIndex = 3;
-            this.livePreviewToolStrip.Text = "Live Preview Tool Strip";
+            this.livePreviewBasicToolStrip.Location = new System.Drawing.Point(0, 1);
+            this.livePreviewBasicToolStrip.Name = "livePreviewBasicToolStrip";
+            this.livePreviewBasicToolStrip.Office12Mode = false;
+            this.livePreviewBasicToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.livePreviewBasicToolStrip.ShowCaption = false;
+            this.livePreviewBasicToolStrip.ShowLauncher = false;
+            this.livePreviewBasicToolStrip.Size = new System.Drawing.Size(294, 65);
+            this.livePreviewBasicToolStrip.TabIndex = 3;
+            this.livePreviewBasicToolStrip.Text = "Live Preview Tool Strip";
             // 
             // previewtoolStripButton
             // 
@@ -662,19 +665,6 @@ namespace PacketStudio
             this.previewtoolStripButton.Text = "Enable Preview";
             this.previewtoolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.previewtoolStripButton.Click += new System.EventHandler(this.LivePreviewToolStripMenuItem_Click);
-            // 
-            // previewContextToolStripButton
-            // 
-            this.previewContextToolStripButton.Checked = true;
-            this.previewContextToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.previewContextToolStripButton.Image = global::PacketStudio.Properties.Resources.preview_cntx;
-            this.previewContextToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.previewContextToolStripButton.Margin = new System.Windows.Forms.Padding(2);
-            this.previewContextToolStripButton.Name = "previewContextToolStripButton";
-            this.previewContextToolStripButton.Size = new System.Drawing.Size(106, 56);
-            this.previewContextToolStripButton.Text = "Preview In Context";
-            this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
             // 
             // prevDelayToolStripLabel
             // 
@@ -690,6 +680,55 @@ namespace PacketStudio
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
             this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 56);
             this.livePrevToolStripTextBox.TextChanged += new System.EventHandler(this.LivePreviewDelayBox_TextChanged);
+            // 
+            // livePreviewOptionsToolStrip
+            // 
+            this.livePreviewOptionsToolStrip.AutoSize = false;
+            this.livePreviewOptionsToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.livePreviewOptionsToolStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.livePreviewOptionsToolStrip.ForeColor = System.Drawing.Color.Black;
+            this.livePreviewOptionsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.livePreviewOptionsToolStrip.Image = null;
+            this.livePreviewOptionsToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.livePreviewOptionsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.previewContextToolStripButton,
+            this.packetListPreviewToolStripButton});
+            this.livePreviewOptionsToolStrip.Location = new System.Drawing.Point(296, 1);
+            this.livePreviewOptionsToolStrip.Name = "livePreviewOptionsToolStrip";
+            this.livePreviewOptionsToolStrip.Office12Mode = false;
+            this.livePreviewOptionsToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.livePreviewOptionsToolStrip.ShowCaption = false;
+            this.livePreviewOptionsToolStrip.ShowLauncher = false;
+            this.livePreviewOptionsToolStrip.Size = new System.Drawing.Size(253, 65);
+            this.livePreviewOptionsToolStrip.TabIndex = 3;
+            this.livePreviewOptionsToolStrip.Text = "Live Preview Tool Strip";
+            // 
+            // previewContextToolStripButton
+            // 
+            this.previewContextToolStripButton.Checked = true;
+            this.previewContextToolStripButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.previewContextToolStripButton.Image = global::PacketStudio.Properties.Resources.preview_cntx;
+            this.previewContextToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.previewContextToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.previewContextToolStripButton.Name = "previewContextToolStripButton";
+            this.previewContextToolStripButton.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.previewContextToolStripButton.Size = new System.Drawing.Size(111, 56);
+            this.previewContextToolStripButton.Text = "Preview In Context";
+            this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
+            // 
+            // packetListPreviewToolStripButton
+            // 
+            this.packetListPreviewToolStripButton.Image = global::PacketStudio.Properties.Resources.bulleted_list;
+            this.packetListPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.packetListPreviewToolStripButton.Margin = new System.Windows.Forms.Padding(2);
+            this.packetListPreviewToolStripButton.Name = "packetListPreviewToolStripButton";
+            this.packetListPreviewToolStripButton.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.packetListPreviewToolStripButton.Size = new System.Drawing.Size(128, 49);
+            this.packetListPreviewToolStripButton.Text = "Get Packet List Details";
+            this.packetListPreviewToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.packetListPreviewToolStripButton.ToolTipText = "Experimental!";
+            this.packetListPreviewToolStripButton.Click += new System.EventHandler(this.packetListPreviewToolStripButton_Click);
             // 
             // exitOfficeButton
             // 
@@ -808,8 +847,10 @@ namespace PacketStudio
             this.wiresharkToolStrip.ResumeLayout(false);
             this.wiresharkToolStrip.PerformLayout();
             this.previewToolStripTabItem.Panel.ResumeLayout(false);
-            this.livePreviewToolStrip.ResumeLayout(false);
-            this.livePreviewToolStrip.PerformLayout();
+            this.livePreviewBasicToolStrip.ResumeLayout(false);
+            this.livePreviewBasicToolStrip.PerformLayout();
+            this.livePreviewOptionsToolStrip.ResumeLayout(false);
+            this.livePreviewOptionsToolStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusBar)).EndInit();
             this.statusBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).EndInit();
@@ -833,7 +874,7 @@ namespace PacketStudio
 		private System.Windows.Forms.ToolStripButton csharpCopyToolStripButton;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem toolStripTabItem2;
 		private Syncfusion.Windows.Forms.Tools.ToolStripTabItem previewToolStripTabItem;
-		private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewToolStrip;
+		private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewBasicToolStrip;
 		private System.Windows.Forms.ToolStripLabel prevDelayToolStripLabel;
 		private System.Windows.Forms.ToolStripTextBox livePrevToolStripTextBox;
 		private Syncfusion.Windows.Forms.Tools.OfficeButton exitOfficeButton;
@@ -859,6 +900,8 @@ namespace PacketStudio
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel statusTextPanel;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel wsVerPanel;
         private System.Windows.Forms.ToolStripButton insertAsciiToolStripButton;
+        private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewOptionsToolStrip;
+        private System.Windows.Forms.ToolStripButton packetListPreviewToolStripButton;
     }
 }
 

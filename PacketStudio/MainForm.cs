@@ -123,10 +123,10 @@ namespace PacketStudio
         });
 
         // Colors for the status bar
-        private Color _neutralStatusColror;
-        private Color _badStatusColror = Color.FromArgb(0xEA, 0x54, 0x55);
-        private Color _goodStatusColror = Color.FromArgb(0x28, 0xC7, 0x6F);
-        private Color _warnStatusColror = Color.FromArgb(241, 194, 107);
+        private Color _neutralStatusColor;
+        private Color _badStatusColor = Color.FromArgb(0xEA, 0x54, 0x55);
+        private Color _goodStatusColor = Color.FromArgb(0x28, 0xC7, 0x6F);
+        private Color _warnStatusColor = Color.FromArgb(241, 194, 107);
 
         private static readonly Color ERROR_PINK = Color.FromArgb(255, 92, 92); // Wireshark's error background color
 
@@ -134,21 +134,24 @@ namespace PacketStudio
         {
             _timer = new System.Threading.Timer(UpdateLivePreview);
             InitializeComponent();
+
             // Removing initial, unaligned, "packet 1" tab.
             tabControl.TabPages.Remove(tabControl.SelectedTab);
-
-            _rawFormName = Text;
-            _neutralStatusColror = statusBar.MetroColor;
-
             // Adding new , aligned, "packet 1" tab
             TabControl_SelectedIndexChanged(null, null);
 
-            _askAboutUnsaved = Settings.Default.lastAskToSaveSetting;
+            // Save default window title ( so we can append file names to it)
+            _rawFormName = Text;
+            _neutralStatusColor = statusBar.MetroColor;
 
-            bool previewActive = Settings.Default.livePreviewActive;
-            previewtoolStripButton.Checked = previewActive;
+            // Load settings
+            _askAboutUnsaved = Settings.Default.lastAskToSaveSetting;
+            previewContextToolStripButton.Checked = Settings.Default.livePreviewInContext;
+            packetListPreviewToolStripButton.Checked = Settings.Default.livePreviewPacketList;
+            previewtoolStripButton.Checked = Settings.Default.livePreviewActive;
             _delayMs = Settings.Default.livePreviewDelayMs;
             livePrevToolStripTextBox.Text = _delayMs.ToString();
+
 
             packetTreeView.DrawNode += DrawTreeNodeLikeWireshark;
 
@@ -521,18 +524,18 @@ namespace PacketStudio
             switch (statusType)
             {
                 case StatusType.Good:
-                    statusBar.MetroColor = _goodStatusColror;
+                    statusBar.MetroColor = _goodStatusColor;
                     break;
                 case StatusType.Warning:
-                    statusBar.MetroColor = _warnStatusColror;
+                    statusBar.MetroColor = _warnStatusColor;
                     ChangeStatusItemsForeColor(Color.Black);
                     break;
                 case StatusType.Bad:
-                    statusBar.MetroColor = _badStatusColror;
+                    statusBar.MetroColor = _badStatusColor;
                     break;
                 case StatusType.Neutral:
                 default:
-                    statusBar.MetroColor = _neutralStatusColror;
+                    statusBar.MetroColor = _neutralStatusColor;
                     break;
             }
         }
@@ -1692,15 +1695,18 @@ namespace PacketStudio
             string[] packetsTextLines = null;
             int maxLine = 0;
 
-            try
+            if (packetListPreviewToolStripButton.Checked)
             {
-                packets = GetAllDefinedPackets();
-                packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
-                maxLine = packetsTextLines.Max(s => s.Length);
-            }
-            catch (Exception)
-            {
-                packetsTextLines = null;
+                try
+                {
+                    packets = GetAllDefinedPackets();
+                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
+                    maxLine = packetsTextLines.Max(s => s.Length);
+                }
+                catch (Exception)
+                {
+                    packetsTextLines = null;
+                }
             }
 
             packetTabsList.Items.Clear();
@@ -1938,6 +1944,17 @@ namespace PacketStudio
                     pdc.CaretPosition = selectionStart + textHex.Length;
                 }
 
+            }
+        }
+
+        private void packetListPreviewToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (sender is ToolStripButton tsb)
+            {
+                tsb.Checked = !tsb.Checked;
+                Settings.Default.livePreviewPacketList = tsb.Checked;
+                Settings.Default.Save();
+                QueueLivePreviewUpdate();
             }
         }
     }

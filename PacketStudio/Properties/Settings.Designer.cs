@@ -82,5 +82,17 @@ namespace PacketStudio.Properties {
                 this["livePreviewInContext"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool livePreviewPacketList {
+            get {
+                return ((bool)(this["livePreviewPacketList"]));
+            }
+            set {
+                this["livePreviewPacketList"] = value;
+            }
+        }
     }
 }
