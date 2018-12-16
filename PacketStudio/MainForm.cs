@@ -540,7 +540,9 @@ namespace PacketStudio
         {
             _longStatus = status;
 
-            statusTextPanel.Text = status.Replace("\r\n", " ");
+            // Truncating status string because if the Text field is too long a Memory access exception raises
+            // next draw (most likely in this function when changing the MetroColor below).
+            statusTextPanel.Text = status.Replace("\r\n", " ").Truncate(100);
 
             void ChangeStatusItemsForeColor(Color foreColor)
             {
