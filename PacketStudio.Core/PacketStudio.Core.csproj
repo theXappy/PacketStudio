@@ -61,6 +61,7 @@
     <Compile Include="TSharkInterop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WiresharkDirectory.cs" />
+    <Compile Include="WiresharkHeuristics.cs" />
     <Compile Include="WiresharkInterop.cs" />
   </ItemGroup>
   <ItemGroup>
