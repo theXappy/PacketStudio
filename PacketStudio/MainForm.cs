@@ -54,7 +54,8 @@ namespace PacketStudio
         private TSharkInterop _tshark;
 
         // Tshark Heuristic Dissectos
-        private ResetLazy<List<TSharkHeuristicProtocolEntry>> heurDissectorsList;
+        private Task<List<TSharkHeuristicProtocolEntry>> _heurDissectorsTask;
+        private List<TSharkHeuristicProtocolEntry> heurDissectorsList => _heurDissectorsTask.Result;
 
         private WiresharkInterop _wireshark
         {
@@ -166,7 +167,6 @@ namespace PacketStudio
             _needToBeDisabledHeuristics =
                 HackyBsae64StringListSerializer.Deserialize(Settings.Default.NeedToBeDisabledDissectors);
 
-            heurDissectorsList = new ResetLazy<List<TSharkHeuristicProtocolEntry>>(() => _tshark.GetHeurDissectors());
 
             packetTreeView.DrawNode += DrawTreeNodeLikeWireshark;
 
@@ -199,6 +199,9 @@ namespace PacketStudio
                     _isConstructing = false;
                 }
             }
+
+            // Now we should have TShark, start getting heuristic dissector in the background
+            _heurDissectorsTask = _tshark.GetHeurDissectors();
 
             _tokenSource = new CancellationTokenSource();
             _unsavedChangesExist = false;
@@ -1999,17 +2002,17 @@ namespace PacketStudio
         private async void heurDissectorsToolStripButton_Click(object sender, EventArgs e)
         {
             // Async-ly get dissectors list
-            if (!heurDissectorsList.IsValueCreated)
+            if (!_heurDissectorsTask.IsCompleted)
             {
                 LoadingSplash splash = new LoadingSplash();
                 splash.Show(this);
-                await Task.Run(() => heurDissectorsList.Load());
+                await _heurDissectorsTask;
                 splash.Close();
                 splash.Dispose();
             }
 
-            List<string> enabled = heurDissectorsList.Value.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
-            List<string> disabled = heurDissectorsList.Value.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+            List<string> enabled = heurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+            List<string> disabled = heurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
 
             bool isDefaultLists = false;
             if (_lastUserDisabledHeuristics == null)
@@ -2032,12 +2035,12 @@ namespace PacketStudio
                 if (res == DialogResult.Retry)
                 {
                     // User requested reload in the dialog.
-                    heurDissectorsList.Reset();
+                    _heurDissectorsTask = _tshark.GetHeurDissectors();
                     // Async-ly get dissectors list
-                    Task.Run(() => heurDissectorsList.Load()).Wait();
+                    _heurDissectorsTask.Wait();
 
-                    enabled = heurDissectorsList.Value.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
-                    disabled = heurDissectorsList.Value.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+                    enabled = heurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+                    disabled = heurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
 
                     // Keeping old dialog's location
                     Point oldLocation = hdd.Location;

@@ -462,56 +462,92 @@ namespace PacketStudio.Core
             }, token);
         }
 
-        public List<TSharkHeuristicProtocolEntry> GetHeurDissectors()
+        public Task<List<TSharkHeuristicProtocolEntry>> GetHeurDissectors()
         {
-            string args = "-G heuristic-decodes";
-            ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
-            psi.UseShellExecute = false;
-            psi.RedirectStandardError = true;
-            psi.RedirectStandardOutput = true;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Minimized;
-            Process p = Process.Start(psi);
-
-            StreamReader errorStream = p.StandardError;
-            StreamReader standardStream = p.StandardOutput;
-            Stream rawStdStream = standardStream.BaseStream;
-            StreamReader unicodeReader = new StreamReader(rawStdStream, Encoding.UTF8);
-
-            StringBuilder output = new StringBuilder();
-            StringBuilder error = new StringBuilder();
-            while (!p.WaitForExit(1000))
+            return Task.Factory.StartNew(() =>
             {
+                string args = "-G heuristic-decodes";
+                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
+                psi.UseShellExecute = false;
+                psi.RedirectStandardError = true;
+                psi.RedirectStandardOutput = true;
+                psi.CreateNoWindow = true;
+                psi.WindowStyle = ProcessWindowStyle.Minimized;
+                Process p = Process.Start(psi);
+
+                StreamReader errorStream = p.StandardError;
+                StreamReader standardStream = p.StandardOutput;
+                Stream rawStdStream = standardStream.BaseStream;
+                StreamReader unicodeReader = new StreamReader(rawStdStream, Encoding.UTF8);
+
+                StringBuilder output = new StringBuilder();
+                StringBuilder error = new StringBuilder();
+                while (!p.WaitForExit(1000))
+                {
+                    output.Append(unicodeReader.ReadToEnd());
+                    error.Append(errorStream.ReadToEnd());
+                }
+
                 output.Append(unicodeReader.ReadToEnd());
                 error.Append(errorStream.ReadToEnd());
-            }
-            output.Append(unicodeReader.ReadToEnd());
-            error.Append(errorStream.ReadToEnd());
 
-            if (p.ExitCode != 0)
-            {
-                if (output.Length > 0)
+                if (p.ExitCode != 0)
                 {
-                    // Exit code isn't 0 but we have output so dismissing for now...
+                    if (output.Length > 0)
+                    {
+                        // Exit code isn't 0 but we have output so dismissing for now...
+                    }
+                    else
+                    {
+                        // No output, show exit code and error
+                        throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                    }
+
                 }
-                else
+
+                string rawStdOut = output.ToString();
+                var lines = rawStdOut.Split('\n');
+                var heuristDissectorsEntries = (from line in lines
+                    let parts = line.Split('\t')
+                    where parts.Length >= 3
+                    let carryingProto = parts[0]
+                    let targetProto = parts[1]
+                    let enabled = (parts[2].Trim() == "T")
+                    select new TSharkHeuristicProtocolEntry(targetProto, carryingProto, enabled)).ToList();
+
+                // Code below tries to find the actual heuristic dissector names since 
+                // the way TShark provide them ('carried protocol name' and 'carrying protocol name') is sometimes
+                // mis-aligned with the registered name
+                var misalignedEntires = from entry in heuristDissectorsEntries
+                    let guessedName = entry.ShortName
+                    where (WiresharkHeuristics.List.Contains(guessedName) == false)
+                    select entry;
+
+                List<TSharkHeuristicProtocolEntry>
+                    entriedToRemove = new List<TSharkHeuristicProtocolEntry>(); // Entried which couldn't be saved
+                foreach (TSharkHeuristicProtocolEntry misalignedEntry in misalignedEntires)
                 {
-                    // No output, show exit code and error
-                    throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                    string newName = WiresharkHeuristics.GetActualName(misalignedEntry);
+                    if (newName != null)
+                    {
+                        misalignedEntry.SetCustomShortName(newName);
+                    }
+                    else
+                    {
+                        entriedToRemove.Add(misalignedEntry);
+                    }
                 }
 
-            }
+                var finalList = heuristDissectorsEntries.ToList();
 
-            string rawStdOut = output.ToString();
-            var lines = rawStdOut.Split('\n');
-            var heuristDissectorsEntries = from line in lines
-                let parts = line.Split('\t')
-                where parts.Length >= 3
-                let carryingProto = parts[0]
-                let targetProto = parts[1]
-                let enabled = (parts[2].Trim() == "T")
-                select new TSharkHeuristicProtocolEntry(targetProto, carryingProto, enabled);
-            return  heuristDissectorsEntries.ToList();
+                foreach (TSharkHeuristicProtocolEntry entry in entriedToRemove)
+                {
+                    finalList.Remove(entry);
+                }
+
+                return finalList;
+            });
         }
+
     }
 }
