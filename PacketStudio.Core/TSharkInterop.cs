@@ -245,13 +245,16 @@ namespace PacketStudio.Core
                     return true;
                 }
             }
+
+            if (VersionMajor >= 3)
+                return true;
             return false;
         }
 
         private string GetTextOutputArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             string oldVersionArgs = $"-r {pcapPath} -T tabs";
-            string newVersionArgs = $"-r {pcapPath} -T tabs -2 --enable-heuristic fp_udp";
+            string newVersionArgs = $"-r {pcapPath} -T tabs -2";
 
             string selected = oldVersionArgs;
             if (isNewVersion())
