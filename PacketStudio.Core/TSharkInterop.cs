@@ -94,6 +94,7 @@ namespace PacketStudio.Core
                 token.ThrowIfCancellationRequested();
 
                 string args = GetPdmlArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
+                Debug.WriteLine("GetPdml Args: "+args);
                 ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
                 psi.UseShellExecute = false;
                 psi.RedirectStandardError = true;
@@ -157,14 +158,15 @@ namespace PacketStudio.Core
             }), token);
         }
 
-        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token)
+        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             return Task.Run((() =>
             {
                 string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
-                string args = GetTextOutputArgs(pcapPath);
+                string args = GetTextOutputArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
+                Debug.WriteLine("GetText Args: "+args);
                 ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
                 psi.UseShellExecute = false;
                 psi.RedirectStandardError = true;

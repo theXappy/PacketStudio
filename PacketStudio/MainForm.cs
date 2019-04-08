@@ -1735,7 +1735,7 @@ namespace PacketStudio
                 try
                 {
                     packets = GetAllDefinedPackets();
-                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None).Result;
+                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None,_needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
                     maxLine = packetsTextLines.Max(s => s.Length);
                 }
                 catch (Exception)
