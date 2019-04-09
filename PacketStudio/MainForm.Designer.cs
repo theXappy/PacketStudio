@@ -1,4 +1,4 @@
-﻿using PacketStudio.Controls;
+using PacketStudio.Controls;
 using PacketStudio.Controls.PacketsDef;
 
 namespace PacketStudio
@@ -792,7 +792,7 @@ namespace PacketStudio
             // statusTextPanel
             // 
             this.statusTextPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.statusTextPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            this.statusTextPanel.BackColor = System.Drawing.Color.Transparent;
             this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(41, 16);
             this.statusTextPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
@@ -823,6 +823,57 @@ namespace PacketStudio
             this.wsVerPanel.SizeToContent = true;
             this.wsVerPanel.TabIndex = 1;
             this.wsVerPanel.Text = "Version";
+            // 
+            // _packetsListDataGrid
+            // 
+            this._packetsListDataGrid.AllowUserToAddRows = false;
+            this._packetsListDataGrid.AllowUserToDeleteRows = false;
+            this._packetsListDataGrid.AllowUserToOrderColumns = true;
+            this._packetsListDataGrid.AllowUserToResizeRows = false;
+            this._packetsListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this._packetsListDataGrid.BackgroundColor = System.Drawing.Color.White;
+            this._packetsListDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._packetsListDataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this._packetsListDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._packetsListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this._packetsListDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this._packetsListDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this._packetsListDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._packetsListDataGrid.GridColor = System.Drawing.Color.White;
+            this._packetsListDataGrid.Location = new System.Drawing.Point(0, 0);
+            this._packetsListDataGrid.MultiSelect = false;
+            this._packetsListDataGrid.Name = "_packetsListDataGrid";
+            this._packetsListDataGrid.ReadOnly = true;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._packetsListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this._packetsListDataGrid.RowHeadersVisible = false;
+            this._packetsListDataGrid.RowHeadersWidth = 21;
+            this._packetsListDataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this._packetsListDataGrid.RowTemplate.Height = 17;
+            this._packetsListDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this._packetsListDataGrid.Size = new System.Drawing.Size(1387, 236);
+            this._packetsListDataGrid.TabIndex = 2;
+            this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this._packetsListDataGrid_SelectionChanged);
             // 
             // MainForm
             // 
