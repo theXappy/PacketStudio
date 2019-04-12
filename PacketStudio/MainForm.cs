@@ -90,13 +90,18 @@ namespace PacketStudio
         // Preview delay
         int _delayMs;
         // Preview timer
-        private readonly System.Threading.Timer _timer;
+        private readonly System.Threading.Timer _livePrevTimer;
+        // PacketList Preview timer
+        private readonly System.Threading.Timer _packetListTimer;
 
         // Number for the next created packet tab
         private int _nextPacketTabNumber = 1;
 
         // Are we in the middle of loading a capture file
         private bool _isLoadingFile;
+
+        // Are we in the middle of updating packets list
+        private bool _isUpdatingList;
 
         // Original form name
         private string _rawFormName;
@@ -108,7 +113,8 @@ namespace PacketStudio
         // Mapping the tab pages and their Packet Define Controls
         private Dictionary<TabPage, PacketDefineControl> _tabToPdc = new Dictionary<TabPage, PacketDefineControl>();
 
-        private CancellationTokenSource _tokenSource;
+        private CancellationTokenSource _livePrevTokenSource;
+        private CancellationTokenSource _packetListTokenSource;
 
         // Colors for the status panel
         private BrushInfoColorArrayList _badGradient = new BrushInfoColorArrayList(new[]
@@ -137,7 +143,11 @@ namespace PacketStudio
 
         public MainForm()
         {
-            _timer = new System.Threading.Timer(UpdateLivePreview);
+            _livePrevTokenSource = new CancellationTokenSource();
+            _packetListTokenSource = new CancellationTokenSource();
+
+            _livePrevTimer = new System.Threading.Timer(UpdateLivePreview);
+            _packetListTimer =  new System.Threading.Timer(state => UpdatePacketListBox(_packetListTokenSource.Token));
             InitializeComponent();
 
             // Save default window title ( so we can append file names to it)
@@ -203,7 +213,6 @@ namespace PacketStudio
             // Now we should have TShark, start getting heuristic dissector in the background
             _heurDissectorsTask = _tshark.GetHeurDissectors();
 
-            _tokenSource = new CancellationTokenSource();
             _unsavedChangesExist = false;
 
 
@@ -239,7 +248,7 @@ namespace PacketStudio
             {
                 // If we aren't in the middle of loading many packets (hence this packet was created with the + tab)
                 // Update packet list to include new tab
-                UpdatePacketListBox();
+                QueuePacketListUpdate();
             }
 
             return newPage;
@@ -533,8 +542,6 @@ namespace PacketStudio
                UpdateStatus("OK", StatusType.Good);
                GC.Collect();
 
-               // Tryigger packets list update
-               UpdatePacketListBox();
            }));
         }
 
@@ -878,7 +885,7 @@ namespace PacketStudio
             TabControl_SelectedIndexChanged(null, null);
 
             _isLoadingFile = false;
-            UpdatePacketListBox();
+            QueuePacketListUpdate();
 
             return anyPacketsFound;
         }
@@ -1293,7 +1300,27 @@ namespace PacketStudio
             Control maybePdc = tabControl.SelectedTab.Controls.Cast<Control>().FirstOrDefault(control => control is PacketDefineControl);
             UpdateHexView(maybePdc);
             QueueLivePreviewUpdate();
-            //UpdatePacketListBox();
+            QueuePacketListUpdate();
+        }
+
+        private void QueuePacketListUpdate()
+        {
+
+            try
+            {
+                _packetListTokenSource?.Cancel();
+            }
+            catch (Exception)
+            {
+                // For some reason this calls Process.Kill which might throw access is denied?
+            }
+
+            _packetListTokenSource = new CancellationTokenSource();
+
+            if (packetListPreviewToolStripButton.Checked)
+            {
+                _packetListTimer.Change(_delayMs, Timeout.Infinite);
+            }
         }
 
         private void previewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1357,20 +1384,20 @@ namespace PacketStudio
         {
             try
             {
-                _tokenSource?.Cancel();
+                _livePrevTokenSource?.Cancel();
             }
             catch (Exception)
             {
                 // For some reason this calls Process.Kill which might throw access is denied?
             }
 
-            _tokenSource = new CancellationTokenSource();
+            _livePrevTokenSource = new CancellationTokenSource();
             UpdateStatus(String.Empty, StatusType.Neutral);
 
             // Assert live preview is on
             if (_livePreviewChecked)
             {
-                _timer.Change(_delayMs, Timeout.Infinite);
+                _livePrevTimer.Change(_delayMs, Timeout.Infinite);
             }
 
         }
@@ -1476,7 +1503,7 @@ namespace PacketStudio
                 _plusTab = null;
             }
             // Update packet list to represent new order after tab dragging is finished
-            UpdatePacketListBox();
+            QueuePacketListUpdate();
         }
         private void TabControl_DragEnter(object sender, DragEventArgs e)
         {
@@ -1542,7 +1569,7 @@ namespace PacketStudio
                 tabs.Remove(pointedTab);
 
                 // Update packet list to remove this tab
-                UpdatePacketListBox();
+                QueuePacketListUpdate();
             }
             else if (e.Button == MouseButtons.Right)
             {
@@ -1605,7 +1632,7 @@ namespace PacketStudio
             hexViewBox.ByteProvider = new DynamicByteProvider(new byte[0]);
 
             // Update hex & Tree
-            Pdc_ContentChanged(null, null);
+            QueueLivePreviewUpdate();
         }
 
         private void TabPage_onRenameRequested(object sender, EventArgs eventArgs)
@@ -1621,7 +1648,7 @@ namespace PacketStudio
             {
                 tab.Text = trd.NewName;
                 // Update packet list to show new tab's name
-                UpdatePacketListBox();
+                QueuePacketListUpdate();
             }
         }
 
@@ -1650,6 +1677,7 @@ namespace PacketStudio
 
         private void UpdateLivePreview(object state)
         {
+            Debug.Write("LIVE UPDATE TIMER TIRGGERED");
             if (!Created) return;
 
             Invoke((Action)(() =>
@@ -1713,22 +1741,25 @@ namespace PacketStudio
                     packets = new[] { packet };
                     packetIndex = 0;
                 }
-                CancellationToken token = _tokenSource.Token;
+                CancellationToken token = _livePrevTokenSource.Token;
                 Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token,_needToBeEnabledHeuristics,_needToBeDisabledHeuristics);
 
                 tsharkTask.ContinueWith((task) =>
                 {
                     packets = null; // Hoping GC will get the que
                     ContinueTsharkTask(task, token);
-                }, _tokenSource.Token);
+                }, _livePrevTokenSource.Token);
             }));
         }
 
-        private void UpdatePacketListBox()
+        private void UpdatePacketListBox(CancellationToken token)
         {
             List<TempPacketSaveData> packets;
             string[] packetsTextLines = null;
             int maxLine = 0;
+
+            if(token.IsCancellationRequested)
+                return;
 
             if (packetListPreviewToolStripButton.Checked)
             {
@@ -1744,6 +1775,9 @@ namespace PacketStudio
                 }
             }
 
+            if (token.IsCancellationRequested)
+                return;
+
             packetTabsList.Items.Clear();
 
             int count = tabControl.TabPages.Count;
@@ -1751,6 +1785,11 @@ namespace PacketStudio
             int digitsRequired = 1 + padding;
             int index = 1;
             TabPacketListItem lastItem = null;
+            List<Tuple<int,string>> _listOfTuples = new List<Tuple<int,string>>();
+
+            if (token.IsCancellationRequested)
+                return;
+
             foreach (TabPage tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
@@ -1774,11 +1813,45 @@ namespace PacketStudio
                 //TabPacketListItem tpli = new TabPacketListItem(, tabPage);
                 TabPacketListItem tpli = new TabPacketListItem(line, tabPage);
                 lastItem = tpli;
+                _listOfTuples.Add(new Tuple<int, string>(index,line));
                 index++;
 
                 packetTabsList.Items.Add(tpli);
+                
+            }
+
+            if (token.IsCancellationRequested)
+                return;
+
+            if (_isUpdatingList)
+            {
+                // Other thread already in updating...
+                return;
+            }
+
+            if (packetsTextLines != null)
+            {
+                ParseTSharkTextOutput ptto = ParseTSharkTextOutput.Parse(packetsTextLines);
+                List<ParseTSharkTextOutput.LinkedParsedPacket> zipped = ptto.Packets.Zip(tabControl.TabPages.Cast<TabPage>(),
+                    (parsedPacket, page)=>
+                {
+                    return ParseTSharkTextOutput.LinkedParsedPacket.FromUnlinked(parsedPacket, page);
+                }).ToList();
+
+                _isUpdatingList = true;
+
+                // Actual list update
+                _packetsListDataGrid.Invoke((Action)(() =>
+                {
+                    _packetsListDataGrid.DataSource = zipped;
+                    _packetsListDataGrid.ClearSelection();
+
+                    _isUpdatingList = false;
+                    _packetsListDataGrid.StretchLastColumn();
+                }));
             }
         }
+        
 
         private void WireDragDrop(IEnumerable ctls)
         {
@@ -2102,6 +2175,20 @@ namespace PacketStudio
 
                 QueueLivePreviewUpdate();
             }
+        }
+
+        private void _packetsListDataGrid_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_packetsListDataGrid.SelectedRows.Count == 0)
+                return;
+
+            if (_isUpdatingList)
+                return;
+
+            DataGridViewRow selectedRow = _packetsListDataGrid.SelectedRows[0];
+            var packet = selectedRow.DataBoundItem as ParseTSharkTextOutput.LinkedParsedPacket;
+            tabControl.SelectedTab = packet.GetLinkedPage();
+
         }
     }
 }
