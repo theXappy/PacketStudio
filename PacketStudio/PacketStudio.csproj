@@ -129,11 +129,13 @@
     <Compile Include="LoadingSplash.Designer.cs">
       <DependentUpon>LoadingSplash.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParseTSharkTextOutput.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DataGridExt.cs" />
     <Compile Include="Utils\ResetLazy.cs" />
     <Compile Include="Utils\TabPacketListItem.cs" />
     <Compile Include="Utils\TabPageExt.cs" />

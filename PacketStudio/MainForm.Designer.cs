@@ -36,6 +36,9 @@ namespace PacketStudio
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccblivePreviewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbpacketTabsPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
             Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection ccbHexViewPanel = new Syncfusion.Windows.Forms.Tools.CaptionButtonsCollection();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             Syncfusion.Windows.Forms.Tools.Office2016ColorTable office2016ColorTable1 = new Syncfusion.Windows.Forms.Tools.Office2016ColorTable();
             Syncfusion.Windows.Forms.Tools.TouchStyleColorTable touchStyleColorTable1 = new Syncfusion.Windows.Forms.Tools.TouchStyleColorTable();
             this.dockingManager = new Syncfusion.Windows.Forms.Tools.DockingManager(this.components);
@@ -44,6 +47,7 @@ namespace PacketStudio
             this.packetTabsPanel = new System.Windows.Forms.Panel();
             this.greyBorderPanel = new System.Windows.Forms.Panel();
             this.whiteBackgroundPanel = new System.Windows.Forms.Panel();
+            this._packetsListDataGrid = new System.Windows.Forms.DataGridView();
             this.packetTabsList = new System.Windows.Forms.ListBox();
             this.HexViewPanel = new System.Windows.Forms.Panel();
             this.hexViewBox = new Be.Windows.Forms.HexBox();
@@ -86,6 +90,7 @@ namespace PacketStudio
             this.packetTabsPanel.SuspendLayout();
             this.greyBorderPanel.SuspendLayout();
             this.whiteBackgroundPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this._packetsListDataGrid)).BeginInit();
             this.HexViewPanel.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -143,7 +148,7 @@ namespace PacketStudio
             this.livePreviewPanel.Location = new System.Drawing.Point(1, 24);
             this.livePreviewPanel.Name = "livePreviewPanel";
             this.livePreviewPanel.Padding = new System.Windows.Forms.Padding(0, 0, 5, 5);
-            this.livePreviewPanel.Size = new System.Drawing.Size(437, 560);
+            this.livePreviewPanel.Size = new System.Drawing.Size(455, 555);
             this.livePreviewPanel.TabIndex = 10;
             // 
             // packetTreeView
@@ -156,7 +161,7 @@ namespace PacketStudio
             this.packetTreeView.Margin = new System.Windows.Forms.Padding(22);
             this.packetTreeView.Name = "packetTreeView";
             this.packetTreeView.ShowLines = false;
-            this.packetTreeView.Size = new System.Drawing.Size(432, 555);
+            this.packetTreeView.Size = new System.Drawing.Size(450, 550);
             this.packetTreeView.TabIndex = 8;
             this.packetTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PacketTreeView_AfterSelect);
             this.packetTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PacketTreeView_KeyDown);
@@ -169,7 +174,7 @@ namespace PacketStudio
             this.packetTabsPanel.Location = new System.Drawing.Point(1, 24);
             this.packetTabsPanel.Name = "packetTabsPanel";
             this.packetTabsPanel.Padding = new System.Windows.Forms.Padding(5, 0, 0, 5);
-            this.packetTabsPanel.Size = new System.Drawing.Size(1394, 243);
+            this.packetTabsPanel.Size = new System.Drawing.Size(1394, 248);
             this.packetTabsPanel.TabIndex = 26;
             // 
             // greyBorderPanel
@@ -180,19 +185,72 @@ namespace PacketStudio
             this.greyBorderPanel.Location = new System.Drawing.Point(5, 0);
             this.greyBorderPanel.Name = "greyBorderPanel";
             this.greyBorderPanel.Padding = new System.Windows.Forms.Padding(1);
-            this.greyBorderPanel.Size = new System.Drawing.Size(1389, 238);
+            this.greyBorderPanel.Size = new System.Drawing.Size(1389, 243);
             this.greyBorderPanel.TabIndex = 1;
             // 
             // whiteBackgroundPanel
             // 
             this.whiteBackgroundPanel.BackColor = System.Drawing.Color.White;
+            this.whiteBackgroundPanel.Controls.Add(this._packetsListDataGrid);
             this.whiteBackgroundPanel.Controls.Add(this.packetTabsList);
             this.whiteBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
             this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
             this.whiteBackgroundPanel.Name = "whiteBackgroundPanel";
-            this.whiteBackgroundPanel.Size = new System.Drawing.Size(1387, 236);
+            this.whiteBackgroundPanel.Size = new System.Drawing.Size(1387, 241);
             this.whiteBackgroundPanel.TabIndex = 1;
+            // 
+            // _packetsListDataGrid
+            // 
+            this._packetsListDataGrid.AllowUserToAddRows = false;
+            this._packetsListDataGrid.AllowUserToDeleteRows = false;
+            this._packetsListDataGrid.AllowUserToOrderColumns = true;
+            this._packetsListDataGrid.AllowUserToResizeRows = false;
+            this._packetsListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this._packetsListDataGrid.BackgroundColor = System.Drawing.Color.White;
+            this._packetsListDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._packetsListDataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this._packetsListDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._packetsListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this._packetsListDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this._packetsListDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this._packetsListDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._packetsListDataGrid.GridColor = System.Drawing.Color.White;
+            this._packetsListDataGrid.Location = new System.Drawing.Point(0, 0);
+            this._packetsListDataGrid.MultiSelect = false;
+            this._packetsListDataGrid.Name = "_packetsListDataGrid";
+            this._packetsListDataGrid.ReadOnly = true;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this._packetsListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this._packetsListDataGrid.RowHeadersVisible = false;
+            this._packetsListDataGrid.RowHeadersWidth = 21;
+            this._packetsListDataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this._packetsListDataGrid.RowTemplate.Height = 17;
+            this._packetsListDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this._packetsListDataGrid.ShowCellToolTips = false;
+            this._packetsListDataGrid.Size = new System.Drawing.Size(1387, 241);
+            this._packetsListDataGrid.TabIndex = 2;
+            this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this._packetsListDataGrid_SelectionChanged);
             // 
             // packetTabsList
             // 
@@ -204,9 +262,10 @@ namespace PacketStudio
             this.packetTabsList.ItemHeight = 19;
             this.packetTabsList.Location = new System.Drawing.Point(0, 0);
             this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(1387, 236);
+            this.packetTabsList.Size = new System.Drawing.Size(1387, 241);
             this.packetTabsList.Sorted = true;
             this.packetTabsList.TabIndex = 1;
+            this.packetTabsList.Visible = false;
             this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
             this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
             this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
@@ -219,7 +278,7 @@ namespace PacketStudio
             this.HexViewPanel.Location = new System.Drawing.Point(1, 24);
             this.HexViewPanel.Name = "HexViewPanel";
             this.HexViewPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.HexViewPanel.Size = new System.Drawing.Size(951, 250);
+            this.HexViewPanel.Size = new System.Drawing.Size(933, 225);
             this.HexViewPanel.TabIndex = 12;
             // 
             // hexViewBox
@@ -235,7 +294,7 @@ namespace PacketStudio
             this.hexViewBox.ReadOnly = true;
             this.hexViewBox.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
             this.hexViewBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hexViewBox.Size = new System.Drawing.Size(951, 245);
+            this.hexViewBox.Size = new System.Drawing.Size(933, 220);
             this.hexViewBox.TabIndex = 0;
             this.hexViewBox.UseFixedBytesPerLine = true;
             this.hexViewBox.VScrollBarVisible = true;
@@ -245,9 +304,9 @@ namespace PacketStudio
             // 
             this.mainPanel.BackColor = System.Drawing.SystemColors.Control;
             this.mainPanel.Controls.Add(this.tabControl);
-            this.mainPanel.Location = new System.Drawing.Point(2, 392);
+            this.mainPanel.Location = new System.Drawing.Point(2, 397);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(953, 306);
+            this.mainPanel.Size = new System.Drawing.Size(935, 326);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
@@ -262,7 +321,7 @@ namespace PacketStudio
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(953, 306);
+            this.tabControl.Size = new System.Drawing.Size(935, 326);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
@@ -275,7 +334,7 @@ namespace PacketStudio
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(945, 280);
+            this.tabPage1.Size = new System.Drawing.Size(927, 300);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -286,7 +345,7 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(939, 274);
+            this.packetDefineControl1.Size = new System.Drawing.Size(921, 294);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
@@ -294,7 +353,7 @@ namespace PacketStudio
             this.plusTab.Location = new System.Drawing.Point(4, 22);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
-            this.plusTab.Size = new System.Drawing.Size(1138, 368);
+            this.plusTab.Size = new System.Drawing.Size(927, 300);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
             this.plusTab.UseVisualStyleBackColor = true;
@@ -810,7 +869,7 @@ namespace PacketStudio
             // wsVerPanel
             // 
             this.wsVerPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.wsVerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
+            this.wsVerPanel.BackColor = System.Drawing.Color.Transparent;
             this.wsVerPanel.BeforeTouchSize = new System.Drawing.Size(48, 16);
             this.wsVerPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.wsVerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -823,57 +882,6 @@ namespace PacketStudio
             this.wsVerPanel.SizeToContent = true;
             this.wsVerPanel.TabIndex = 1;
             this.wsVerPanel.Text = "Version";
-            // 
-            // _packetsListDataGrid
-            // 
-            this._packetsListDataGrid.AllowUserToAddRows = false;
-            this._packetsListDataGrid.AllowUserToDeleteRows = false;
-            this._packetsListDataGrid.AllowUserToOrderColumns = true;
-            this._packetsListDataGrid.AllowUserToResizeRows = false;
-            this._packetsListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this._packetsListDataGrid.BackgroundColor = System.Drawing.Color.White;
-            this._packetsListDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this._packetsListDataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this._packetsListDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this._packetsListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this._packetsListDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this._packetsListDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
-            this._packetsListDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._packetsListDataGrid.GridColor = System.Drawing.Color.White;
-            this._packetsListDataGrid.Location = new System.Drawing.Point(0, 0);
-            this._packetsListDataGrid.MultiSelect = false;
-            this._packetsListDataGrid.Name = "_packetsListDataGrid";
-            this._packetsListDataGrid.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this._packetsListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this._packetsListDataGrid.RowHeadersVisible = false;
-            this._packetsListDataGrid.RowHeadersWidth = 21;
-            this._packetsListDataGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this._packetsListDataGrid.RowTemplate.Height = 17;
-            this._packetsListDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this._packetsListDataGrid.Size = new System.Drawing.Size(1387, 236);
-            this._packetsListDataGrid.TabIndex = 2;
-            this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this._packetsListDataGrid_SelectionChanged);
             // 
             // MainForm
             // 
@@ -897,6 +905,7 @@ namespace PacketStudio
             this.packetTabsPanel.ResumeLayout(false);
             this.greyBorderPanel.ResumeLayout(false);
             this.whiteBackgroundPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this._packetsListDataGrid)).EndInit();
             this.HexViewPanel.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
@@ -968,6 +977,7 @@ namespace PacketStudio
         private Syncfusion.Windows.Forms.Tools.ToolStripEx livePreviewOptionsToolStrip;
         private System.Windows.Forms.ToolStripButton packetListPreviewToolStripButton;
         private System.Windows.Forms.ToolStripButton heurDissectorsToolStripButton;
+        private System.Windows.Forms.DataGridView _packetsListDataGrid;
     }
 }
 
