@@ -71,8 +71,10 @@ namespace PacketStudio
                 string newLine = lessTabs.Replace(packetsTextLine, "\t");
                 string[] fields = newLine.Split('\t');
                 fields = fields.Select(fld => " " + fld.Trim() + " ").ToArray();
-                if (fields.Length < 6)
-                    continue;
+                if (fields.Length < 8)
+                {
+                    fields = fields.Concat(new string[8 - fields.Length]).ToArray();
+                }
                 ParsedTsharkTextPacket packet = new ParsedTsharkTextPacket()
                 {
                     Number = fields[0],
