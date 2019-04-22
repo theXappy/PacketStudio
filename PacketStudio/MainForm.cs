@@ -1709,16 +1709,6 @@ namespace PacketStudio
 
 
 
-                string wsPath = Settings.Default.lastWiresharkPath.Trim('"'); // removing any leading or trailing quotes
-                string tsharkPath = Path.GetDirectoryName(wsPath) + @"\tshark.exe";
-
-                if (!File.Exists(tsharkPath))
-                {
-                    UpdateStatus($"Can't find TShark at:\r\n{tsharkPath}", StatusType.Bad);
-                    return;
-                }
-
-                Debug.WriteLine(sw.Elapsed);
                 UpdateStatus("Working...", StatusType.Neutral);
 
                 IEnumerable<TempPacketSaveData> packets;
