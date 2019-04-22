@@ -37,8 +37,8 @@
     <ApplicationIcon>NewAgeIcons\ps_icon_new.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Be.Windows.Forms.HexBox">
-      <HintPath>..\dependencies\be.HexEditor\Be.Windows.Forms.HexBox.dll</HintPath>
+    <Reference Include="Be.Windows.Forms.HexBox, Version=1.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Be.Windows.Forms.HexBox.1.6.1\lib\net40\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
     <Reference Include="CliWrap, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CliWrap.1.2.3\lib\net45\CliWrap.dll</HintPath>
