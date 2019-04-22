@@ -148,7 +148,10 @@ namespace PacketStudio
 
             _livePrevTimer = new System.Threading.Timer(UpdateLivePreview);
             _packetListTimer =  new System.Threading.Timer(state => UpdatePacketListBox(_packetListTokenSource.Token));
+
             InitializeComponent();
+            wsVerPanel.BackColor = Color.Transparent;
+            statusTextPanel.BackColor = Color.Transparent;
 
             // Save default window title ( so we can append file names to it)
             _rawFormName = Text;
