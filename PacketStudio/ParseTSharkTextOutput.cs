@@ -1,3 +1,4 @@
+using Syncfusion.Windows.Forms.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -29,16 +30,16 @@ namespace PacketStudio
             public string Proto { get; set; }
             public string Length { get; set; }
             public string Info { get; set; }
-            private TabPage _tabPage;
+            private TabPageAdv _tabPage;
 
-            public LinkedParsedPacket(TabPage tabPage)
+            public LinkedParsedPacket(TabPageAdv tabPage)
             {
                 _tabPage = tabPage;
             }
 
-            public TabPage GetLinkedPage() => _tabPage;
+            public TabPageAdv GetLinkedPage() => _tabPage;
 
-            public static LinkedParsedPacket FromUnlinked(ParsedTsharkTextPacket packet, TabPage page)
+            public static LinkedParsedPacket FromUnlinked(ParsedTsharkTextPacket packet, TabPageAdv page)
             {
                 return new LinkedParsedPacket(page)
                 {

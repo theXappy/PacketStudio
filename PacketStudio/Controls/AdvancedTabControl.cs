@@ -1,3 +1,4 @@
+using Syncfusion.Windows.Forms.Tools;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,9 +8,9 @@ namespace PacketStudio.Controls
 {
     public class TabEventArgs : EventArgs
     {
-        public TabPage Tab { get; set; }
+        public TabPageAdv Tab { get; set; }
 
-        public TabEventArgs(TabPage tab)
+        public TabEventArgs(TabPageAdv tab)
         {
             this.Tab = tab;
         }
@@ -17,17 +18,17 @@ namespace PacketStudio.Controls
 
     public class TabCancelEventArgs : EventArgs
     {
-        public TabPage Tab { get; set; }
+        public TabPageAdv Tab { get; set; }
         public bool Cancel { get; set; }
 
-        public TabCancelEventArgs(TabPage tab)
+        public TabCancelEventArgs(TabPageAdv tab)
         {
             Tab = tab;
         }
     }
 
 
-    public class AdvancedTabControl : TabControl
+    public class AdvancedTabControl : TabControlAdv
 	{
 		public AdvancedTabControl()
 		{
@@ -37,7 +38,7 @@ namespace PacketStudio.Controls
 
 		#region Tab Swapping and Tab Closing
 
-		private TabPage predraggedTab, contextmenuTab;
+		private TabPageAdv predraggedTab, contextmenuTab;
 		private Point dragStartPoint;
 		private readonly ContextMenu tabCtxm = new ContextMenu();
 		private bool allowClose, allowSwap;
@@ -110,7 +111,7 @@ namespace PacketStudio.Controls
 		{
 			predraggedTab = null;
 
-			TabPage pointedTab = getPointedTab(e.Location);
+			TabPageAdv pointedTab = getPointedTab(e.Location);
 			if (this.AllowClose && pointedTab != null)
 			{
 				if (e.Button == MouseButtons.Right)
@@ -139,8 +140,8 @@ namespace PacketStudio.Controls
 
 		protected override void OnDragOver(DragEventArgs drgevent)
 		{
-			TabPage draggedTab = (TabPage)drgevent.Data.GetData(typeof(TabPage));
-			TabPage pointedTab = getPointedTab(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
+			TabPageAdv draggedTab = (TabPageAdv)drgevent.Data.GetData(typeof(TabPageAdv));
+			TabPageAdv pointedTab = getPointedTab(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
 
 			if (draggedTab == predraggedTab && pointedTab != null)
 			{
@@ -174,7 +175,7 @@ namespace PacketStudio.Controls
 			contextmenuTab = null;
 		}
 
-		private void swapTabPages(TabPage src, TabPage dst)
+		private void swapTabPages(TabPageAdv src, TabPageAdv dst)
 		{
 			int srci = this.TabPages.IndexOf(src);
 			int dsti = this.TabPages.IndexOf(dst);
@@ -227,11 +228,11 @@ namespace PacketStudio.Controls
 
 		#endregion
 
-		public TabPage getPointedTab(Point position)
+		public TabPageAdv getPointedTab(Point position)
 		{
 			for (int i = 0; i < this.TabPages.Count; i++)
 				if (this.GetTabRect(i).Contains(position))
-					return this.TabPages[i];
+					return TabPages[i];
 
 			return null;
 		}
