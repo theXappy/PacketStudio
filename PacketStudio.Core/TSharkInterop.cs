@@ -86,6 +86,40 @@ namespace PacketStudio.Core
             return await GetPdmlAsync(new List<TempPacketSaveData>() { packetSaveData }, 0, token);
         }
 
+        public Task<XElement> GetPdmlAsync2(IEnumerable<TempPacketSaveData> packets, int packetIndex,
+            CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        {
+            StringBuilder sb = new StringBuilder();
+            DataReceivedEventHandler dreh = (sender, eventArgs) => sb.Append(eventArgs.Data);
+
+            string pcapPath = _packetsSaver.WritePackets(packets);
+            string args = GetPdmlArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
+            Stopwatch spw = new Stopwatch();
+            spw.Start();
+            Process pProcess = new Process();
+            pProcess.StartInfo.FileName = _tsharkPath;
+            pProcess.StartInfo.Arguments = args;
+            pProcess.StartInfo.CreateNoWindow = true;
+            pProcess.StartInfo.UseShellExecute = false;
+            pProcess.StartInfo.RedirectStandardOutput = true;
+            pProcess.EnableRaisingEvents = true;
+            pProcess.OutputDataReceived += dreh;
+            pProcess.Start();
+            pProcess.BeginOutputReadLine();
+            pProcess.WaitForExit();
+            pProcess.OutputDataReceived -= dreh;
+            spw.Stop();
+            Debug.WriteLine("Completed in : " +
+                              spw.ElapsedMilliseconds.ToString()
+                              + "ms");
+            Debug.WriteLine("Process obj elapsed time : " +  pProcess.TotalProcessorTime);
+            pProcess.Close();
+
+            string xml = sb.ToString();
+
+            return ParsePdmlAsync(xml, packetIndex, token);
+        }
+
         public Task<XElement> GetPdmlAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             return Task.Run((() =>
@@ -437,10 +471,10 @@ namespace PacketStudio.Core
         public Task<TSharkCombinedResults> GetPdmlAndJsonAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex,
             CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            Task<XElement> pdmlTask = GetPdmlAsync(packets, packetIndex, token,toBeEnabledHeurs,toBeDisabledHeurs);
+            Task<XElement> pdmlTask = GetPdmlAsync2(packets, packetIndex, token,toBeEnabledHeurs,toBeDisabledHeurs);
             Task<JObject> jsonTask = GetJsonRawAsync(packets, packetIndex, token, toBeEnabledHeurs, toBeDisabledHeurs);
 
-            return Task.Factory.StartNew(() =>
+            return Task.WhenAll(new Task[] { pdmlTask,jsonTask}).ContinueWith((task) =>
             {
                 XElement pdml = null;
                 Exception pdmlException = null;

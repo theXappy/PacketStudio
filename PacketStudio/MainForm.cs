@@ -80,9 +80,9 @@ namespace PacketStudio
         private readonly bool _isConstructing;
 
         // The previous selected tab
-        private TabPage _lastSelectedPage;
+        private TabPageAdv _lastSelectedPage;
         // Reference to the '+' Tab
-        private TabPage _plusTab;
+        private TabPageAdv _plusTab;
 
         // Live Preview members
         bool _livePreviewChecked = true;
@@ -108,10 +108,10 @@ namespace PacketStudio
 
         private Rectangle _rectangle = Rectangle.Empty;
 
-        private TabPage _tabRequestingRename;
+        private TabPageAdv _tabRequestingRename;
 
         // Mapping the tab pages and their Packet Define Controls
-        private Dictionary<TabPage, PacketDefineControl> _tabToPdc = new Dictionary<TabPage, PacketDefineControl>();
+        private Dictionary<TabPageAdv, PacketDefineControl> _tabToPdc = new Dictionary<TabPageAdv, PacketDefineControl>();
 
         private CancellationTokenSource _livePrevTokenSource;
         private CancellationTokenSource _packetListTokenSource;
@@ -147,7 +147,7 @@ namespace PacketStudio
             _packetListTokenSource = new CancellationTokenSource();
 
             _livePrevTimer = new System.Threading.Timer(UpdateLivePreview);
-            _packetListTimer =  new System.Threading.Timer(state => UpdatePacketListBox(_packetListTokenSource.Token));
+            _packetListTimer = new System.Threading.Timer(state => UpdatePacketListBox(_packetListTokenSource.Token));
 
             InitializeComponent();
             wsVerPanel.BackColor = Color.Transparent;
@@ -171,7 +171,7 @@ namespace PacketStudio
             livePrevToolStripTextBox.Text = _delayMs.ToString();
 
 
-            _lastUserEnabledHeuristics = 
+            _lastUserEnabledHeuristics =
                 HackyBsae64StringListSerializer.Deserialize(Settings.Default.EnabledHeuristicDissectors);
             _lastUserDisabledHeuristics =
                 HackyBsae64StringListSerializer.Deserialize(Settings.Default.DisabledHeuristicDissectors);
@@ -227,9 +227,10 @@ namespace PacketStudio
 
         }
 
-        private TabPage AddNewTab(PacketSaveData saveData)
+        private TabPageAdv AddNewTab(PacketSaveData saveData)
         {
-            TabPage newPage = new TabPage("Packet " + (_nextPacketTabNumber));
+            TabPageAdv newPage = new TabPageAdv("Packet " + (_nextPacketTabNumber));
+            newPage.TabForeColor = Color.White;
             newPage.ContextMenu = new ContextMenu(new MenuItem[]
             {
                 new MenuItem("Rename",TabPage_onRenameRequested)
@@ -293,8 +294,8 @@ namespace PacketStudio
                    }
 
                    // Show the exit code + errors
-                   UpdateStatus("PDML retrival exception:"+tsharkTask.Result.PdmlException +"\r\n\r\n" +
-                                "JSON retrival exception:"+tsharkTask.Result.JsonException, StatusType.Bad);
+                   UpdateStatus("PDML retrival exception:" + tsharkTask.Result.PdmlException + "\r\n\r\n" +
+                                "JSON retrival exception:" + tsharkTask.Result.JsonException, StatusType.Bad);
 
                    return;
                }
@@ -829,10 +830,10 @@ namespace PacketStudio
 
             tabControl.SelectedIndexChanged -= TabControl_SelectedIndexChanged;
 
-            TabPage localPlusTab = null;
+            TabPageAdv localPlusTab = null;
 
-            List<TabPage> toRemove = new List<TabPage>();
-            foreach (TabPage tabPage in tabControl.TabPages)
+            List<TabPageAdv> toRemove = new List<TabPageAdv>();
+            foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab())
                 {
@@ -842,7 +843,7 @@ namespace PacketStudio
                 toRemove.Add(tabPage);
             }
 
-            foreach (TabPage tabPage in toRemove)
+            foreach (TabPageAdv tabPage in toRemove)
             {
                 tabControl.TabPages.Remove(tabPage);
             }
@@ -943,7 +944,7 @@ namespace PacketStudio
             {
                 // Check if we even have packets to save (or if the GUI is empty)
                 bool anyPacketsFound = false;
-                foreach (TabPage tab in tabControl.TabPages)
+                foreach (TabPageAdv tab in tabControl.TabPages)
                 {
                     foreach (object control in tab.Controls)
                     {
@@ -1003,10 +1004,10 @@ namespace PacketStudio
                 }
             }
 
-            TabPage localPlusTab = null;
+            TabPageAdv localPlusTab = null;
 
-            List<TabPage> toRemove = new List<TabPage>();
-            foreach (TabPage tabPage in tabControl.TabPages)
+            List<TabPageAdv> toRemove = new List<TabPageAdv>();
+            foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab())
                 {
@@ -1018,7 +1019,7 @@ namespace PacketStudio
 
             tabControl.SelectedIndexChanged -= TabControl_SelectedIndexChanged;
 
-            foreach (TabPage tabPage in toRemove)
+            foreach (TabPageAdv tabPage in toRemove)
             {
                 tabControl.TabPages.Remove(tabPage);
             }
@@ -1057,61 +1058,7 @@ namespace PacketStudio
 
         }
 
-        private void PacketTabsList_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            if (e.Index == -1)
-                return;
 
-            Color backColor = Color.White;
-            if (e.State.HasFlag(DrawItemState.Selected))
-            {
-                backColor = Color.FromArgb(240, 240, 240);
-            }
-            if (e.State.HasFlag(DrawItemState.Focus))
-            {
-                backColor = Color.FromArgb(205, 232, 255);
-            }
-
-
-            e.DrawBackground();
-            e.Graphics.FillRectangle(new SolidBrush(backColor), e.Bounds);
-            e.DrawFocusRectangle();
-            Rectangle newBounds = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
-            e.Graphics.DrawString(
-                packetTabsList.Items[e.Index].ToString(),
-                e.Font,
-                new SolidBrush(Color.Black),
-                newBounds);
-        }
-
-        private void PacketTabsList_MeasureItem(object sender, MeasureItemEventArgs e)
-        {
-            e.ItemHeight = 17;
-        }
-
-        private void PacketTabsList_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                TabPacketListItem pointedItem = packetTabsList.Items.Cast<TabPacketListItem>()
-                    .Where((lvi, i) => packetTabsList.GetItemRectangle(i).Contains(e.Location))
-                    .FirstOrDefault();
-                if (pointedItem != null)
-                {
-                    packetTabsList.SelectedItem = pointedItem;
-                    _tabRequestingRename = pointedItem.Page;
-                    pointedItem.Page.ContextMenu.Show(packetTabsList, e.Location);
-                }
-            }
-        }
-
-        private void PacketTabsList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (packetTabsList.SelectedItem is TabPacketListItem tpli)
-            {
-                tabControl.SelectTab(tpli.Page);
-            }
-        }
 
         private void PacketTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -1145,7 +1092,7 @@ namespace PacketStudio
             hexViewBox.Select(index, length);
 
             // Update Packet Define Control (Only if it contains a 'hex stream'!!)
-            TabPage tab = tabControl.SelectedTab;
+            TabPageAdv tab = tabControl.SelectedTab;
             PacketDefineControl pdc = tab.Controls.OfType<PacketDefineControl>().First();
             pdc.SetSelection(0, 0); // Clear any old Selection
 
@@ -1361,7 +1308,7 @@ namespace PacketStudio
 
 
             bool anyPacketsFound = false;
-            foreach (TabPage tab in tabControl.TabPages)
+            foreach (TabPageAdv tab in tabControl.TabPages)
             {
                 foreach (object control in tab.Controls)
                 {
@@ -1408,7 +1355,7 @@ namespace PacketStudio
         private void SaveAsPss(string path)
         {
             List<PacketSaveDataV3> allSaveData = new List<PacketSaveDataV3>(tabControl.TabPages.Count);
-            foreach (TabPage tabPage in tabControl.TabPages)
+            foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
@@ -1442,7 +1389,7 @@ namespace PacketStudio
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach (TabPage tabPage in tabControl.TabPages)
+            foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
@@ -1523,7 +1470,7 @@ namespace PacketStudio
                 return;
             }
 
-            _plusTab = tabControl.TabPages.OfType<TabPage>().SingleOrDefault(page => page.IsPlusTab());
+            _plusTab = tabControl.TabPages.OfType<TabPageAdv>().SingleOrDefault(page => page.IsPlusTab());
             if (_plusTab != null)
             {
                 _rectangle = tabControl.GetTabRect(tabControl.TabCount - 1);
@@ -1540,10 +1487,10 @@ namespace PacketStudio
 
         private void TabControl_MouseClick(object sender, MouseEventArgs e)
         {
-            TabControl.TabPageCollection tabs = tabControl.TabPages;
+            TabPageAdvCollection tabs = tabControl.TabPages;
 
             // Getting tab control which was clicked based on the mouse's location
-            TabPage pointedTab = tabs.Cast<TabPage>()
+            TabPageAdv pointedTab = tabs.Cast<TabPageAdv>()
                 .Where((t, i) => tabControl.GetTabRect(i).Contains(e.Location))
                 .FirstOrDefault();
 
@@ -1588,7 +1535,7 @@ namespace PacketStudio
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TabPage currentSelectTab = tabControl.SelectedTab;
+            TabPageAdv currentSelectTab = tabControl.SelectedTab;
             bool isCurrentTabEqualLastTab = currentSelectTab == _lastSelectedPage;
 
 
@@ -1605,9 +1552,9 @@ namespace PacketStudio
             if (tabControl.SelectedTab.IsPlusTab())
             {
                 // The selected tab is the special 'Plus Tab' - we should create a new packet
-                TabPage localPlusTab = tabControl.SelectedTab;
+                TabPageAdv localPlusTab = tabControl.SelectedTab;
                 tabControl.TabPages.Remove(localPlusTab);
-                TabPage newPage = AddNewTab(null);
+                TabPageAdv newPage = AddNewTab(null);
                 tabControl.TabPages.Add(localPlusTab);
                 tabControl.SelectedTab = newPage;
                 TabControl_SelectedIndexChanged(null, null);
@@ -1615,7 +1562,7 @@ namespace PacketStudio
             else
             {
                 // The selected tab is a regular one, add PDC
-                TabPage tab = tabControl.SelectedTab;
+                TabPageAdv tab = tabControl.SelectedTab;
 
                 if (tab == null)
                     return;
@@ -1687,7 +1634,7 @@ namespace PacketStudio
             {
                 Stopwatch sw = Stopwatch.StartNew();
                 UpdateStatus(string.Empty, StatusType.Neutral);
-                TabPage tabPage = tabControl.SelectedTab;
+                TabPageAdv tabPage = tabControl.SelectedTab;
                 if (!(tabPage.Controls[0] is PacketDefineControl pdc))
                 {
                     UpdateStatus("Could not find packet define control...", StatusType.Bad);
@@ -1735,7 +1682,7 @@ namespace PacketStudio
                     packetIndex = 0;
                 }
                 CancellationToken token = _livePrevTokenSource.Token;
-                Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token,_needToBeEnabledHeuristics,_needToBeDisabledHeuristics);
+                Task<TSharkCombinedResults> tsharkTask = _tshark.GetPdmlAndJsonAsync(packets, packetIndex, token, _needToBeEnabledHeuristics, _needToBeDisabledHeuristics);
 
                 tsharkTask.ContinueWith((task) =>
                 {
@@ -1751,7 +1698,7 @@ namespace PacketStudio
             string[] packetsTextLines = null;
             int maxLine = 0;
 
-            if(token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
                 return;
 
             if (packetListPreviewToolStripButton.Checked)
@@ -1759,58 +1706,13 @@ namespace PacketStudio
                 try
                 {
                     packets = GetAllDefinedPackets();
-                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None,_needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
+                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None, _needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
                     maxLine = packetsTextLines.Max(s => s.Length);
                 }
                 catch (Exception)
                 {
                     packetsTextLines = null;
                 }
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            packetTabsList.Items.Clear();
-
-            int count = tabControl.TabPages.Count;
-            int padding = (int)Math.Log10(count);
-            int digitsRequired = 1 + padding;
-            int index = 1;
-            TabPacketListItem lastItem = null;
-            List<Tuple<int,string>> _listOfTuples = new List<Tuple<int,string>>();
-
-            if (token.IsCancellationRequested)
-                return;
-
-            foreach (TabPage tabPage in tabControl.TabPages)
-            {
-                if (tabPage.IsPlusTab()) // plus tab is a special case
-                    continue;
-
-                string line;
-                if (packetsTextLines != null)
-                {
-                    line = packetsTextLines[index - 1];
-                    if (line.Length < maxLine)
-                    {
-                        line = line.PadRight(maxLine, ' ');
-                    }
-                    line += '\t';
-                }
-                else
-                {
-                    // Fallback, just number the packets in the list 
-                    line = index.ToString().PadLeft(digitsRequired, '0') + ".";
-                }
-                //TabPacketListItem tpli = new TabPacketListItem(, tabPage);
-                TabPacketListItem tpli = new TabPacketListItem(line, tabPage);
-                lastItem = tpli;
-                _listOfTuples.Add(new Tuple<int, string>(index,line));
-                index++;
-
-                packetTabsList.Items.Add(tpli);
-                
             }
 
             if (token.IsCancellationRequested)
@@ -1825,11 +1727,8 @@ namespace PacketStudio
             if (packetsTextLines != null)
             {
                 ParseTSharkTextOutput ptto = ParseTSharkTextOutput.Parse(packetsTextLines);
-                List<ParseTSharkTextOutput.LinkedParsedPacket> zipped = ptto.Packets.Zip(tabControl.TabPages.Cast<TabPage>(),
-                    (parsedPacket, page)=>
-                {
-                    return ParseTSharkTextOutput.LinkedParsedPacket.FromUnlinked(parsedPacket, page);
-                }).ToList();
+                List<ParseTSharkTextOutput.LinkedParsedPacket> zipped = ptto.Packets.Zip(tabControl.TabPages.Cast<TabPageAdv>(),
+                    ParseTSharkTextOutput.LinkedParsedPacket.FromUnlinked).ToList();
 
                 _isUpdatingList = true;
 
@@ -1844,7 +1743,7 @@ namespace PacketStudio
                 }));
             }
         }
-        
+
 
         private void WireDragDrop(IEnumerable ctls)
         {
@@ -1869,7 +1768,7 @@ namespace PacketStudio
         public List<TempPacketSaveData> GetAllDefinedPackets()
         {
             List<TempPacketSaveData> packets = new List<TempPacketSaveData>();
-            foreach (TabPage tabPage in tabControl.TabPages)
+            foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
                 if (tabPage.IsPlusTab()) // plus tab is a special case
                     continue;
@@ -2064,7 +1963,7 @@ namespace PacketStudio
 
         private List<string> _needToBeDisabledHeuristics = new List<string>();
         private List<string> _needToBeEnabledHeuristics = new List<string>();
-        
+
         private async void heurDissectorsToolStripButton_Click(object sender, EventArgs e)
         {
             // Async-ly get dissectors list
@@ -2183,5 +2082,88 @@ namespace PacketStudio
             tabControl.SelectedTab = packet.GetLinkedPage();
 
         }
+
+        TouchStyleColorTable lightColorTable = new TouchStyleColorTable()
+        {
+            BackStageButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123))))),
+            BackStageButtonForeColor = System.Drawing.Color.White,
+            BackStageButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            BackStageCaptionColor = System.Drawing.Color.White,
+            BackStageCloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80))))),
+            BackStageCloseButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
+            BackStageCloseButtonHoverForeColor = System.Drawing.Color.White,
+            BackStageCloseButtonPressedForeColor = System.Drawing.Color.White,
+            BackStageMaximizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
+            BackStageMaximizeButtonHoverForeColor = System.Drawing.Color.White,
+            BackStageMaximizeButtonPressedForeColor = System.Drawing.Color.White,
+            BackStageMinimizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
+            BackStageMinimizeButtonHoverForeColor = System.Drawing.Color.White,
+            BackStageMinimizeButtonPressedForeColor = System.Drawing.Color.White,
+            BackStageNavigationButtonBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123))))),
+            BackStageNavigationButtonForeColor = System.Drawing.Color.White,
+            BackStageRestoreButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
+            BackStageRestoreButtonHoverForeColor = System.Drawing.Color.White,
+            BackStageRestoreButtonPressedForeColor = System.Drawing.Color.White,
+            BackStageSysytemButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            BackStageTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            BackStageTabForeColor = System.Drawing.Color.White,
+            BackStageTabHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            BottomToolStripBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ButtonCheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211))))),
+            ButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242))))),
+            ButtonPressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211))))),
+            CheckBoxForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(66)))), ((int)(((byte)(139))))),
+            CheckedToolstripTabItemForeColor = System.Drawing.Color.Black,
+            CloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80))))),
+            CloseButtonForeColor = System.Drawing.Color.White,
+            CloseButtonHoverForeColor = System.Drawing.Color.White,
+            CloseButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(61)))), ((int)(((byte)(61))))),
+            CloseButtonPressedForeColor = System.Drawing.Color.White,
+            DropDownBodyColor = System.Drawing.Color.White,
+            DropDownMenuItemBackground = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            DropDownSelectedTextForeColor = System.Drawing.Color.White,
+            DropDownTextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            DropDownTitleBackground = System.Drawing.Color.White,
+            HeaderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            HoverTabBackColor = System.Drawing.Color.White,
+            HoverTabForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ImageMargin = System.Drawing.Color.White,
+            InActiveToolStripTabItemBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            MaximizeButtonForeColor = System.Drawing.Color.White,
+            MaximizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            MaximizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            MenuButtonArrowColor = System.Drawing.Color.White,
+            MenuButtonHoverArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            MinimizeButtonForeColor = System.Drawing.Color.White,
+            MinimizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            MinimizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            OverFlowArrowColor = System.Drawing.Color.White,
+            QATButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242))))),
+            QATDownArrowColor = System.Drawing.Color.White,
+            RestoreButtonForeColor = System.Drawing.Color.White,
+            RestoreButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            RestoreButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            RibbonPanelBackColor = System.Drawing.Color.White,
+            SplitButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            SplitButtonSelected = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
+            SystemButtonBackground = System.Drawing.Color.White,
+            SystemButtonPressed = System.Drawing.Color.White,
+            TabGroupColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(203)))), ((int)(((byte)(29))))),
+            TabScrollArrowColor = System.Drawing.Color.White,
+            TitleColor = System.Drawing.Color.White,
+            ToolstripActiveTabItemForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolStripArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolStripBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolstripButtonPressedBorder = System.Drawing.Color.Black,
+            ToolStripDropDownBackColor = System.Drawing.Color.White,
+            ToolStripDropDownButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(247)))), ((int)(((byte)(247))))),
+            ToolStripDropDownButtonSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240))))),
+            ToolstripSelectedTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolStripSpliterColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolstripTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
+            ToolstripTabItemCheckedGradientBegin = System.Drawing.Color.Empty,
+            ToolstripTabItemForeColor = System.Drawing.Color.White,
+            ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty
+        };
     }
 }
