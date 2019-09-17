@@ -1,5 +1,6 @@
 using PacketStudio.Controls;
 using PacketStudio.Controls.PacketsDef;
+using Syncfusion.Windows.Forms.Tools;
 
 namespace PacketStudio
 {
@@ -48,14 +49,13 @@ namespace PacketStudio
             this.greyBorderPanel = new System.Windows.Forms.Panel();
             this.whiteBackgroundPanel = new System.Windows.Forms.Panel();
             this._packetsListDataGrid = new System.Windows.Forms.DataGridView();
-            this.packetTabsList = new System.Windows.Forms.ListBox();
             this.HexViewPanel = new System.Windows.Forms.Panel();
             this.hexViewBox = new Be.Windows.Forms.HexBox();
             this.mainPanel = new Syncfusion.Windows.Forms.Tools.DockingClientPanel();
             this.tabControl = new PacketStudio.Controls.AdvancedTabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage1 = new Syncfusion.Windows.Forms.Tools.TabPageAdv();
             this.packetDefineControl1 = new PacketStudio.Controls.PacketsDef.PacketDefineControl();
-            this.plusTab = new System.Windows.Forms.TabPage();
+            this.plusTab = new Syncfusion.Windows.Forms.Tools.TabPageAdv();
             this.ribbonControl = new Syncfusion.Windows.Forms.Tools.RibbonControlAdv();
             this.homeToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.fileToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
@@ -192,7 +192,6 @@ namespace PacketStudio
             // 
             this.whiteBackgroundPanel.BackColor = System.Drawing.Color.White;
             this.whiteBackgroundPanel.Controls.Add(this._packetsListDataGrid);
-            this.whiteBackgroundPanel.Controls.Add(this.packetTabsList);
             this.whiteBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.whiteBackgroundPanel.Location = new System.Drawing.Point(1, 1);
             this.whiteBackgroundPanel.Margin = new System.Windows.Forms.Padding(1);
@@ -251,25 +250,6 @@ namespace PacketStudio
             this._packetsListDataGrid.Size = new System.Drawing.Size(1387, 241);
             this._packetsListDataGrid.TabIndex = 2;
             this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this._packetsListDataGrid_SelectionChanged);
-            // 
-            // packetTabsList
-            // 
-            this.packetTabsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.packetTabsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.packetTabsList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.packetTabsList.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.packetTabsList.FormattingEnabled = true;
-            this.packetTabsList.ItemHeight = 19;
-            this.packetTabsList.Location = new System.Drawing.Point(0, 0);
-            this.packetTabsList.Name = "packetTabsList";
-            this.packetTabsList.Size = new System.Drawing.Size(1387, 241);
-            this.packetTabsList.Sorted = true;
-            this.packetTabsList.TabIndex = 1;
-            this.packetTabsList.Visible = false;
-            this.packetTabsList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.PacketTabsList_DrawItem);
-            this.packetTabsList.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.PacketTabsList_MeasureItem);
-            this.packetTabsList.SelectedIndexChanged += new System.EventHandler(this.PacketTabsList_SelectedIndexChanged);
-            this.packetTabsList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PacketTabsList_MouseDown);
             // 
             // HexViewPanel
             // 
@@ -896,6 +876,7 @@ namespace PacketStudio
             this.MinimumSize = new System.Drawing.Size(500, 280);
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(1, 0, 1, 1);
+            this.ShowApplicationIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Packet Studio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -955,9 +936,9 @@ namespace PacketStudio
 		private System.Windows.Forms.ToolStripButton previewtoolStripButton;
 		private System.Windows.Forms.ToolStripButton previewContextToolStripButton;
 		private AdvancedTabControl tabControl;
-		private System.Windows.Forms.TabPage tabPage1;
+		private TabPageAdv tabPage1;
 		private PacketDefineControl packetDefineControl1;
-		private System.Windows.Forms.TabPage plusTab;
+		private TabPageAdv plusTab;
 		private System.Windows.Forms.Panel HexViewPanel;
 		private Be.Windows.Forms.HexBox hexViewBox;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx wiresharkToolStrip;
@@ -969,7 +950,6 @@ namespace PacketStudio
         private System.Windows.Forms.ToolStripMenuItem flattenProtocolStackToolStripMenuItem;
         private System.Windows.Forms.Panel greyBorderPanel;
         private System.Windows.Forms.Panel whiteBackgroundPanel;
-        private System.Windows.Forms.ListBox packetTabsList;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdv statusBar;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel statusTextPanel;
         private Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel wsVerPanel;
