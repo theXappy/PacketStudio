@@ -21,8 +21,9 @@ namespace PacketStudio.DataAccess.SaveData
 	    public override string LinkLayerType => ((byte)LinkType.Ethernet).ToString();
         public override string StreamID => _streamId;
 	    public override string PayloadProtoId => _ppid;
+        public override string Extension => "";
 
-		public PacketSaveDataV2(string text, HexStreamType type, string streamId, string ppid)
+        public PacketSaveDataV2(string text, HexStreamType type, string streamId, string ppid)
 		{
 			_text = text;
 			_type = type;

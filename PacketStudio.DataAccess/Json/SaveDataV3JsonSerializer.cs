@@ -7,7 +7,7 @@ using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.DataAccess.Json
 {
-    public class SaveDataJsonSerializer
+    public class SaveDataV3JsonSerializer
     {
         public byte[] Serialize(IEnumerable<PacketSaveDataV3> psd)
         {
@@ -15,7 +15,7 @@ namespace PacketStudio.DataAccess.Json
             JsonSerializer jSerializer = new JsonSerializer();
             jSerializer.Formatting = Formatting.Indented;
             TextWriter tWriter = new StringWriter();
-            jSerializer.Serialize(tWriter,psdArray);
+            jSerializer.Serialize(tWriter, psdArray);
             return Encoding.UTF8.GetBytes(tWriter.ToString());
         }
 

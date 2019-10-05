@@ -8,6 +8,7 @@ namespace PacketStudio.DataAccess.SaveData
         public abstract string StreamID { get; }
         public abstract string PayloadProtoId { get; }
         public abstract string MagicWord { get; }
+        public abstract string Extension { get; }
 
         public static PacketSaveData Parse(string magicWord, string content)
 		{

@@ -21,7 +21,7 @@ namespace PacketStudio.DataAccess.SaveData
         public override string LinkLayerType => _linkLayerType;
         public override string StreamID => _streamId;
         public override string PayloadProtoId => _payloadProtoId;
-        public string Extension => _extension;
+        public override string Extension => _extension;
 
         public PacketSaveDataV3(string text, HexStreamType type, string linkLayerType, string streamId, string payloadProtoId, string extension)
         {
@@ -31,6 +31,11 @@ namespace PacketStudio.DataAccess.SaveData
             _streamId = streamId;
             _payloadProtoId = payloadProtoId;
             _extension = extension;
+        }
+
+        public void SetExtension(string ext)
+        {
+            _extension = ext;
         }
 
         public override string ToString()

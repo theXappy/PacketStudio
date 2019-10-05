@@ -93,6 +93,7 @@ namespace PacketStudio
             ((System.ComponentModel.ISupportInitialize)(this._packetsListDataGrid)).BeginInit();
             this.HexViewPanel.SuspendLayout();
             this.mainPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
@@ -292,15 +293,22 @@ namespace PacketStudio
             // 
             // tabControl
             // 
+            this.tabControl.ActiveTabForeColor = System.Drawing.Color.Empty;
             this.tabControl.AllowClose = false;
+            this.tabControl.BeforeTouchSize = new System.Drawing.Size(935, 326);
+            this.tabControl.CloseButtonForeColor = System.Drawing.Color.Empty;
+            this.tabControl.CloseButtonHoverForeColor = System.Drawing.Color.Empty;
+            this.tabControl.CloseButtonPressedForeColor = System.Drawing.Color.Empty;
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.plusTab);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.InActiveTabForeColor = System.Drawing.Color.Empty;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(5);
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabControl.SelectedIndex = 0;
+            this.tabControl.SeparatorColor = System.Drawing.SystemColors.ControlDark;
+            this.tabControl.ShowSeparator = false;
             this.tabControl.Size = new System.Drawing.Size(935, 326);
             this.tabControl.TabIndex = 4;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
@@ -311,13 +319,16 @@ namespace PacketStudio
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.packetDefineControl1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Image = null;
+            this.tabPage1.ImageSize = new System.Drawing.Size(16, 16);
+            this.tabPage1.Location = new System.Drawing.Point(1, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(927, 300);
+            this.tabPage1.ShowCloseButton = true;
+            this.tabPage1.Size = new System.Drawing.Size(932, 299);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.ThemesEnabled = false;
             // 
             // packetDefineControl1
             // 
@@ -325,18 +336,21 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(921, 294);
+            this.packetDefineControl1.Size = new System.Drawing.Size(926, 293);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
             // 
-            this.plusTab.Location = new System.Drawing.Point(4, 22);
+            this.plusTab.Image = null;
+            this.plusTab.ImageSize = new System.Drawing.Size(16, 16);
+            this.plusTab.Location = new System.Drawing.Point(1, 25);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
-            this.plusTab.Size = new System.Drawing.Size(927, 300);
+            this.plusTab.ShowCloseButton = true;
+            this.plusTab.Size = new System.Drawing.Size(932, 299);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
-            this.plusTab.UseVisualStyleBackColor = true;
+            this.plusTab.ThemesEnabled = false;
             // 
             // ribbonControl
             // 
@@ -714,6 +728,7 @@ namespace PacketStudio
             // livePrevToolStripTextBox
             // 
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.livePrevToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
             this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 56);
@@ -831,7 +846,7 @@ namespace PacketStudio
             // statusTextPanel
             // 
             this.statusTextPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.statusTextPanel.BackColor = System.Drawing.Color.Transparent;
+            this.statusTextPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.statusTextPanel.BeforeTouchSize = new System.Drawing.Size(41, 16);
             this.statusTextPanel.Border3DStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusTextPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
@@ -849,7 +864,7 @@ namespace PacketStudio
             // wsVerPanel
             // 
             this.wsVerPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.wsVerPanel.BackColor = System.Drawing.Color.Transparent;
+            this.wsVerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.wsVerPanel.BeforeTouchSize = new System.Drawing.Size(48, 16);
             this.wsVerPanel.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255)))));
             this.wsVerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -889,6 +904,7 @@ namespace PacketStudio
             ((System.ComponentModel.ISupportInitialize)(this._packetsListDataGrid)).EndInit();
             this.HexViewPanel.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tabControl)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).EndInit();
