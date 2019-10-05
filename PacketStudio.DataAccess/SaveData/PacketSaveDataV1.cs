@@ -20,6 +20,7 @@ namespace PacketStudio.DataAccess.SaveData
 	    public bool UdpPayload => _udpPayload;
 		public override string StreamID => _streamId;
         public override string PayloadProtoId => "";
+        public override string Extension => "";
 
         public PacketSaveDataV1(string text, bool udpPayload, string streamId)
 		{

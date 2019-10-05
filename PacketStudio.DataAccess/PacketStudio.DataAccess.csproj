@@ -61,10 +61,12 @@
   <ItemGroup>
     <Compile Include="HexStreamType.cs" />
     <Compile Include="HexUtils.cs" />
+    <Compile Include="Json\V3Ext1JsonSerializer.cs" />
     <Compile Include="Providers\PssFileProvider.cs" />
     <Compile Include="Json\PssFileSaver.cs" />
     <Compile Include="LinkLayerType.cs" />
-    <Compile Include="Json\SaveDataJsonSerializer.cs" />
+    <Compile Include="Json\SaveDataV3JsonSerializer.cs" />
+    <Compile Include="SaveData\Extensions\V3Ext1.cs" />
     <Compile Include="SaveData\PacketSaveData.cs" />
     <Compile Include="SaveData\PacketSaveDataFactory.cs" />
     <Compile Include="SaveData\PacketSaveDataV1.cs" />

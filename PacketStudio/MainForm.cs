@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using PacketStudio.DataAccess.Json;
 using PacketStudio.DataAccess.SaveData;
+using PacketStudio.DataAccess.SaveData.Extensions;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
 // ReSharper disable StringIndexOfIsCultureSpecific.1
@@ -229,14 +230,37 @@ namespace PacketStudio
 
         private TabPageAdv AddNewTab(PacketSaveData saveData)
         {
-            TabPageAdv newPage = new TabPageAdv("Packet " + (_nextPacketTabNumber));
-            newPage.TabForeColor = Color.White;
-            newPage.ContextMenu = new ContextMenu(new MenuItem[]
-            {
-                new MenuItem("Rename",TabPage_onRenameRequested)
-            });
-
+            string tabLabel = "Packet " + (_nextPacketTabNumber);
             _nextPacketTabNumber++;
+
+            // Trying to get saved 'tab name' from "Version 3 Extension 1" if present
+            string extStr = saveData?.Extension;
+            if (extStr != null)
+            {
+                var serializer = new V3Ext1JsonSerializer();
+                try
+                {
+                    var res = serializer.Deserialize(extStr);
+                    if (res != null)
+                    {
+                        // Extension parsed corectly! 
+                        tabLabel = res.PacketName;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // TODO: Log this somewhere the user can see?
+                    // We wont trow it further because we don't mind if a name wasn't saved
+                }
+            }
+
+
+            // Creating the TAB, setting it's properties and events
+            TabPageAdv newPage = new TabPageAdv(tabLabel)
+            {
+                TabForeColor = Color.Black,
+                ContextMenu = new ContextMenu(new[] {new MenuItem("Rename", TabPage_onRenameRequested)})
+            };
             PacketDefineControl pdc = new PacketDefineControl(saveData);
             pdc.ContentChanged += Pdc_ContentChanged;
             pdc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -1354,6 +1378,8 @@ namespace PacketStudio
 
         private void SaveAsPss(string path)
         {
+            V3Ext1JsonSerializer extSerializer = new V3Ext1JsonSerializer();
+
             List<PacketSaveDataV3> allSaveData = new List<PacketSaveDataV3>(tabControl.TabPages.Count);
             foreach (TabPageAdv tabPage in tabControl.TabPages)
             {
@@ -1370,8 +1396,15 @@ namespace PacketStudio
                     PacketSaveData psd = pdc.GetSaveData();
                     if (!(psd is PacketSaveDataV3))
                     {
-                        throw new Exception("Expecting Packet Define Cotnrols to return PacketSaveDataV3. Can't serialize any other versions to .pss file");
+                        throw new Exception("Expecting Packet Define Controls to return PacketSaveDataV3. Can't serialize any other versions to .pss file");
                     }
+
+                    PacketSaveDataV3 psdV3 = psd as PacketSaveDataV3;
+                    // Encoding V3Ext1 Extension
+                    V3Ext1 ext = new V3Ext1(tabPage.Text,string.Empty);
+                    string extStr = extSerializer.SerializeToString(ext);
+                    psdV3.SetExtension(extStr);
+
                     allSaveData.Add(psd as PacketSaveDataV3);
                 }
                 catch (Exception ex)
