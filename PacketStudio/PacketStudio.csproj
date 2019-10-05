@@ -76,7 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\AdvancedTabControl.cs" />
+    <Compile Include="Controls\AdvancedTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PacketsDef\HexTypeWrapper.cs" />
     <Compile Include="Controls\PacketsDef\IPacketDefiner.cs" />
     <Compile Include="Controls\PacketsDef\PacketsDefinersDictionaries.cs" />
@@ -116,6 +118,8 @@
     <Compile Include="AsciiDialog.Designer.cs">
       <DependentUpon>AsciiDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TabCancelEventArgs.cs" />
+    <Compile Include="Controls\TabEventArgs.cs" />
     <Compile Include="HackyBsae64StringListSerializer.cs" />
     <Compile Include="HeurDissectorsDialog.cs">
       <SubType>Form</SubType>
@@ -241,6 +245,10 @@
     <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj">
       <Project>{587fb8b1-bc09-40d5-950d-4cd0a3c5f855}</Project>
       <Name>PacketStudio.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScintillaNET\ScintillaNET.csproj">
+      <Project>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</Project>
+      <Name>ScintillaNET</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -30,27 +30,12 @@ namespace PacketStudio.Controls.PacketsDef
         /// </summary>
         private void InitializeComponent()
         {
-            this.hexBox = new System.Windows.Forms.TextBox();
             this.packetTypeListBox = new System.Windows.Forms.ListBox();
             this.packetDefPanel = new System.Windows.Forms.Panel();
             this.rawPacketDefControl1 = new PacketStudio.Controls.PacketsDef.RawPacketDefControl();
+            this.scintillaHexBox = new ScintillaNET.Scintilla();
             this.packetDefPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // hexBox
-            // 
-            this.hexBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hexBox.Font = new System.Drawing.Font("Consolas", 10F);
-            this.hexBox.HideSelection = false;
-            this.hexBox.Location = new System.Drawing.Point(3, 3);
-            this.hexBox.Multiline = true;
-            this.hexBox.Name = "hexBox";
-            this.hexBox.Size = new System.Drawing.Size(392, 166);
-            this.hexBox.TabIndex = 6;
-            this.hexBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            this.hexBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // packetTypeListBox
             // 
@@ -79,25 +64,41 @@ namespace PacketStudio.Controls.PacketsDef
             this.rawPacketDefControl1.Size = new System.Drawing.Size(247, 82);
             this.rawPacketDefControl1.TabIndex = 0;
             // 
+            // scintillaHexBox
+            // 
+            this.scintillaHexBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scintillaHexBox.AutoCMaxHeight = 9;
+            this.scintillaHexBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.scintillaHexBox.Location = new System.Drawing.Point(3, 3);
+            this.scintillaHexBox.Name = "scintillaHexBox";
+            this.scintillaHexBox.PasteConvertEndings = false;
+            this.scintillaHexBox.Size = new System.Drawing.Size(392, 166);
+            this.scintillaHexBox.TabIndex = 16;
+            this.scintillaHexBox.WrapIndentMode = ScintillaNET.WrapIndentMode.Same;
+            this.scintillaHexBox.WrapMode = ScintillaNET.WrapMode.Char;
+            this.scintillaHexBox.TextChanged += new System.EventHandler(this.scintillaHexBox_TextChanged);
+            // 
             // PacketDefineControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.scintillaHexBox);
             this.Controls.Add(this.packetDefPanel);
             this.Controls.Add(this.packetTypeListBox);
-            this.Controls.Add(this.hexBox);
             this.Name = "PacketDefineControl";
             this.Size = new System.Drawing.Size(398, 256);
+            this.Load += new System.EventHandler(this.PacketDefineControl_Load);
             this.packetDefPanel.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TextBox hexBox;
 		private System.Windows.Forms.ListBox packetTypeListBox;
 		private System.Windows.Forms.Panel packetDefPanel;
 		private RawPacketDefControl rawPacketDefControl1;
-	}
+        private ScintillaNET.Scintilla scintillaHexBox;
+    }
 }

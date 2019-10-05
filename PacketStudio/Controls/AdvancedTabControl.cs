@@ -6,28 +6,6 @@ using System.Windows.Forms;
 
 namespace PacketStudio.Controls
 {
-    public class TabEventArgs : EventArgs
-    {
-        public TabPageAdv Tab { get; set; }
-
-        public TabEventArgs(TabPageAdv tab)
-        {
-            this.Tab = tab;
-        }
-    }
-
-    public class TabCancelEventArgs : EventArgs
-    {
-        public TabPageAdv Tab { get; set; }
-        public bool Cancel { get; set; }
-
-        public TabCancelEventArgs(TabPageAdv tab)
-        {
-            Tab = tab;
-        }
-    }
-
-
     public class AdvancedTabControl : TabControlAdv
 	{
 		public AdvancedTabControl()
@@ -143,7 +121,7 @@ namespace PacketStudio.Controls
 			TabPageAdv draggedTab = (TabPageAdv)drgevent.Data.GetData(typeof(TabPageAdv));
 			TabPageAdv pointedTab = getPointedTab(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
 
-			if (draggedTab == predraggedTab && pointedTab != null)
+			if (draggedTab == predraggedTab && draggedTab != null && pointedTab != null)
 			{
 				drgevent.Effect = DragDropEffects.Move;
 
