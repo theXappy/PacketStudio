@@ -379,7 +379,7 @@ namespace PacketStudio.Core
         private string GetJsonArgs(string pcapPath, List<string> toBeEnabledHeurs, List<string> toBeDisabledHeurs)
         {
             string oldVersionArgs = $"-r {pcapPath} -T jsonraw";
-            string newVersionArgs = $"-r {pcapPath} -T jsonraw -2  --no-duplicate-keys";
+            string newVersionArgs = $"-r {pcapPath} -T jsonraw -2  --no-duplicate-keys -o nameres.use_external_name_resolver:FALSE";
 
             string selected = oldVersionArgs;
             if (isNewVersion())
