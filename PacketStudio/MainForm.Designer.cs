@@ -287,30 +287,38 @@ namespace PacketStudio
             this.mainPanel.Controls.Add(this.tabControl);
             this.mainPanel.Location = new System.Drawing.Point(2, 397);
             this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Padding = new System.Windows.Forms.Padding(3);
             this.mainPanel.Size = new System.Drawing.Size(935, 326);
             this.mainPanel.SizeToFit = true;
             this.mainPanel.TabIndex = 9;
             // 
             // tabControl
             // 
+            this.tabControl.ActiveTabFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.tabControl.ActiveTabForeColor = System.Drawing.Color.Empty;
             this.tabControl.AllowClose = false;
-            this.tabControl.BeforeTouchSize = new System.Drawing.Size(935, 326);
+            this.tabControl.BeforeTouchSize = new System.Drawing.Size(929, 320);
+            this.tabControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabControl.BorderWidth = 1;
             this.tabControl.CloseButtonForeColor = System.Drawing.Color.Empty;
             this.tabControl.CloseButtonHoverForeColor = System.Drawing.Color.Empty;
             this.tabControl.CloseButtonPressedForeColor = System.Drawing.Color.Empty;
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.plusTab);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabControl.FixedSingleBorderColor = System.Drawing.SystemColors.WindowFrame;
+            this.tabControl.FocusOnTabClick = false;
             this.tabControl.InActiveTabForeColor = System.Drawing.Color.Empty;
-            this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(5);
+            this.tabControl.Location = new System.Drawing.Point(3, 3);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl.Name = "tabControl";
             this.tabControl.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tabControl.SeparatorColor = System.Drawing.SystemColors.ControlDark;
             this.tabControl.ShowSeparator = false;
-            this.tabControl.Size = new System.Drawing.Size(935, 326);
+            this.tabControl.Size = new System.Drawing.Size(929, 320);
             this.tabControl.TabIndex = 4;
+            this.tabControl.TabPanelBackColor = System.Drawing.SystemColors.ControlLight;
+            this.tabControl.TabStyle = typeof(Syncfusion.Windows.Forms.Tools.TabRendererDockingWhidbey);
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
             this.tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.TabControl_DragDrop);
             this.tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.TabControl_DragEnter);
@@ -318,14 +326,16 @@ namespace PacketStudio
             // 
             // tabPage1
             // 
+            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.packetDefineControl1);
+            this.tabPage1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage1.Image = null;
             this.tabPage1.ImageSize = new System.Drawing.Size(16, 16);
-            this.tabPage1.Location = new System.Drawing.Point(1, 25);
+            this.tabPage1.Location = new System.Drawing.Point(1, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.ShowCloseButton = true;
-            this.tabPage1.Size = new System.Drawing.Size(932, 299);
+            this.tabPage1.Size = new System.Drawing.Size(927, 293);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Packet 1";
             this.tabPage1.ThemesEnabled = false;
@@ -336,18 +346,20 @@ namespace PacketStudio
             this.packetDefineControl1.Location = new System.Drawing.Point(3, 3);
             this.packetDefineControl1.Margin = new System.Windows.Forms.Padding(5);
             this.packetDefineControl1.Name = "packetDefineControl1";
-            this.packetDefineControl1.Size = new System.Drawing.Size(926, 293);
+            this.packetDefineControl1.Size = new System.Drawing.Size(921, 287);
             this.packetDefineControl1.TabIndex = 0;
             // 
             // plusTab
             // 
+            this.plusTab.BackColor = System.Drawing.SystemColors.Control;
+            this.plusTab.ForeColor = System.Drawing.SystemColors.ControlText;
             this.plusTab.Image = null;
             this.plusTab.ImageSize = new System.Drawing.Size(16, 16);
-            this.plusTab.Location = new System.Drawing.Point(1, 25);
+            this.plusTab.Location = new System.Drawing.Point(1, 22);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
             this.plusTab.ShowCloseButton = true;
-            this.plusTab.Size = new System.Drawing.Size(932, 299);
+            this.plusTab.Size = new System.Drawing.Size(927, 297);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
             this.plusTab.ThemesEnabled = false;

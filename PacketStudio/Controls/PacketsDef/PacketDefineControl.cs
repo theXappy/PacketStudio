@@ -23,19 +23,16 @@ namespace PacketStudio.Controls.PacketsDef
 
         public override string Text
         {
-            get => hexBox.Text;
-            set => hexBox.Text = value;
+            get => scintillaHexBox.Text;
+            set => scintillaHexBox.Text = value;
         }
 
         public int CaretPosition
         {
-            set
-            {
-                hexBox.Select(value,0);
-            }
+            set => scintillaHexBox.CurrentPosition = value;
         }
 
-        public (int start, int len) GetSelection => (hexBox.SelectionStart, hexBox.SelectionLength);
+        public (int start, int len) GetSelection => (scintillaHexBox.SelectionStart, (scintillaHexBox.SelectionEnd - scintillaHexBox.SelectionStart) );
 
         public HexTypeWrapper PacketType
         {
@@ -72,7 +69,7 @@ namespace PacketStudio.Controls.PacketsDef
                 }
             }
 
-            hexBox.Text = data?.Text ?? "";
+            scintillaHexBox.Text = data?.Text ?? "";
             HexStreamType type = data?.Type ?? HexStreamType.Raw;
             HexTypeWrapper wrapped = new HexTypeWrapper(type);
             packetTypeListBox.SelectedItem = wrapped;
@@ -90,7 +87,7 @@ namespace PacketStudio.Controls.PacketsDef
         public TempPacketSaveData GetPacket()
         {
             byte[] bytes;
-            string rawHex = hexBox.Text;
+            string rawHex = scintillaHexBox.Text;
             try
             {
                 bytes = _deserializer.Deserialize(rawHex);
@@ -114,7 +111,7 @@ namespace PacketStudio.Controls.PacketsDef
         {
             IPacketDefiner definer = GetCurrentDefiner();
 
-            return definer.GetSaveData(hexBox.Text);
+            return definer.GetSaveData(scintillaHexBox.Text);
         }
 
 
@@ -134,20 +131,20 @@ namespace PacketStudio.Controls.PacketsDef
 
                 if (firstByteIndex < 0 || bytesLength <= 0)
                 {
-                    hexBox.SelectionStart = 0;
-                    hexBox.SelectionLength = 0;
+                    scintillaHexBox.SelectionStart = 0;
+                    scintillaHexBox.SelectionEnd = 0;
                     return;
                 }
-                hexBox.SelectionStart = firstByteIndex * 2 + (isSecondNibble ? 1 : 0);
-                hexBox.SelectionLength = bytesLength * 2;
+                scintillaHexBox.SelectionStart = firstByteIndex * 2 + (isSecondNibble ? 1 : 0);
+                scintillaHexBox.SelectionEnd = scintillaHexBox.SelectionStart + (bytesLength * 2);
             }
-            hexBox.Select();
+            scintillaHexBox.Select();
         }
 
         public void NormalizeHex()
         {
             byte[] bytes;
-            string rawHex = hexBox.Text;
+            string rawHex = scintillaHexBox.Text;
             try
             {
                 bytes = _deserializer.Deserialize(rawHex);
@@ -163,7 +160,7 @@ namespace PacketStudio.Controls.PacketsDef
                 sb.Append($"{b:x2}");
             }
             string finalHex = sb.ToString();
-            this.hexBox.Text = finalHex;
+            this.scintillaHexBox.Text = finalHex;
         }
 
         public void FlattenProtoStack()
@@ -185,7 +182,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
             string finalHex = sb.ToString();
             this.PacketType = HexStreamType.Raw;
-            this.hexBox.Text = finalHex;
+            this.scintillaHexBox.Text = finalHex;
         }
 
         // Hack to allow CTRL+A to select all
@@ -193,7 +190,7 @@ namespace PacketStudio.Controls.PacketsDef
         {
             if (e.Control && e.KeyCode == Keys.A)
             {
-                hexBox.SelectAll();
+                scintillaHexBox.SelectAll();
                 // These prevent from the control to make the annoying 'error' sound
                 e.Handled = true;
                 e.SuppressKeyPress = true;
@@ -202,7 +199,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         private void InvokeContentChanged() => ContentChanged?.Invoke(this, new EventArgs());
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void scintillaHexBox_TextChanged(object sender, EventArgs e)
         {
             InvokeContentChanged();
         }
@@ -246,6 +243,17 @@ namespace PacketStudio.Controls.PacketsDef
             }
 
             return definer;
+        }
+
+        private void PacketDefineControl_Load(object sender, EventArgs e)
+        {
+            // Adjusting 'line margin' on the scintilla text box so it shows
+            scintillaHexBox.Margins[0].Width = 16;
+
+            // Changing scintilla font
+            scintillaHexBox.Styles[ScintillaNET.Style.Default].Font = "Consolas";
+            scintillaHexBox.Styles[ScintillaNET.Style.Default].Size = 12;
+
         }
 
     }

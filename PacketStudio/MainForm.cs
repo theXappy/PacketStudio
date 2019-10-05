@@ -1544,12 +1544,16 @@ namespace PacketStudio
                     return;
                 }
 
-                // If we are removing the currently selected tab, reselect the previous tab
-                if (tabControl.SelectedTab == pointedTab && pointedTab.TabIndex > 1)
-                {
-                    tabControl.SelectedIndex = pointedTab.TabIndex - 1;
-                }
+                // Making sure a neighbor tab is selected which ISN'T the plus tab.
+                // We do that by removing the plus tab and then re-adding
+                // I Used to do this by checking the tab's index by when migrating to 'advanced' tab control
+                // it broke (would return inconsistance indexes...)
+                tabs.Remove(plusTab);
                 tabs.Remove(pointedTab);
+                // Also the 'tab changed' wouldn't call automaticlly in this case for some reason
+                // so we are forcing it here:
+                TabControl_SelectedIndexChanged(tabControl,null);
+                tabs.Add(plusTab);
 
                 // Update packet list to remove this tab
                 QueuePacketListUpdate();
