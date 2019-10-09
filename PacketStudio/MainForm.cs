@@ -1731,19 +1731,44 @@ namespace PacketStudio
 
         private void UpdatePacketListBox(CancellationToken token)
         {
-            List<TempPacketSaveData> packets;
+            Debug.Write("PACKET LIT UPDATE TIMER TIRGGERED");
+            if (!Created) return;
+
+            List<TempPacketSaveData> textOfPackets = null;
+            AutoResetEvent textOfPacketsPopulated = new AutoResetEvent(false);
             string[] packetsTextLines = null;
             int maxLine = 0;
 
             if (token.IsCancellationRequested)
                 return;
 
+            Invoke((Action) (() =>
+            {
+                if (packetListPreviewToolStripButton.Checked)
+                {
+                    try
+                    {
+                        textOfPackets = GetAllDefinedPackets();
+                    }
+                    catch (Exception)
+                    {
+                        packetsTextLines = null;
+                    }
+                }
+
+                textOfPacketsPopulated.Set();
+            }));
+
+            textOfPacketsPopulated.WaitOne();
+            if(textOfPackets == null)
+                return;
+
             if (packetListPreviewToolStripButton.Checked)
             {
                 try
                 {
-                    packets = GetAllDefinedPackets();
-                    packetsTextLines = _tshark.GetTextOutputAsync(packets, 0, CancellationToken.None, _needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
+                    packetsTextLines = _tshark.GetTextOutputAsync(textOfPackets, 0, CancellationToken.None,
+                        _needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
                     maxLine = packetsTextLines.Max(s => s.Length);
                 }
                 catch (Exception)
@@ -1764,13 +1789,14 @@ namespace PacketStudio
             if (packetsTextLines != null)
             {
                 ParseTSharkTextOutput ptto = ParseTSharkTextOutput.Parse(packetsTextLines);
-                List<ParseTSharkTextOutput.LinkedParsedPacket> zipped = ptto.Packets.Zip(tabControl.TabPages.Cast<TabPageAdv>(),
+                List<ParseTSharkTextOutput.LinkedParsedPacket> zipped = ptto.Packets.Zip(
+                    tabControl.TabPages.Cast<TabPageAdv>(),
                     ParseTSharkTextOutput.LinkedParsedPacket.FromUnlinked).ToList();
 
                 _isUpdatingList = true;
 
                 // Actual list update
-                _packetsListDataGrid.Invoke((Action)(() =>
+                _packetsListDataGrid.Invoke((Action) (() =>
                 {
                     _packetsListDataGrid.DataSource = zipped;
                     _packetsListDataGrid.ClearSelection();

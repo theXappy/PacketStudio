@@ -202,44 +202,28 @@ namespace PacketStudio.Core
 
                 string args = GetTextOutputArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
                 Debug.WriteLine("GetText Args: "+args);
-                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
-                psi.UseShellExecute = false;
-                psi.RedirectStandardError = true;
-                psi.RedirectStandardOutput = true;
-                psi.CreateNoWindow = true;
-                psi.WindowStyle = ProcessWindowStyle.Minimized;
-                Process p = Process.Start(psi);
+                var cli = Cli.Wrap(_tsharkPath)
+                    .SetArguments(args)
+                    .SetStandardOutputEncoding(Encoding.UTF8)
+                    .SetStandardErrorCallback(s => { });
 
-                StreamReader errorStream = p.StandardError;
-                StreamReader standardStream = p.StandardOutput;
-                Stream rawStdStream = standardStream.BaseStream;
-                StreamReader unicodeReader = new StreamReader(rawStdStream, Encoding.UTF8);
+                ExecutionResult res = cli.Execute();
 
-                StringBuilder output = new StringBuilder();
-                StringBuilder error = new StringBuilder();
-                while (!p.WaitForExit(1000))
+                if (res.ExitCode != 0)
                 {
-                    output.Append(unicodeReader.ReadToEnd());
-                    error.Append(errorStream.ReadToEnd());
-                }
-                output.Append(unicodeReader.ReadToEnd());
-                error.Append(errorStream.ReadToEnd());
-
-                if (p.ExitCode != 0)
-                {
-                    if (output.Length > 0)
+                    if (res.StandardOutput.Length > 0)
                     {
                         // Exit code isn't 0 but we have output so dismissing for now...
                     }
                     else
                     {
                         // No output, show exit code and error
-                        throw new Exception($"TShark returned with exit code: {p.ExitCode}\r\n{error}");
+                        throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
                     }
 
                 }
 
-                string rawStdOut = output.ToString();
+                string rawStdOut = res.StandardOutput.ToString();
 
                 return rawStdOut.Split('\n');
             }), token);
@@ -348,10 +332,11 @@ namespace PacketStudio.Core
                 string args = GetJsonArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
                 var cli = Cli.Wrap(_tsharkPath)
                     .SetArguments(args)
-                    .SetStandardErrorCallback(s => Debug.WriteLine("TSHARK ERR: " + s))
+                    .SetStandardOutputEncoding(Encoding.UTF8)
+                    .SetStandardErrorCallback(s => { })
                     .SetCancellationToken(token);
                 Task<ExecutionResult> tsharkTask = cli.ExecuteAsync();
-                bool timedOut = !tsharkTask.Wait(5_000);
+                bool timedOut = !tsharkTask.Wait(15_000);
 
                 if (timedOut)
                     throw new TaskCanceledException();
