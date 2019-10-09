@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using CliWrap;
 using CliWrap.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -344,9 +345,12 @@ namespace PacketStudio.Core
                 string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
-                CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
-                string args = GetJsonArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
-                Task<ExecutionOutput> tsharkTask = cli.ExecuteAsync(args, token);
+                string args = GetJsonArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
+                var cli = Cli.Wrap(_tsharkPath)
+                    .SetArguments(args)
+                    .SetStandardErrorCallback(s => Debug.WriteLine("TSHARK ERR: " + s))
+                    .SetCancellationToken(token);
+                Task<ExecutionResult> tsharkTask = cli.ExecuteAsync();
                 bool timedOut = !tsharkTask.Wait(5_000);
 
                 if (timedOut)
@@ -355,7 +359,7 @@ namespace PacketStudio.Core
                 if (tsharkTask.IsCanceled) // task was canceled
                     throw new TaskCanceledException();
 
-                ExecutionOutput res = tsharkTask.Result;
+                ExecutionResult res = tsharkTask.Result;
                 if (res.ExitCode != 0) // TShark returned an error exit code
                 {
                     // If we are cancelled, we don't actually care about the exit code

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using CliWrap;
 using CliWrap.Models;
 
 namespace PacketStudio.Core
@@ -29,9 +30,9 @@ namespace PacketStudio.Core
 
         public int GetPacketsCount(string captureFile)
         {
-            CliWrap.Cli cli = new CliWrap.Cli(_capinfosPath);
-
-            ExecutionOutput res = cli.Execute($"\"{captureFile}\" -c");
+            var cli = Cli.Wrap(_capinfosPath)
+                                 .SetArguments($"\"{captureFile}\" -c");
+            ExecutionResult res = cli.Execute();
             if (res.ExitCode != 0) // Capinfos returned an error exit code
             {
                 // Show the exit code + errors
