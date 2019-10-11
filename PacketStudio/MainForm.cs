@@ -117,23 +117,6 @@ namespace PacketStudio
         private CancellationTokenSource _livePrevTokenSource;
         private CancellationTokenSource _packetListTokenSource;
 
-        // Colors for the status panel
-        private BrushInfoColorArrayList _badGradient = new BrushInfoColorArrayList(new[]
-        {
-            Color.FromArgb(0xEA,0x54,0x55),
-            Color.FromArgb(0xFE,0xB6,0x92)
-        });
-        private BrushInfoColorArrayList _goodGradient = new BrushInfoColorArrayList(new[]
-        {
-            Color.FromArgb(0x28,0xC7,0x6F),
-            Color.FromArgb(0x81,0xFB,0xB8)
-        });
-        private BrushInfoColorArrayList _warnGradient = new BrushInfoColorArrayList(new[]
-        {
-            Color.FromArgb(241,194,107),
-            Color.FromArgb(251,245,149)
-        });
-
         // Colors for the status bar
         private Color _neutralStatusColor;
         private Color _badStatusColor = Color.FromArgb(0xEA, 0x54, 0x55);
