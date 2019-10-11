@@ -70,7 +70,8 @@ namespace PacketStudio
             this.insertAsciiToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.wiresharkToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.pcapToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.locateWsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.locateWsDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.locateWiresharkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewToolStripTabItem = new Syncfusion.Windows.Forms.Tools.ToolStripTabItem();
             this.livePreviewBasicToolStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
             this.previewtoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -355,11 +356,11 @@ namespace PacketStudio
             this.plusTab.ForeColor = System.Drawing.SystemColors.ControlText;
             this.plusTab.Image = null;
             this.plusTab.ImageSize = new System.Drawing.Size(16, 16);
-            this.plusTab.Location = new System.Drawing.Point(1, 22);
+            this.plusTab.Location = new System.Drawing.Point(1, 26);
             this.plusTab.Name = "plusTab";
             this.plusTab.Padding = new System.Windows.Forms.Padding(3);
             this.plusTab.ShowCloseButton = true;
-            this.plusTab.Size = new System.Drawing.Size(927, 297);
+            this.plusTab.Size = new System.Drawing.Size(927, 293);
             this.plusTab.TabIndex = 1;
             this.plusTab.Text = "+";
             this.plusTab.ThemesEnabled = false;
@@ -645,14 +646,14 @@ namespace PacketStudio
             this.wiresharkToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.wiresharkToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pcapToolStripButton,
-            this.locateWsToolStripButton});
+            this.locateWsDropDownButton});
             this.wiresharkToolStrip.Location = new System.Drawing.Point(380, 1);
             this.wiresharkToolStrip.Name = "wiresharkToolStrip";
             this.wiresharkToolStrip.Office12Mode = false;
             this.wiresharkToolStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
             this.wiresharkToolStrip.ShowCaption = false;
             this.wiresharkToolStrip.ShowLauncher = false;
-            this.wiresharkToolStrip.Size = new System.Drawing.Size(177, 65);
+            this.wiresharkToolStrip.Size = new System.Drawing.Size(215, 65);
             this.wiresharkToolStrip.TabIndex = 2;
             this.wiresharkToolStrip.Text = "Wireshark Tool Strip";
             // 
@@ -668,15 +669,23 @@ namespace PacketStudio
             this.pcapToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.pcapToolStripButton.Click += new System.EventHandler(this.GeneratePcapButton_Click);
             // 
-            // locateWsToolStripButton
+            // locateWsDropDownButton
             // 
-            this.locateWsToolStripButton.Image = global::PacketStudio.Properties.Resources.ws_dir1;
-            this.locateWsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.locateWsToolStripButton.Name = "locateWsToolStripButton";
-            this.locateWsToolStripButton.Size = new System.Drawing.Size(99, 57);
-            this.locateWsToolStripButton.Text = "Locate Wireshark";
-            this.locateWsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.locateWsToolStripButton.Click += new System.EventHandler(this.LocateWireshark_Click);
+            this.locateWsDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.locateWiresharkToolStripMenuItem});
+            this.locateWsDropDownButton.Image = global::PacketStudio.Properties.Resources.ws_dir1;
+            this.locateWsDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.locateWsDropDownButton.Name = "locateWsDropDownButton";
+            this.locateWsDropDownButton.Size = new System.Drawing.Size(108, 57);
+            this.locateWsDropDownButton.Text = "Locate Wireshark";
+            this.locateWsDropDownButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // locateWiresharkToolStripMenuItem
+            // 
+            this.locateWiresharkToolStripMenuItem.Name = "locateWiresharkToolStripMenuItem";
+            this.locateWiresharkToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.locateWiresharkToolStripMenuItem.Text = "Locate...";
+            this.locateWiresharkToolStripMenuItem.Click += new System.EventHandler(this.LocateWireshark_Click);
             // 
             // previewToolStripTabItem
             // 
@@ -740,7 +749,6 @@ namespace PacketStudio
             // livePrevToolStripTextBox
             // 
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.livePrevToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
             this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 56);
@@ -907,7 +915,7 @@ namespace PacketStudio
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Packet Studio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainFormLoaded);
             ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).EndInit();
             this.livePreviewPanel.ResumeLayout(false);
             this.packetTabsPanel.ResumeLayout(false);
@@ -971,7 +979,6 @@ namespace PacketStudio
 		private Be.Windows.Forms.HexBox hexViewBox;
 		private Syncfusion.Windows.Forms.Tools.ToolStripEx wiresharkToolStrip;
 		private System.Windows.Forms.ToolStripButton pcapToolStripButton;
-		private System.Windows.Forms.ToolStripButton locateWsToolStripButton;
 		private System.Windows.Forms.Panel packetTabsPanel;
         private System.Windows.Forms.ToolStripDropDownButton refactorDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem normalizeHexToolStripMenuItem;
@@ -986,6 +993,8 @@ namespace PacketStudio
         private System.Windows.Forms.ToolStripButton packetListPreviewToolStripButton;
         private System.Windows.Forms.ToolStripButton heurDissectorsToolStripButton;
         private System.Windows.Forms.DataGridView _packetsListDataGrid;
+        private System.Windows.Forms.ToolStripDropDownButton locateWsDropDownButton;
+        private System.Windows.Forms.ToolStripMenuItem locateWiresharkToolStripMenuItem;
     }
 }
 

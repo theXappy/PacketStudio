@@ -68,6 +68,8 @@ namespace PacketStudio
             }
         }
 
+        private HashSet<string> _lastWiresharksPaths;
+
         private CapInfosInterop _capinfos;
 
         // Unsaved changes members
@@ -163,6 +165,12 @@ namespace PacketStudio
                 HackyBsae64StringListSerializer.Deserialize(Settings.Default.NeedToBeEnabledDissectors);
             _needToBeDisabledHeuristics =
                 HackyBsae64StringListSerializer.Deserialize(Settings.Default.NeedToBeDisabledDissectors);
+
+            // Load last wireshark lists. Saved as a list - loading into a hash set
+            _lastWiresharksPaths = new HashSet<string>();
+            var lastWsSavedList = HackyBsae64StringListSerializer.Deserialize(Settings.Default.LastWiresharksList);
+            lastWsSavedList?.ForEach(savedWsPath => _lastWiresharksPaths.Add(savedWsPath));
+            LastWiresharkPathsListUpdated();
 
 
             packetTreeView.DrawNode += DrawTreeNodeLikeWireshark;
@@ -733,7 +741,7 @@ namespace PacketStudio
 
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MainFormLoaded(object sender, EventArgs e)
         {
             // Docking manager will KEEP RESETTING to TRUE no matter what I set in the designer mode or underlying code
             // So every time the load forms, Setting to FALSE *here* seems to solve this.
@@ -746,6 +754,8 @@ namespace PacketStudio
             // Give focus to PDC (and it's hex box)
             PacketDefineControl pdc = GetCurrentPacketDefineControl();
             pdc.Select();
+
+            LastWiresharkPathsListUpdated();
         }
 
         private void GeneratePcapButton_Click(object sender, EventArgs e)
@@ -923,8 +933,16 @@ namespace PacketStudio
                     string dirPath = Path.GetDirectoryName(ofd.FileName);
                     if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
                     {
-                        Settings.Default.lastWiresharkPath = ofd.FileName;
+                        string selectedPath = ofd.FileName;
+                        // Update settings
+                        Settings.Default.lastWiresharkPath = selectedPath;
+                        _lastWiresharksPaths.Add(selectedPath);
+                        Settings.Default.LastWiresharksList = HackyBsae64StringListSerializer.Serialize(_lastWiresharksPaths.ToList());
                         Settings.Default.Save();
+
+                        // Raise list updated "event"
+                        LastWiresharkPathsListUpdated();
+                        
                         _wireshark = new WiresharkInterop(wsDir.WiresharkPath);
                         _tshark = new TSharkInterop(wsDir.TsharkPath);
                         _capinfos = new CapInfosInterop(wsDir.CapinfosPath);
@@ -943,6 +961,50 @@ namespace PacketStudio
                 // since the user cancelled the dialog, we don't have a WS path to work with so we quit
                 Environment.Exit(-1);
             }
+        }
+
+        private void LastWiresharkPathsListUpdated()
+        {
+            if (_isConstructing)
+                return;
+
+
+            // Save the 'locate...' menu item before cleaing the list
+            var locateMenuItem = locateWiresharkToolStripMenuItem;
+
+            // Remove last buttons list
+            this.locateWsDropDownButton.DropDownItems.Clear();
+
+            // Make new buttons list
+            foreach (string lastWiresharksPath in _lastWiresharksPaths)
+            {
+
+
+                ToolStripMenuItem tsi = new ToolStripMenuItem(lastWiresharksPath);
+                //tsi.Width = (int)(lastWiresharksPath.Length * Math.Ceiling(tsi.Font.Size));
+                tsi.Click += delegate(object sender, EventArgs args)
+                {
+                    string dirPath = Path.GetDirectoryName(lastWiresharksPath);
+                    if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
+                    {
+                        string selectedPath = lastWiresharksPath;
+                        // Update settings
+                        Settings.Default.lastWiresharkPath = selectedPath;
+                        Settings.Default.Save();
+
+                        _wireshark = new WiresharkInterop(wsDir.WiresharkPath);
+                        _tshark = new TSharkInterop(wsDir.TsharkPath);
+                        _capinfos = new CapInfosInterop(wsDir.CapinfosPath);
+
+                        QueueLivePreviewUpdate();
+                    }
+                };
+                this.locateWsDropDownButton.DropDownItems.Add(tsi);
+            }
+
+            // Re-add locate menu item
+            this.locateWsDropDownButton.DropDownItems.Add(locateMenuItem);
+
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -2211,5 +2273,6 @@ namespace PacketStudio
             ToolstripTabItemForeColor = System.Drawing.Color.White,
             ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty
         };
+
     }
 }
