@@ -1,51 +1,60 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using PacketStudio.DataAccess.SaveData;
-using SharpPcap;
-using SharpPcap.LibPcap;
+using PcapngUtils.Common;
+using PcapngUtils.Pcap;
 
 namespace PacketStudio.DataAccess.Providers
 {
-	public class PcapProvider : IPacketsProvider
-	{
+    public class PcapProvider : IPacketsProvider
+    {
 
-		private string _fileName;
-		CaptureFileReaderDevice cfrd = null;
+        private string _fileName;
+        private PcapngUtils.Pcap.PcapReader pReader;
 
-		public PcapProvider(string fileName)
-		{
-			_fileName = fileName;
-		}
+        public PcapProvider(string fileName)
+        {
+            _fileName = fileName;
+        }
 
-		public IEnumerator<PacketSaveData> GetEnumerator()
-		{
-			try
-			{
-				cfrd = new CaptureFileReaderDevice(_fileName);
-				cfrd.Open();
-				RawCapture nextPacket;
-			    string linkType = ((byte) cfrd.LinkType).ToString();
-                while ((nextPacket = cfrd.GetNextPacket()) != null)
-				{
-					byte[] arr = nextPacket.Data;
-					yield return new PacketSaveDataV3(arr.ToHex(),HexStreamType.Raw,linkType,"1","1","");
-				}
+        public IEnumerator<PacketSaveData> GetEnumerator()
+        {
 
-			}
-			finally
-			{
-				cfrd?.Close();
-			}
-		}
+            try
+            {
+                List<PacketSaveData> blockCol = new List<PacketSaveData>();
+                 pReader = new PcapReader(_fileName);
+                string linkLayer = ((int) pReader.Header.LinkType).ToString();
+                pReader.OnReadPacketEvent += delegate(object context, IPacket packet)
+                {
+                    PacketSaveData psd = new PacketSaveDataV3(packet.Data.ToHex(),HexStreamType.Raw,linkLayer, "1", "1", "");
+                    blockCol.Add(psd);
+                };
+                pReader.ReadPackets(CancellationToken.None);
+
+                foreach (var packet in blockCol)
+                {
+                    yield return packet;
+                }
+            }
+            finally
+            {
+                pReader?.Dispose();
+            }
+        }
 
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public void Dispose()
-		{
-			cfrd?.Close();
-		}
-	}
+        public void Dispose()
+        {
+            pReader?.Dispose();
+        }
+    }
 
 
 }
