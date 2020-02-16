@@ -28,6 +28,7 @@ using System.Xml.Linq;
 using PacketStudio.DataAccess.Json;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.SaveData.Extensions;
+using PacketStudio.NetAccess;
 using Action = System.Action;
 // ReSharper disable LocalizableElement
 // ReSharper disable StringIndexOfIsCultureSpecific.1
@@ -127,6 +128,7 @@ namespace PacketStudio
 
         private static readonly Color ERROR_PINK = Color.FromArgb(255, 92, 92); // Wireshark's error background color
 
+
         public MainForm()
         {
             _livePrevTokenSource = new CancellationTokenSource();
@@ -217,6 +219,36 @@ namespace PacketStudio
             // Allow dropping in the dock manager's panels (i.e. hex view panel, tree view panel)
             WireDragDrop(this.dockingManager.ControlsArray);
 
+
+            InitializeSendToNetworkComboBox();
+        }
+
+        private void InitializeSendToNetworkComboBox()
+        {
+            int i = 0;
+            foreach (CapDeviceToken t in PacketSender.AvailableDevices)
+            {
+                Debug.WriteLine(i++);
+                Debug.WriteLine(t.ToString());
+                if (String.IsNullOrEmpty(t.Name))
+                {
+                    Debug.WriteLine("DROPPED");
+                    continue;
+                }
+                sendToComboBox.Items.Add(t);
+            }
+
+            if (sendToComboBox.Items.Count > 0)
+            {
+                // some items added, select the first
+                sendToComboBox.SelectedIndex = 0;
+            }
+            else
+            {
+                // no items added, disable the feature
+                sendToComboBox.Enabled = false;
+                sendToStripButton.Enabled = false;
+            }
         }
 
         private TabPageAdv AddNewTab(PacketSaveData saveData)
@@ -2274,5 +2306,25 @@ namespace PacketStudio
             ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty
         };
 
+        private void sendToStripButton_Click(object sender, EventArgs e)
+        {
+            if (sendToComboBox.SelectedItem is CapDeviceToken t)
+            {
+                PacketDefineControl pdc = GetCurrentPacketDefineControl();
+                byte[] data;
+                try
+                {
+                    data = pdc.GetPacket().Data;
+                }
+                catch (Exception ex)
+                {
+                    ShowErrorMessageBox($"Error getting the current packet's data.\r\n{ex.Message}",
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                PacketSender.Send(t, data);
+            }
+        }
     }
 }

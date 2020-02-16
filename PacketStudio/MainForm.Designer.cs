@@ -86,6 +86,10 @@ namespace PacketStudio
             this.statusBar = new Syncfusion.Windows.Forms.Tools.StatusBarAdv();
             this.statusTextPanel = new Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel();
             this.wsVerPanel = new Syncfusion.Windows.Forms.Tools.StatusBarAdvPanel();
+            this.netStrip = new Syncfusion.Windows.Forms.Tools.ToolStripEx();
+            this.sendToComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.sendToLabel = new System.Windows.Forms.ToolStripLabel();
+            this.sendToStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.dockingManager)).BeginInit();
             this.livePreviewPanel.SuspendLayout();
             this.packetTabsPanel.SuspendLayout();
@@ -110,6 +114,7 @@ namespace PacketStudio
             this.statusBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wsVerPanel)).BeginInit();
+            this.netStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // dockingManager
@@ -493,6 +498,7 @@ namespace PacketStudio
             this.homeToolStripTabItem.Panel.Controls.Add(this.fileToolStrip);
             this.homeToolStripTabItem.Panel.Controls.Add(this.copyToolStrip);
             this.homeToolStripTabItem.Panel.Controls.Add(this.wiresharkToolStrip);
+            this.homeToolStripTabItem.Panel.Controls.Add(this.netStrip);
             this.homeToolStripTabItem.Panel.Name = "ribbonPanel1";
             this.homeToolStripTabItem.Panel.ScrollPosition = 0;
             this.homeToolStripTabItem.Panel.ShowCaption = false;
@@ -749,6 +755,7 @@ namespace PacketStudio
             // livePrevToolStripTextBox
             // 
             this.livePrevToolStripTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.livePrevToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.livePrevToolStripTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.livePrevToolStripTextBox.Name = "livePrevToolStripTextBox";
             this.livePrevToolStripTextBox.Size = new System.Drawing.Size(100, 56);
@@ -898,6 +905,45 @@ namespace PacketStudio
             this.wsVerPanel.TabIndex = 1;
             this.wsVerPanel.Text = "Version";
             // 
+            // netStrip
+            // 
+            this.netStrip.AutoSize = false;
+            this.netStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.netStrip.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.netStrip.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.netStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.netStrip.Image = null;
+            this.netStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sendToLabel,
+            this.sendToComboBox,
+            this.sendToStripButton});
+            this.netStrip.Location = new System.Drawing.Point(597, 1);
+            this.netStrip.Name = "netStrip";
+            this.netStrip.Office12Mode = false;
+            this.netStrip.Size = new System.Drawing.Size(243, 65);
+            this.netStrip.TabIndex = 3;
+            // 
+            // sendToComboBox
+            // 
+            this.sendToComboBox.Name = "sendToComboBox";
+            this.sendToComboBox.Size = new System.Drawing.Size(121, 65);
+            // 
+            // sendToLabel
+            // 
+            this.sendToLabel.Name = "sendToLabel";
+            this.sendToLabel.Size = new System.Drawing.Size(50, 62);
+            this.sendToLabel.Text = "Send to:";
+            // 
+            // sendToStripButton
+            // 
+            this.sendToStripButton.Image = ((System.Drawing.Image)(resources.GetObject("sendToStripButton.Image")));
+            this.sendToStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.sendToStripButton.Name = "sendToStripButton";
+            this.sendToStripButton.Size = new System.Drawing.Size(40, 62);
+            this.sendToStripButton.Text = "Send!";
+            this.sendToStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.sendToStripButton.Click += new System.EventHandler(this.sendToStripButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -946,6 +992,8 @@ namespace PacketStudio
             this.statusBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.statusTextPanel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wsVerPanel)).EndInit();
+            this.netStrip.ResumeLayout(false);
+            this.netStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -995,6 +1043,10 @@ namespace PacketStudio
         private System.Windows.Forms.DataGridView _packetsListDataGrid;
         private System.Windows.Forms.ToolStripDropDownButton locateWsDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem locateWiresharkToolStripMenuItem;
+        private ToolStripEx netStrip;
+        private System.Windows.Forms.ToolStripLabel sendToLabel;
+        private System.Windows.Forms.ToolStripComboBox sendToComboBox;
+        private System.Windows.Forms.ToolStripButton sendToStripButton;
     }
 }
 
