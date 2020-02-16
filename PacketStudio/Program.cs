@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PacketStudio.NetAccess;
+
 namespace PacketStudio
 {
     static class Program

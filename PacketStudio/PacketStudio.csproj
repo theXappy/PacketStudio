@@ -223,6 +223,7 @@
   <ItemGroup>
     <Content Include="NewAgeIcons\bulleted-list.png" />
     <Content Include="NewAgeIcons\evidence.png" />
+    <Content Include="NewAgeIcons\send.png" />
     <Content Include="NewAgeIcons\text-box.png" />
     <None Include="NewAgeIcons\icons8-open-96.png" />
     <None Include="NewAgeIcons\icons8-save-96.png" />
@@ -245,6 +246,10 @@
     <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj">
       <Project>{587fb8b1-bc09-40d5-950d-4cd0a3c5f855}</Project>
       <Name>PacketStudio.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PacketStudio.NetAccess\PacketStudio.NetAccess.csproj">
+      <Project>{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}</Project>
+      <Name>PacketStudio.NetAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScintillaNET\ScintillaNET.csproj">
       <Project>{22AE2386-60F1-476E-9303-61CDB0AAC4CF}</Project>
