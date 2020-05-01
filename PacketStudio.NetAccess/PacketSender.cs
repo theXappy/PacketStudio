@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpPcap;
 using SharpPcap.Npcap;
 using SharpPcap.WinPcap;
@@ -24,17 +20,29 @@ namespace PacketStudio.NetAccess
                     _mapping = new Dictionary<string, ICaptureDevice>();
                     foreach (ICaptureDevice dev in CaptureDeviceList.Instance)
                     {
-                        if (dev is WinPcapDevice nDev)
+                        string id;
+                        string name;
+
+                        if (dev is WinPcapDevice windDev)
                         {
-                            string id = nDev.Interface.Name;
-                            string name = nDev.Interface.FriendlyName;
-
-                            _mapping[id] = dev;
-
-                            CapDeviceToken t = new CapDeviceToken(name, id);
-                            _availableDevices.Add(t);
-
+                            id = windDev.Interface.Name;
+                            name = windDev.Interface.FriendlyName;
                         }
+                        else if (dev is NpcapDevice npDev)
+                        {
+                            id = npDev.Interface.Name;
+                            name = npDev.Interface.FriendlyName;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        _mapping[id] = dev;
+
+                        CapDeviceToken t = new CapDeviceToken(name, id);
+                        _availableDevices.Add(t);
+                        
                     }
                 }
                 return _availableDevices;

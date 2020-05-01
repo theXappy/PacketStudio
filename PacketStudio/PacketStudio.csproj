@@ -55,9 +55,11 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="PacketDotNet, Version=1.0.5.0, Culture=neutral, PublicKeyToken=451414c7667b2a58, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.1.0.5\lib\net45\PacketDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpPcap, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.5.1.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="Syncfusion.Grid.Base, Version=16.3460.0.21, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89" />
     <Reference Include="Syncfusion.Grid.Windows, Version=16.3460.0.21, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89" />
@@ -68,6 +70,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -88,9 +93,7 @@
     <Compile Include="Controls\PacketsDef\RawPacketDefControl.Designer.cs">
       <DependentUpon>RawPacketDefControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PacketsDef\SctpPacketDefControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Controls\PacketsDef\SctpPacketDefControl.cs" />
     <Compile Include="Controls\PacketsDef\SctpPacketDefControl.Designer.cs">
       <DependentUpon>SctpPacketDefControl.cs</DependentUpon>
     </Compile>
@@ -235,10 +238,6 @@
     <Content Include="NewAgeIcons\ps_white.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PacketDotNet\PacketDotNet.csproj">
-      <Project>{f205181b-b208-4d37-8aec-899be63932b6}</Project>
-      <Name>PacketDotNet</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj">
       <Project>{E7558B32-25C1-4175-97E5-CA1BFFE951F8}</Project>
       <Name>PacketStudio.Core</Name>
