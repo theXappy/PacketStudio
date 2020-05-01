@@ -42,7 +42,7 @@ namespace PacketStudio.Controls.PacketsDef
             }
 
             PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
+            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetType.IPv4);
 
             bool flip = udpStreamId < 0;
             udpStreamId = Math.Abs(udpStreamId);
@@ -56,7 +56,7 @@ namespace PacketStudio.Controls.PacketsDef
                 sourceIp = destIp;
                 destIp = tempAddress;
             }
-            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.UDP };
+            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { Protocol = ProtocolType.Udp };
             TcpPacket tcpPacket = new TcpPacket(1, 1) { PayloadData = rawBytes };
             ipPacket.PayloadPacket = tcpPacket;
             etherPacket.PayloadPacket = ipPacket;
