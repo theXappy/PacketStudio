@@ -20,19 +20,19 @@ namespace PacketStudio.DataAccess
             TimestampHelper tsh = new TimestampHelper(0, 0);
 
             string pcapngPath = Path.ChangeExtension(Path.GetTempFileName(), "pcapng");
-            IEnumerable<byte> allLinkLayers = packets.Select(packetData => packetData.LinkLayer).Distinct();
+            IEnumerable<LinkLayerType> allLinkLayers = packets.Select(packetData => packetData.LinkLayer).Distinct();
 
             // A local "Link layer to Interface ID" dictionary
-            Dictionary<byte, int> linkLayerToFakeInterfaceId = new Dictionary<byte, int>();
+            Dictionary<ushort, int> linkLayerToFakeInterfaceId = new Dictionary<ushort, int>();
             int nextInterfaceId = 0;
             // Collection of face interfaces we need to add
             List<InterfaceDescriptionBlock> ifaceDescBlock = new List<InterfaceDescriptionBlock>();
-            foreach (byte linkLayer in allLinkLayers)
+            foreach (LinkLayerType linkLayer in allLinkLayers)
             {
                 InterfaceDescriptionBlock ifdb = new InterfaceDescriptionBlock((LinkTypes)linkLayer, ushort.MaxValue,
                     new InterfaceDescriptionOption(Comment: null, Name: "Fake interface " + nextInterfaceId));
                 ifaceDescBlock.Add(ifdb);
-                linkLayerToFakeInterfaceId.Add(linkLayer, nextInterfaceId);
+                linkLayerToFakeInterfaceId.Add((ushort)linkLayer, nextInterfaceId);
 
                 nextInterfaceId++;
             }
@@ -45,7 +45,7 @@ namespace PacketStudio.DataAccess
             PcapngUtils.PcapNG.PcapNGWriter ngWriter = new PcapNGWriter(pcapngPath, new List<HeaderWithInterfacesDescriptions>() { hwid });
             foreach (TempPacketSaveData packet in packets)
             {
-                int interfaceId = linkLayerToFakeInterfaceId[packet.LinkLayer];
+                int interfaceId = linkLayerToFakeInterfaceId[(ushort)packet.LinkLayer];
                 byte[] packetData = packet.Data;
                 EnchantedPacketBlock epb = new EnchantedPacketBlock(interfaceId, tsh, packetData.Length, packetData, new EnchantedPacketOption());
                 ngWriter.WritePacket(epb);

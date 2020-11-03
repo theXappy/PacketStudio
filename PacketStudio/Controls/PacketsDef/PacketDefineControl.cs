@@ -102,7 +102,7 @@ namespace PacketStudio.Controls.PacketsDef
 
             byte[] data =  definer.Generate(bytes);
             LinkLayerType llt = definer.LinkLayer;
-            TempPacketSaveData output = new TempPacketSaveData(data, (byte)llt);
+            TempPacketSaveData output = new TempPacketSaveData(data, llt);
             return output;
         }
 

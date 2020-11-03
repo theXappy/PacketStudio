@@ -66,6 +66,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFHexaEditor, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFHexaEditor.2.0.3\lib\net48\WPFHexaEditor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -73,6 +76,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BytesHiglightning.cs" />
+    <Compile Include="PacketTemplatesControls\IPacketTemplateControl.cs" />
+    <Compile Include="PacketTemplatesControls\RawTemplateControl.xaml.cs">
+      <DependentUpon>RawTemplateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PacketTemplatesControls\UdpTemplateControl.xaml.cs">
+      <DependentUpon>UdpTemplateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PacketTreeView.xaml.cs">
+      <DependentUpon>PacketTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfJokes\WidthToRightPaddingConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -89,6 +102,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PacketDefiner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PacketTemplatesControls\RawTemplateControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PacketTemplatesControls\UdpTemplateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PacketTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +144,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\EBCDIC-NoSpecialChar.tbl" />
+    <None Include="Resources\EBCDIC.tbl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -146,5 +173,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

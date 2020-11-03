@@ -41,7 +41,7 @@ namespace PacketStudio.Controls.PacketsDef
             // 
             this.packetTypeListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.packetTypeListBox.FormattingEnabled = true;
-            this.packetTypeListBox.Location = new System.Drawing.Point(3, 171);
+            this.packetTypeListBox.Location = new System.Drawing.Point(3, 77);
             this.packetTypeListBox.Name = "packetTypeListBox";
             this.packetTypeListBox.Size = new System.Drawing.Size(139, 82);
             this.packetTypeListBox.TabIndex = 14;
@@ -51,7 +51,7 @@ namespace PacketStudio.Controls.PacketsDef
             // 
             this.packetDefPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.packetDefPanel.Controls.Add(this.rawPacketDefControl1);
-            this.packetDefPanel.Location = new System.Drawing.Point(148, 171);
+            this.packetDefPanel.Location = new System.Drawing.Point(143, 77);
             this.packetDefPanel.Name = "packetDefPanel";
             this.packetDefPanel.Size = new System.Drawing.Size(247, 82);
             this.packetDefPanel.TabIndex = 15;
@@ -74,7 +74,7 @@ namespace PacketStudio.Controls.PacketsDef
             this.scintillaHexBox.Location = new System.Drawing.Point(3, 3);
             this.scintillaHexBox.Name = "scintillaHexBox";
             this.scintillaHexBox.PasteConvertEndings = false;
-            this.scintillaHexBox.Size = new System.Drawing.Size(392, 166);
+            this.scintillaHexBox.Size = new System.Drawing.Size(387, 72);
             this.scintillaHexBox.TabIndex = 16;
             this.scintillaHexBox.WrapIndentMode = ScintillaNET.WrapIndentMode.Same;
             this.scintillaHexBox.WrapMode = ScintillaNET.WrapMode.Char;
@@ -88,7 +88,7 @@ namespace PacketStudio.Controls.PacketsDef
             this.Controls.Add(this.packetDefPanel);
             this.Controls.Add(this.packetTypeListBox);
             this.Name = "PacketDefineControl";
-            this.Size = new System.Drawing.Size(398, 256);
+            this.Size = new System.Drawing.Size(393, 162);
             this.Load += new System.EventHandler(this.PacketDefineControl_Load);
             this.packetDefPanel.ResumeLayout(false);
             this.ResumeLayout(false);
