@@ -7,13 +7,11 @@
         xmlns:controls="http://schemas.syncfusion.com/wpf"
     xmlns:syncfusionskin="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
     xmlns:WpfJokes="clr-namespace:ByteArrayToPcap.NewGUI.WpfJokes"
+    xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
     syncfusionskin:SfSkinManager.VisualStyle="VisualStudio2015"
         x:Class="ByteArrayToPcap.NewGUI.MainWindow"
         mc:Ignorable="d"
         Title="Byte Array To Pcap" Height="837" Width="1166" ShowHelpButton="False">
-    <controls:RibbonWindow.Resources>
-        <WpfJokes:WidthToRightPaddingConverter x:Key="WidthToRightPaddingConverter"/>
-    </controls:RibbonWindow.Resources>
     <DockPanel>
         <controls:Ribbon x:Name="ribbon" DockPanel.Dock="Top">
             <controls:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23">
@@ -55,14 +53,7 @@
                        controls:DockingManager.CanAutoHide="False" 
                        controls:DockingManager.SideInDockedMode="Right" 
                        controls:DockingManager.DesiredWidthInDockedMode="450">
-                <TreeView x:Name="previewTree" FontFamily="Consolas" FontSize="12" Margin="0" DockPanel.Dock="Top" Foreground="#FF000001" >
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="TreeViewItem">
-                            <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                    <TreeViewItem Header="" Background="White" Padding="{Binding ActualWidth, Converter={StaticResource WidthToRightPaddingConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}" />
-                </TreeView>
+                       <local:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top"/>
             </DockPanel>
             <DockPanel controls:DockingManager.CanClose="False" 
                        controls:DockingManager.IsContextMenuButtonVisible="False" 
@@ -71,7 +62,7 @@
                        controls:DockingManager.CanAutoHide="False" 
                        controls:DockingManager.SideInDockedMode="Bottom" 
                        controls:DockingManager.DesiredHeightInDockedMode="200">
-                <TextBox x:Name="hexBox" IsReadOnly="True" Background="White" Style="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:BalloonTip}}}" FontFamily="Consolas" FontSize="16" LostFocus="hexBox_LostFocus" />
+                <wpfHexaEditor:HexEditor x:Name="hexEditor" ReadOnlyMode="True" FontSize="14" FontFamily="Consolas"/>
             </DockPanel>
         </controls:DockingManager>
     </DockPanel>

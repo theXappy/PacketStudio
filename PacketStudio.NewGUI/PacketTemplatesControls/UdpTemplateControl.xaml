@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="ByteArrayToPcap.NewGUI.PacketTemplatesControls.UdpTemplateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI.PacketTemplatesControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="350">
+    <StackPanel Orientation="Vertical" Margin="5">
+
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Left" MinWidth="60">Stream:</Label>
+            <TextBox x:Name="streamTextbox" DockPanel.Dock="Left" TextChanged="StreamTextbox_OnTextChanged"/>
+        </DockPanel>
+
+    </StackPanel>
+</UserControl>

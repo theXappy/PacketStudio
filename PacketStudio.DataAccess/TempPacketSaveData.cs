@@ -3,9 +3,9 @@
     public class TempPacketSaveData
     {
         public byte[] Data { get; private set; }
-        public byte LinkLayer { get; private set; }
+        public LinkLayerType LinkLayer { get; private set; }
 
-        public TempPacketSaveData(byte[] data, byte linkLayer)
+        public TempPacketSaveData(byte[] data, LinkLayerType linkLayer)
         {
             Data = data;
             LinkLayer = linkLayer;

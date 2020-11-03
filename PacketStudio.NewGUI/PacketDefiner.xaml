@@ -4,42 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI"
-             mc:Ignorable="d" Width="345" Height="315">
-    <DockPanel LastChildFill="True">
-        <Grid DockPanel.Dock="Bottom" Margin="5">
-            <Grid.Resources>
-                <Style TargetType="{x:Type TextBox}">
-                    <Setter Property="Margin" Value="0,0,0,8" />
-                </Style>
-                <Style TargetType="{x:Type ComboBox}">
-                    <Setter Property="Margin" Value="0,0,0,8" />
-                </Style>
-            </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="111"/>
-                <ColumnDefinition Width="167*" MinWidth="150"/>
-                <ColumnDefinition Width="56*"/>
-            </Grid.ColumnDefinitions>
-            <!-- Packet Type -->
-            <Label Grid.Column="0" Grid.Row="0">Packet Type:</Label>
-            <ComboBox x:Name="packetTypeCombo" Width="150" HorizontalAlignment="Left" Grid.Column="1" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" MouseEnter="packetTypeCombo_MouseEnter">
-                <ComboBoxItem>Raw Ethernet</ComboBoxItem>
-                <ComboBoxItem>UDP Payload</ComboBoxItem>
-                <ComboBoxItem>SCTP Payload</ComboBoxItem>
-            </ComboBox>
-            <Label x:Name="streamIdLabel" Grid.Column="0" Grid.Row="1">Stream ID:</Label>
-            <TextBox x:Name="streamIdTextbox" Grid.Column="1" Grid.Row="1" Width="150" HorizontalAlignment="Left" TextAlignment="Right" TextChanged="streamIdTextbox_TextChanged">1</TextBox>
-            <Label x:Name="ppidLabel" Grid.Column="0" Grid.Row="2">PPID:</Label>
-            <TextBox x:Name="ppidTextbox" Grid.Column="1" Grid.Row="2" Width="150" HorizontalAlignment="Left" TextAlignment="Right" TextChanged="ppidTextbox_TextChanged">1</TextBox>
+             mc:Ignorable="d" Width="345" Height="315" Loaded="UserControl_Loaded">
+        <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="hexTextBox" Grid.ColumnSpan="2" 
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 TextChanged="hexTextBox_TextChanged"
+                 LostFocus="hexTextBox_LostFocus"/>
+         <ListBox x:Name="templatesListBox" Grid.Row="1" Margin="5" SelectionChanged="ListBox_SelectionChanged">
+            <ListBoxItem>Placeholder</ListBoxItem>
+         </ListBox>
+         <DockPanel x:Name="packetTemplatePanel" Grid.Column="1" Grid.Row="1" LastChildFill="True"/>
+
         </Grid>
-        <TextBox x:Name="hexTextBox" DockPanel.Dock="Top" AcceptsReturn="True" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" LostFocus="hexTextBox_LostFocus">
-
-        </TextBox>
-
-    </DockPanel>
 </UserControl>
