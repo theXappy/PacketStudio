@@ -1,4 +1,4 @@
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
 	public class BytesHiglightning
 	{

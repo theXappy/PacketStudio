@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
 	/// <summary>
 	/// Converts a byte array to a multi-row hex string containing 

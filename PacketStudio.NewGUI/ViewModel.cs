@@ -1,16 +1,11 @@
-﻿using Syncfusion.Windows.Shared;
-using Syncfusion.Windows.Shared;
-using Syncfusion.Windows.Tools.Controls;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Syncfusion.Windows.Shared;
+using Syncfusion.Windows.Tools.Controls;
 
-
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
     public class TabItem_ViewModel : NotificationObject
     {
@@ -55,10 +50,6 @@ namespace ByteArrayToPcap.NewGUI
                 return newButtonClickCommand;
             }
         }
-        private DelegateCommand<object> newButtonClickCommand2;
-
-
-
 
         public Thickness NewButtonMargin
         {
@@ -126,12 +117,6 @@ namespace ByteArrayToPcap.NewGUI
                 Content = "This is the content of " + count + " tabitem."
             };
             tabItems.Add(new_model1);
-        }
-
-        public void NewButtonClicked2(object parameter)
-        {
-            var lastSide = NewButtonMargin.Left;
-            this.NewButtonMargin = new Thickness(lastSide+5,1,lastSide+5,1);
         }
 
 

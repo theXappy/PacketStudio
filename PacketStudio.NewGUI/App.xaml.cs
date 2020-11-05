@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ByteArrayToPcap.NewGUI.WpfJokes
+namespace PacketStudio.NewGUI.WpfJokes
 {
 	[ValueConversion(typeof(int), typeof(Thickness))]
 	public class WidthToRightPaddingConverter : IValueConverter

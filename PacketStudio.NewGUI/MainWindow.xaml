@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI"
+        xmlns:local="clr-namespace:PacketStudio.NewGUI"
         xmlns:controls="http://schemas.syncfusion.com/wpf"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
@@ -12,14 +12,14 @@
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
         syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=MaterialDarkBlue}"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        x:Class="ByteArrayToPcap.NewGUI.MainWindow"
+        xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
+        x:Class="PacketStudio.NewGUI.MainWindow"
         mc:Ignorable="d"
         Title="Byte Array To Pcap" Height="837" Width="1166" ShowHelpButton="False">
+    <controls:RibbonWindow.DataContext>
+        <newGui:ViewModel/>
+    </controls:RibbonWindow.DataContext>
 
-
-    <syncfusion:RibbonWindow.Resources>
-        <System:String x:Key="StringOnNewButton" xml:space="preserve"> + </System:String>
-    </syncfusion:RibbonWindow.Resources>
     <DockPanel>
         <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top">
             <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23">
@@ -39,7 +39,7 @@
         </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False" >
             <syncfusion:DockingManager.ClientControl>
-                <local:TabControlWrapper x:Name="tabControl"
+                <newGui:TabControlWrapper x:Name="tabControl"
                                           ItemsSource="{Binding TabItems}"
                                            NewButtonBackground="{Binding NewButtonBackground}"
                                            IsNewButtonClosedonNoChild="{Binding IsNewButtonClosedonNoChild}"
@@ -47,12 +47,6 @@
                                            NewButtonAlignment="{Binding NewButtonAlignment}"
                                            Margin="5"
                                            >
-
-                    <local:TabControlWrapper.DataContext>
-                        <local:ViewModel />
-                    </local:TabControlWrapper.DataContext>
-
-
                     <!--Custom UI for the NewButton -->
                     <syncfusion:TabControlExt.NewTabButtonTemplate>
                         <DataTemplate>
@@ -99,7 +93,7 @@
                         </DataTemplate>
                     </syncfusion:TabControlExt.EditHeaderTemplate>
 
-                </local:TabControlWrapper>
+                </newGui:TabControlWrapper>
             </syncfusion:DockingManager.ClientControl>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
@@ -108,7 +102,7 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                <local:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top"/>
+                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top"/>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 

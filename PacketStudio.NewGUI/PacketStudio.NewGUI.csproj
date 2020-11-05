@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{68615F16-0B85-4858-91F0-B8662BF3095A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ByteArrayToPcap.NewGUI</RootNamespace>
-    <AssemblyName>ByteArrayToPcap.NewGUI</AssemblyName>
+    <RootNamespace>PacketStudio.NewGUI</RootNamespace>
+    <AssemblyName>PacketStudio.NewGUI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="ViewModel.cs" />
     <Compile Include="WpfJokes\WidthToRightPaddingConverter.cs" />
+    <Compile Include="WpfJokes\WpfScavengerHunt.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
