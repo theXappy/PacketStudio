@@ -1,0 +1,15 @@
+﻿<syncfusion:TabControlExt x:Class="ByteArrayToPcap.NewGUI.TabControlWrapper"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:sfSkinManager="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+        mc:Ignorable="d"         
+        sfSkinManager:SfSkinManager.VisualStyle="Blend" 
+        >
+</syncfusion:TabControlExt>
+    

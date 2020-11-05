@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:ByteArrayToPcap.NewGUI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Syncfusion.Tools.WPF;component/Controls/TabControlExt/Themes/metrostyle.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
