@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
+using Syncfusion.SfSkinManager;
 using Syncfusion.Windows.Tools.Controls;
 using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -26,9 +27,10 @@ namespace ByteArrayToPcap.NewGUI
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        public static ViewModel TabControlViewModel;
+
         private PacketDefiner CurrentShowingDefiner => (((tabControl.SelectedItem as TabItemExt)?.Content as DockPanel)?.Children?[0] as PacketDefiner) ?? null;
-
-
+        
         private static int _packetsCounter = 0;
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -47,10 +49,17 @@ namespace ByteArrayToPcap.NewGUI
 
         public MainWindow()
         {
+            SfSkinManager.SetTheme(this, new Theme("MaterialDarkBlue"));
+            SfSkinManager.ApplyStylesOnApplication = true;
+            
+
             InitializeComponent();
 
-            tabControl.Items.Clear(); // Remove "Packet 1"
-            AddNewPacketTab(null, null); // Re-add "Packet 1"
+            if (false)
+            {
+                tabControl.Items.Clear(); // Remove "Packet 1"
+                AddNewPacketTab(null, null); // Re-add "Packet 1"
+            }
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
@@ -62,6 +71,8 @@ namespace ByteArrayToPcap.NewGUI
 
         private void AddNewPacketTab(object sender, EventArgs e)
         {
+            TabControlWrapper mnw = new TabControlWrapper();
+
             _packetsCounter++;
             DockPanel panel = new DockPanel()
             {
@@ -74,11 +85,13 @@ namespace ByteArrayToPcap.NewGUI
                 Height = Double.NaN // This means 'Auto'
             };
             panel.Children.Add(pd);
+            panel.Children.Add(mnw);
             pd.PacketChanged += PacketDefinerPacketChanged;
             TabItemExt newTab = new TabItemExt()
             {
                 Header = $"Packet {_packetsCounter}",
                 Margin = new Thickness(1),
+                Padding = new Thickness(0, 0, 5, 0),
                 Content = panel
             };
             newTab.MouseDown += PacketTab_MouseDown;

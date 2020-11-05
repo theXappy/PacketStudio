@@ -57,10 +57,9 @@ namespace ByteArrayToPcap.NewGUI.PacketTemplatesControls
                 linkLayersBox.Items.Add(label);
             }
 
-            linkLayersBox.SelectedIndex = 0;
+            // Setting default to Ethernet
+            linkLayersBox.SelectedIndex = (int)LinkLayerType.Ethernet;
         }
-
-
 
         public event EventHandler Changed;
 
@@ -74,8 +73,6 @@ namespace ByteArrayToPcap.NewGUI.PacketTemplatesControls
                 return (true, new TempPacketSaveData(rawHex, type), null);
             return (false, null, "Couldn't result Link Layer type");
         }
-
-        private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
 
         private void LinkLayersBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
             this.Changed?.Invoke(this, e);
