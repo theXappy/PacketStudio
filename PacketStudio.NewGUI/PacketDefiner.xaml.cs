@@ -7,16 +7,14 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
-using ByteArrayToPcap.NewGUI.PacketTemplatesControls;
 using PacketDotNet;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
+using PacketStudio.NewGUI.PacketTemplatesControls;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
     /// <summary>
     /// Interaction logic for PacketDefiner.xaml
@@ -27,11 +25,11 @@ namespace ByteArrayToPcap.NewGUI
 
         private HexDeserializer _deserializer = new HexDeserializer();
 
-        private UdpPacketFactory _udpPacketFactory = new UdpPacketFactory();
-        private SctpPacketFactory _sctpPacketFactory = new SctpPacketFactory();
+        private IPacketTemplateControl PacketTemplateControl => packetTemplatePanel.Children.Count != 0 ? (packetTemplatePanel.Children[0] as IPacketTemplateControl) : null;
 
-        private IPacketTemplateControl _packetTemplateControl => packetTemplatePanel.Children.Count != 0 ? (packetTemplatePanel.Children[0] as IPacketTemplateControl) : null;
-        public bool IsValid => _deserializer.TryDeserialize(this.hexTextBox.Text, out _) && _packetTemplateControl.IsValid;
+        public bool IsValid =>
+            _deserializer.TryDeserialize(hexTextBox.Text, out var data) &&
+            PacketTemplateControl.IsValidWithPayload(data);
 
         /// <summary>
         /// Returns the errors causing this defined to show 'IsValid' as false (otherwise null)
@@ -40,58 +38,7 @@ namespace ByteArrayToPcap.NewGUI
         {
             get
             {
-                //try
-                //{
-                //	_deserializer.Deserialize(this.hexTextBox.Text);
-                //}
-                //catch (Exception e)
-                //{
-                //	return e.Message;
-                //}
-                //switch (packetTypeCombo.SelectedIndex)
-                //{
-                //	case 1: // UDP
-                //		string udpStreamIdStr = streamIdTextbox.Text;
-                //		try
-                //		{
-                //			int.Parse(udpStreamIdStr);
-                //		}
-                //		catch (Exception e)
-                //		{
-                //			return e.Message;
-                //		}
-                //		break;
-                //	case 2: // SCTP
-                //		string sctpStreamIdStr = streamIdTextbox.Text;
-                //		try
-                //		{
-                //			int.Parse(sctpStreamIdStr);
-                //		}
-                //		catch (Exception e)
-                //		{
-                //			return e.Message;
-                //		}
-                //		string sctpPpid = ppidTextbox.Text;
-                //		try
-                //		{
-                //			if (sctpPpid.StartsWith("0x")) // PPID defined with HEX value
-                //			{
-                //				sctpPpid = sctpPpid.Substring(2);
-                //				Convert.ToInt32(sctpPpid, 16);
-                //			}
-                //			else // PPID defined with decimal value
-                //			{
-                //				int.Parse(sctpPpid);
-                //			}
-                //		}
-                //		catch (Exception e)
-                //		{
-                //			return e.Message;
-                //		}
-                //		break;
-                //}
-
-                //// No errors encountered, everything's fine!
+                // TODO
                 return null;
             }
         }
@@ -100,7 +47,7 @@ namespace ByteArrayToPcap.NewGUI
         {
             get
             {
-                IPacketTemplateControl templateControl = _packetTemplateControl;
+                IPacketTemplateControl templateControl = PacketTemplateControl;
                 if (templateControl == null)
                     return null;
 
@@ -113,8 +60,6 @@ namespace ByteArrayToPcap.NewGUI
         }
 
         public bool IsHexStream => _deserializer.IsHexStream(this.hexTextBox.Text);
-
-
 
         public PacketDefiner()
         {

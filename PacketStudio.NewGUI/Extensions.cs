@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
 	public static class Extensions
 	{

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,7 +18,7 @@ using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
-namespace ByteArrayToPcap.NewGUI
+namespace PacketStudio.NewGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -55,6 +53,7 @@ namespace ByteArrayToPcap.NewGUI
 
             InitializeComponent();
 
+            // TODO: remove
             if (false)
             {
                 tabControl.Items.Clear(); // Remove "Packet 1"
