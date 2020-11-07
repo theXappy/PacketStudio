@@ -17,6 +17,9 @@ namespace PacketStudio
         [STAThread]
         static void Main(string[] args)
         {
+            
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzQ4MDQ2QDMxMzgyZTMzMmUzMEVsVFV6N2tPS0tJMitVR05LQXRDNTN1bWJtWHlUZUg3dzlFbytuYlUrSkE9;MzQ4MDQ3QDMxMzgyZTMzMmUzMENaazhtZmRYVEVHV1M3MDBhaWZueU83WnRmR0dhUEtBK0x5bWhxSHZHNzA9");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 			MainForm a = new MainForm();
