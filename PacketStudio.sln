@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Core", "Packet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet", "PacketDotNet\PacketDotNet.csproj", "{F205181B-B208-4D37-8AEC-899BE63932B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScintillaNET", "ScintillaNET\ScintillaNET.csproj", "{22AE2386-60F1-476E-9303-61CDB0AAC4CF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.NetAccess", "PacketStudio.NetAccess\PacketStudio.NetAccess.csproj", "{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}"
 EndProject
 Global
@@ -53,12 +51,6 @@ Global
 		{F205181B-B208-4D37-8AEC-899BE63932B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F205181B-B208-4D37-8AEC-899BE63932B6}.Signed|Any CPU.ActiveCfg = Release|Any CPU
 		{F205181B-B208-4D37-8AEC-899BE63932B6}.Signed|Any CPU.Build.0 = Release|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Signed|Any CPU.ActiveCfg = Signed|Any CPU
-		{22AE2386-60F1-476E-9303-61CDB0AAC4CF}.Signed|Any CPU.Build.0 = Signed|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
