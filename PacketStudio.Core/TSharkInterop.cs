@@ -150,25 +150,6 @@ namespace PacketStudio.Core
                 output.Append(standardStream.ReadToEnd());
                 error.Append(errorStream.ReadToEnd());
 
-                // TODO: Using CliWrap seems to hang if TShark complains about config in the Standard Error stream 
-                // (maybe? For the 'NPF error' it doesn't?)
-                // Uncomment when solved
-
-                //CliWrap.Cli cli = new CliWrap.Cli(_tsharkPath);
-                //ExecutionOutput a = cli.Execute(new ExecutionInput(args));
-
-                // ExecutionOutput res = a;
-                //if (res.ExitCode != 0) // TShark returned an error exit code
-                //{
-                //// If we are cancelled, we don't actually care about the exit code
-                //token.ThrowIfCancellationRequested();
-
-                //// Show the exit code + errors
-                //throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
-                //}
-
-                //string xml = res.StandardOutput;
-
                 if (p.ExitCode != 0)
                 {
                     if (output.Length > 0)
