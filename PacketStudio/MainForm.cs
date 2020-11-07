@@ -811,7 +811,7 @@ namespace PacketStudio
                 return;
             }
 
-            _wireshark.ExportToWsAsync(packets).ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
+            _wireshark.ExportToWsAsync(packets).Task.ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
         }
 
         private PacketDefineControl GetCurrentPacketDefineControl()

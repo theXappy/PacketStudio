@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CliWrap;
-using CliWrap.Models;
 using PacketStudio.DataAccess;
 
 namespace PacketStudio.Core
@@ -38,21 +37,21 @@ namespace PacketStudio.Core
 			_packetsSaver = new TempPacketsSaver();
 		}
 
-		public Task<ExecutionResult> ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
+		public CommandTask<CommandResult> ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
 		{
 			string savedPcapPath = _packetsSaver.WritePackets(packets);
 			// Running wireshark
 			// Note that when wireshark exists it triggers a live preview update since
 			// the user might have enabled/disabled some protocols/preferences so we need to update the current view!
             var wsCli = Cli.Wrap(_wiresharkPath)
-                           .SetArguments(savedPcapPath);
+                           .WithArguments(savedPcapPath);
 			return wsCli.ExecuteAsync();
 		}
 		public void ExportToWs(IEnumerable<TempPacketSaveData> packets)
 		{
 			try
 			{
-				ExportToWsAsync(packets).Wait();
+				ExportToWsAsync(packets).Task.Wait();
 			}
 			catch
 			{
