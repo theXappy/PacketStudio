@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using CliWrap;
-using CliWrap.Models;
+using CliWrap.Buffered;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PacketStudio.DataAccess;
@@ -113,7 +113,7 @@ namespace PacketStudio.Core
             Debug.WriteLine("Completed in : " +
                               spw.ElapsedMilliseconds.ToString()
                               + "ms");
-            Debug.WriteLine("Process obj elapsed time : " +  pProcess.TotalProcessorTime);
+            Debug.WriteLine("Process obj elapsed time : " + pProcess.TotalProcessorTime);
             pProcess.Close();
 
             string xml = sb.ToString();
@@ -128,14 +128,15 @@ namespace PacketStudio.Core
                 string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
-                string args = GetPdmlArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
-                Debug.WriteLine("GetPdml Args: "+args);
+                string args = GetPdmlArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
+                Debug.WriteLine("GetPdml Args: " + args);
                 ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
                 psi.UseShellExecute = false;
                 psi.RedirectStandardError = true;
                 psi.RedirectStandardOutput = true;
                 psi.CreateNoWindow = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
+                // TODO CliWrap this
                 Process p = Process.Start(psi);
 
                 StreamReader errorStream = p.StandardError;
@@ -181,14 +182,14 @@ namespace PacketStudio.Core
                 string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
-                string args = GetTextOutputArgs(pcapPath,toBeEnabledHeurs,toBeDisabledHeurs);
-                Debug.WriteLine("GetText Args: "+args);
+                string args = GetTextOutputArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
+                Debug.WriteLine("GetText Args: " + args);
                 var cli = Cli.Wrap(_tsharkPath)
-                    .SetArguments(args)
-                    .SetStandardOutputEncoding(Encoding.UTF8)
-                    .SetStandardErrorCallback(s => { });
+                    .WithArguments(args)
+                    .ExecuteBufferedAsync(Encoding.UTF8);
 
-                ExecutionResult res = cli.Execute();
+                var task = cli.Task;
+                var res = task.Result;
 
                 if (res.ExitCode != 0)
                 {
@@ -204,7 +205,7 @@ namespace PacketStudio.Core
 
                 }
 
-                string rawStdOut = res.StandardOutput.ToString();
+                string rawStdOut = res.StandardOutput;
 
                 return rawStdOut.Split('\n');
             }), token);
@@ -278,9 +279,24 @@ namespace PacketStudio.Core
                     selected += " --disable-heuristic " + disabledHeur;
                 }
             }
+
+            // Force Wireshark's default columns in output format 
+            selected +=
+                " -o \"gui.column.format:" +
+                "\"No\",\"%m\"," 
+                +
+                "\"Time\",\"%t\"," +
+                "\"Source\",\"%s\"," +
+                "\"Destination\",\"%d\"," +
+                "\"Protocol\",\"%p\"," +
+                "\"Length\",\"%L\"," +
+                "\"Info\",\"%i\"" +
+                "\""
+                ;
+
             return selected;
         }
-        
+
 
         public async Task<JObject> GetJsonRawAsync(TempPacketSaveData packetBytes)
         {
@@ -312,30 +328,29 @@ namespace PacketStudio.Core
 
                 string args = GetJsonArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
                 var cli = Cli.Wrap(_tsharkPath)
-                    .SetArguments(args)
-                    .SetStandardOutputEncoding(Encoding.UTF8)
-                    .SetStandardErrorCallback(s => { })
-                    .SetCancellationToken(token);
-                Task<ExecutionResult> tsharkTask = cli.ExecuteAsync();
-                bool timedOut = !tsharkTask.Wait(15_000);
+                    .WithArguments(args)
+                    .ExecuteBufferedAsync(token);
+
+                bool timedOut = !cli.Task.Wait(15_000);
 
                 if (timedOut)
                     throw new TaskCanceledException();
 
-                if (tsharkTask.IsCanceled) // task was canceled
+                if (cli.Task.IsCanceled) // task was canceled
                     throw new TaskCanceledException();
 
-                ExecutionResult res = tsharkTask.Result;
+
+                var res = cli.Task.Result;
                 if (res.ExitCode != 0) // TShark returned an error exit code
                 {
                     // If we are cancelled, we don't actually care about the exit code
                     token.ThrowIfCancellationRequested();
 
                     // Show the exit code + errors
-                    throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{tsharkTask.Result.StandardError}");
+                    throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
                 }
 
-                string jsonArray = res.StandardOutput;
+                string jsonArray = res.StandardOutput.ToString();
 
                 JObject jsonPacket = ParseJsonAsync(jsonArray, packetIndex, token).Result;
 
@@ -441,34 +456,34 @@ namespace PacketStudio.Core
         public Task<TSharkCombinedResults> GetPdmlAndJsonAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex,
             CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            Task<XElement> pdmlTask = GetPdmlAsync2(packets, packetIndex, token,toBeEnabledHeurs,toBeDisabledHeurs);
+            Task<XElement> pdmlTask = GetPdmlAsync2(packets, packetIndex, token, toBeEnabledHeurs, toBeDisabledHeurs);
             Task<JObject> jsonTask = GetJsonRawAsync(packets, packetIndex, token, toBeEnabledHeurs, toBeDisabledHeurs);
 
-            return Task.WhenAll(new Task[] { pdmlTask,jsonTask}).ContinueWith((task) =>
-            {
-                XElement pdml = null;
-                Exception pdmlException = null;
-                JObject json = null;
-                Exception jsonException = null;
+            return Task.WhenAll(new Task[] { pdmlTask, jsonTask }).ContinueWith((task) =>
+              {
+                  XElement pdml = null;
+                  Exception pdmlException = null;
+                  JObject json = null;
+                  Exception jsonException = null;
 
-                try
-                {
-                    pdml = pdmlTask.Result;
-                }
-                catch (Exception ex)
-                {
-                    pdmlException = ex;
-                }
-                try
-                {
-                    json = jsonTask.Result;
-                }
-                catch (Exception ex)
-                {
-                    jsonException = ex;
-                }
-                return new TSharkCombinedResults(pdml, json,pdmlException,jsonException);
-            }, token);
+                  try
+                  {
+                      pdml = pdmlTask.Result;
+                  }
+                  catch (Exception ex)
+                  {
+                      pdmlException = ex;
+                  }
+                  try
+                  {
+                      json = jsonTask.Result;
+                  }
+                  catch (Exception ex)
+                  {
+                      jsonException = ex;
+                  }
+                  return new TSharkCombinedResults(pdml, json, pdmlException, jsonException);
+              }, token);
         }
 
         public Task<List<TSharkHeuristicProtocolEntry>> GetHeurDissectors()
@@ -517,20 +532,20 @@ namespace PacketStudio.Core
                 string rawStdOut = output.ToString();
                 var lines = rawStdOut.Split('\n');
                 var heuristDissectorsEntries = (from line in lines
-                    let parts = line.Split('\t')
-                    where parts.Length >= 3
-                    let carryingProto = parts[0]
-                    let targetProto = parts[1]
-                    let enabled = (parts[2].Trim() == "T")
-                    select new TSharkHeuristicProtocolEntry(targetProto, carryingProto, enabled)).ToList();
+                                                let parts = line.Split('\t')
+                                                where parts.Length >= 3
+                                                let carryingProto = parts[0]
+                                                let targetProto = parts[1]
+                                                let enabled = (parts[2].Trim() == "T")
+                                                select new TSharkHeuristicProtocolEntry(targetProto, carryingProto, enabled)).ToList();
 
                 // Code below tries to find the actual heuristic dissector names since 
                 // the way TShark provide them ('carried protocol name' and 'carrying protocol name') is sometimes
                 // mis-aligned with the registered name
                 var misalignedEntires = from entry in heuristDissectorsEntries
-                    let guessedName = entry.ShortName
-                    where (WiresharkHeuristics.List.Contains(guessedName) == false)
-                    select entry;
+                                        let guessedName = entry.ShortName
+                                        where (WiresharkHeuristics.List.Contains(guessedName) == false)
+                                        select entry;
 
                 List<TSharkHeuristicProtocolEntry>
                     entriedToRemove = new List<TSharkHeuristicProtocolEntry>(); // Entried which couldn't be saved
