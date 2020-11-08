@@ -10,3 +10,10 @@ The UI allows you to edit pcap/pcapng files, add/remove/edit packets all with li
 ![screenshot](https://i.imgur.com/GNuIcXn.png)
 
 \* PacketStudio works with offline captures, this tool does not manipulate live data.
+
+
+## Compilation
+
+* Clone
+* Open .sln in Visual Studio (Community 2019 suggested)
+* Compile & Run (F5)
