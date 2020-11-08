@@ -7,7 +7,6 @@
         xmlns:controls="http://schemas.syncfusion.com/wpf"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
-        
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
         syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=MaterialDarkBlue}"
@@ -15,13 +14,13 @@
         xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
         x:Class="PacketStudio.NewGUI.MainWindow"
         mc:Ignorable="d"
-        Title="Byte Array To Pcap" Height="837" Width="1166" ShowHelpButton="False">
+        Title="PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False">
     <controls:RibbonWindow.DataContext>
         <newGui:ViewModel/>
     </controls:RibbonWindow.DataContext>
 
     <DockPanel>
-        <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top">
+        <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167">
             <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23">
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="1,2">
                     <syncfusion:SplitButton x:Name="copyForCSharpButton" Label="Copy For C#" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png" ScrollViewer.CanContentScroll="True" Width="35" Click="CopyCSharpShort">
@@ -46,6 +45,8 @@
                                            IsNewButtonEnabled="{Binding IsNewButtonEnabled}"
                                            NewButtonAlignment="{Binding NewButtonAlignment}"
                                            Margin="5"
+                                           TabPanelBackground="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type newGui:MainWindow}}}"
+
                                            >
                     <!--Custom UI for the NewButton -->
                     <syncfusion:TabControlExt.NewTabButtonTemplate>
@@ -65,8 +66,8 @@
 
 
                     <!--Binding the header text for the Tab item-->
-                    <syncfusion:TabControlExt.ItemContainerStyle>
-                        <Style TargetType="syncfusion:TabItemExt"  BasedOn="{StaticResource MetroTabItemExtStyle}">
+                    <syncfusion:TabControlExt.ItemContainerStyle >
+                        <Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource BlendTabItemExtStyle}">
                             <Setter Property="HeaderTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
@@ -77,9 +78,18 @@
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Content}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
+                                        <local:PacketDefiner
+                                                    PacketChanged="PacketDefinerPacketChanged"
+                                                    BasePacket="{Binding
+                                                    BasePacket}"
+                                                    Margin="-2,-2"
+                                                    Background="{Binding
+                                                    Background,
+                                                    RelativeSource={RelativeSource
+                                                    FindAncestor,
+                                                    AncestorType={x:Type
+                                                    newGui:MainWindow}},
+                                                    FallbackValue=#152549}"/>
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -102,7 +112,7 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top"/>
+                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black"/>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 

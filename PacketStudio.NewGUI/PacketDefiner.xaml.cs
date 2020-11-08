@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using PacketDotNet;
-using PacketDotNet.Sctp.Chunks;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 using PacketStudio.NewGUI.PacketTemplatesControls;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -43,16 +41,32 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        public TempPacketSaveData PacketBytes
+        public static readonly DependencyProperty BasePacketProperty = DependencyProperty.Register(nameof(BasePacket), typeof(PacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(null));
+
+        public PacketSaveData BasePacket
         {
             get
             {
+                return GetValue(BasePacketProperty) as PacketSaveData;
+            }
+            set
+            {
+                SetValue(BasePacketProperty, value);
+            }
+        }
+
+        public TempPacketSaveData Packet
+        {
+            get
+            {
+                Debug.WriteLine($"@@@ At Packet prop");
                 IPacketTemplateControl templateControl = PacketTemplateControl;
                 if (templateControl == null)
                     return null;
 
                 if (!_deserializer.TryDeserialize(this.hexTextBox.Text, out byte[] bytes)) return null;
 
+                Debug.WriteLine($"@@@ Calling GenPacket in templateControl");
                 var (success, res, _) = templateControl.GeneratePacket(bytes);
                 return success ? res : null;
 
@@ -165,71 +179,5 @@ namespace PacketStudio.NewGUI
 
         private void PacketTemplateControlChanged(object sender, EventArgs e) => this.PacketChanged?.Invoke(this,e);
 
-    }
-
-    public class UdpPacketFactory
-    {
-        public TempPacketSaveData GetPacket(byte[] payload, int streamId)
-        {
-            PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
-
-            bool flip = streamId < 0;
-            streamId = Math.Abs(streamId);
-            Random r = new Random(streamId);
-
-            IPAddress sourceIp = new IPAddress(r.Next());
-            IPAddress destIp = new IPAddress(r.Next());
-            if (flip)
-            {
-                IPAddress tempAddress = sourceIp;
-                sourceIp = destIp;
-                destIp = tempAddress;
-            }
-            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.UDP };
-            UdpPacket udpPacket = new UdpPacket(1, 1) { PayloadData = payload };
-            ipPacket.PayloadPacket = udpPacket;
-            etherPacket.PayloadPacket = ipPacket;
-            return new TempPacketSaveData(etherPacket.Bytes, LinkLayerType.Ethernet);
-        }
-    }
-
-    public class SctpPacketFactory
-    {
-        public byte[] GetPacket(byte[] payload, int sctpStreamId, int ppid)
-        {
-            PacketDotNet.Sctp.Chunks.SctpPayloadProtocol proto = (SctpPayloadProtocol)ppid;
-
-            PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
-
-            bool flip = sctpStreamId < 0;
-            sctpStreamId = Math.Abs(sctpStreamId);
-            Random r = new Random(sctpStreamId);
-
-            IPAddress sourceIp = new IPAddress(r.Next());
-            IPAddress destIp = new IPAddress(r.Next());
-            if (flip)
-            {
-                IPAddress tempAddress = sourceIp;
-                sourceIp = destIp;
-                destIp = tempAddress;
-            }
-            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.SCTP };
-            SctpPacket sctpPacket = new SctpPacket(1, 1, 0, 0);
-            SctpDataChunk dataChunk = new PacketDotNet.Sctp.Chunks.SctpDataChunk(new PacketDotNet.Utils.ByteArraySegment(new byte[]
-            {
-                0x00,0x03,0x00,0x14,0x79,0x46,0x08,0xb7,0x00,0x00,0x00,0x17,0x00,0x00,0x00,0x19,0x00,0x00,0x00,0x00
-            }), sctpPacket)
-            {
-                PayloadData = payload,
-                PayloadProtocol = proto
-            };
-            dataChunk.Length = (ushort)(16 + payload.Length);
-            byte[] ipPayload = sctpPacket.Bytes.Concat(dataChunk.Bytes).ToArray();
-            ipPacket.PayloadData = ipPayload;
-            etherPacket.PayloadPacket = ipPacket;
-            return etherPacket.Bytes;
-        }
     }
 }

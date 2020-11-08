@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace PacketStudio.NewGUI
     {
         public static ViewModel TabControlViewModel;
 
-        private PacketDefiner CurrentShowingDefiner => (((tabControl.SelectedItem as TabItemExt)?.Content as DockPanel)?.Children?[0] as PacketDefiner) ?? null;
+        private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
         
         private static int _packetsCounter = 0;
         private int _livePreviewDelay;
@@ -48,7 +49,6 @@ namespace PacketStudio.NewGUI
         public MainWindow()
         {
             SfSkinManager.SetTheme(this, new Theme("MaterialDarkBlue"));
-            SfSkinManager.ApplyStylesOnApplication = true;
             
 
             InitializeComponent();
@@ -106,10 +106,11 @@ namespace PacketStudio.NewGUI
         private void PacketDefinerPacketChanged(object sender, EventArgs e)
         {
             PacketDefiner definer = ((PacketDefiner)sender);
+            Debug.WriteLine($"@@@ PacketDefinerPacketChanged. IsValid: {definer.IsValid}");
             if (definer.IsValid)
             {
                 // Update HEX view
-                byte[] bytes = definer.PacketBytes.Data;
+                byte[] bytes = definer.Packet.Data;
 
 
                 // Some WPF hacking is going on here:
@@ -129,6 +130,10 @@ namespace PacketStudio.NewGUI
                 hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                 hexEditor.ForegroundSecondColor = hexEditor.Foreground;
 
+                // Update Tab's ViewModel
+                CurrentTabItemModel.IsValid = true;
+                CurrentTabItemModel.Packet = definer.Packet;
+
                 // Call Live Update
                 if (previewEnabledCheckbox.IsChecked == true)
                 {
@@ -137,6 +142,9 @@ namespace PacketStudio.NewGUI
             }
             else
             {
+                CurrentTabItemModel.IsValid = false;
+                CurrentTabItemModel.Packet = null;
+
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
@@ -157,13 +165,14 @@ namespace PacketStudio.NewGUI
             AutoResetEvent are = new AutoResetEvent(false);
             this.Dispatcher.Invoke(() =>
             {
-                packetBytes = CurrentShowingDefiner.PacketBytes;
+                packetBytes = CurrentTabItemModel.Packet;
                 are.Set();
             });
             are.WaitOne();
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
-            XElement a = _tSharkInterop.GetPdmlAsync(packetBytes).Result;
+            var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
+            XElement a = tsharkTask.Result;
             packetTreeView.PopulateLivePreview(a);
         }
 
@@ -204,7 +213,7 @@ namespace PacketStudio.NewGUI
 
             if (packetValid)
             {
-                byte[] packet = CurrentShowingDefiner.PacketBytes.Data;
+                byte[] packet = CurrentTabItemModel.Packet.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = string.Join(", ", bytesAsStrings);
                 Clipboard.SetText(combinedString);
@@ -221,7 +230,7 @@ namespace PacketStudio.NewGUI
 
             if (packetValid)
             {
-                byte[] packet = CurrentShowingDefiner.PacketBytes.Data;
+                byte[] packet = CurrentTabItemModel.Packet.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
                 Clipboard.SetText(combinedString);
@@ -235,16 +244,16 @@ namespace PacketStudio.NewGUI
         /// <returns>True if the packet is valid, false otherwise</returns>
         private bool AssertCurrentPacketValid()
         {
-            PacketDefiner currenDefiner = CurrentShowingDefiner;
-            if (currenDefiner == null)
+            TabItemViewModel currItem = CurrentTabItemModel;
+            if (currItem == null)
             {
                 MessageBox.Show("Couldn't find current packet definer control.");
                 return false;
             }
 
-            if (!currenDefiner.IsValid)
+            if (!currItem.IsValid)
             {
-                string error = currenDefiner.ValidationError;
+                string error = currItem.ValidationError;
                 MessageBox.Show("Error in the packet definer: \r\n" + error);
                 return false;
             }
@@ -315,7 +324,8 @@ namespace PacketStudio.NewGUI
 
         private void RibbonButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentShowingDefiner.NormalizeHex();
+            // TODO:
+            //CurrentTabItemModel.NormalizeHex();
         }
     }
 }

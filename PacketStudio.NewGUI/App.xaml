@@ -8,6 +8,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Syncfusion.Tools.WPF;component/Controls/TabControlExt/Themes/metrostyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Syncfusion.Tools.WPF;component/Controls/TabControlExt/Themes/blendstyle.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
