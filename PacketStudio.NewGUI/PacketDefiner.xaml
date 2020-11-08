@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PacketStudio.NewGUI"
-             mc:Ignorable="d" Width="345" Height="315" Loaded="UserControl_Loaded">
-        <Grid>
+             mc:Ignorable="d" d:DesignHeight="350" d:DesignWidth="300" Loaded="UserControl_Loaded"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
+        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=MaterialDarkBlue}"
+             >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -14,15 +18,24 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="hexTextBox" Grid.ColumnSpan="2" 
+        <TextBox  x:Name="hexTextBox"
+                  Grid.ColumnSpan="2" 
+                  Grid.Row="0"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
                  TextChanged="hexTextBox_TextChanged"
-                 LostFocus="hexTextBox_LostFocus"/>
-         <ListBox x:Name="templatesListBox" Grid.Row="1" Margin="5" SelectionChanged="ListBox_SelectionChanged">
-            <ListBoxItem>Placeholder</ListBoxItem>
-         </ListBox>
-         <DockPanel x:Name="packetTemplatePanel" Grid.Column="1" Grid.Row="1" LastChildFill="True"/>
+                 LostFocus="hexTextBox_LostFocus" 
+                  VerticalContentAlignment="Top"/>
+        <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
+            <ListBox x:Name="templatesListBox" 
+                  SelectionChanged="ListBox_SelectionChanged">
+                <ListBoxItem>Placeholder</ListBoxItem>
 
-        </Grid>
+            </ListBox>
+        </Border>
+        <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
+            <DockPanel x:Name="packetTemplatePanel" LastChildFill="True"/>
+        </Border>
+
+    </Grid>
 </UserControl>

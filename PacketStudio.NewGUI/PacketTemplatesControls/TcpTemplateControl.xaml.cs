@@ -8,12 +8,12 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("UDP Packet")]
-    public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
+    [DisplayName("TCP Packet")]
+    public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
     {
-        private static UdpPacketFactory _factory = new UdpPacketFactory();
+        private static TcpPacketFactory _factory = new TcpPacketFactory();
 
-        public UdpTemplateControl()
+        public TcpTemplateControl()
         {
             InitializeComponent();
             streamTextbox.Text = "1";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +29,8 @@ namespace PacketStudio.NewGUI
         public PacketTreeView()
         {
             InitializeComponent();
+			// Remove placeholder item
+			//previewTree.Items.Clear();
         }
 
 		private Brush _protoBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
@@ -122,6 +125,7 @@ namespace PacketStudio.NewGUI
 					else
 					{
 						// Insert at root level
+						Debug.WriteLine("@@@  Adding to root: "+nextNode.Header);
 						previewTree.Items.Insert(0, nextNode);
 					}
 				}

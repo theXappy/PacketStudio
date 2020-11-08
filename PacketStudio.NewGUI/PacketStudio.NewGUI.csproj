@@ -115,6 +115,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BytesHiglightning.cs" />
+    <Compile Include="PacketTemplatesControls\SctpTemplateControl.xaml.cs">
+      <DependentUpon>SctpTemplateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PacketTemplatesControls\TcpTemplateControl.xaml.cs">
+      <DependentUpon>TcpTemplateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SctpPacketFactory.cs" />
     <Compile Include="TabControlWrapper.xaml.cs">
       <DependentUpon>TabControlWrapper.xaml</DependentUpon>
     </Compile>
@@ -128,6 +135,9 @@
     <Compile Include="PacketTreeView.xaml.cs">
       <DependentUpon>PacketTreeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TabItemViewModel.cs" />
+    <Compile Include="TcpPacketFactory.cs" />
+    <Compile Include="UdpPacketFactory.cs" />
     <Compile Include="ViewModel.cs" />
     <Compile Include="WpfJokes\WidthToRightPaddingConverter.cs" />
     <Compile Include="WpfJokes\WpfScavengerHunt.cs" />
@@ -145,6 +155,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PacketTemplatesControls\SctpTemplateControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PacketTemplatesControls\TcpTemplateControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="TabControlWrapper.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

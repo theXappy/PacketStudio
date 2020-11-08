@@ -7,32 +7,6 @@ using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI
 {
-    public class TabItem_ViewModel : NotificationObject
-    {
-        private string header;
-        private string content;
-
-        public string Header
-        {
-            get { return header; }
-            set
-            {
-                header = value;
-                this.RaisePropertyChanged(nameof(Header));
-            }
-        }
-
-        public string Content
-        {
-            get { return content; }
-            set
-            {
-                content = value;
-                this.RaisePropertyChanged(nameof(Content));
-            }
-        }
-    }
-
     public class ViewModel : NotificationObject
     {
         private NewButtonAlignment newButtonAlignment = NewButtonAlignment.Last;
@@ -40,7 +14,7 @@ namespace PacketStudio.NewGUI
         private Thickness newButtonMargin = new Thickness(5,1,5,1); 
         private bool isNewButtonClosedonNoChild = true;
         private bool isNewButtonEnabled = true;
-        private ObservableCollection<TabItem_ViewModel> tabItems;
+        private ObservableCollection<TabItemViewModel> tabItems;
         private DelegateCommand<object> newButtonClickCommand;
 
         public ICommand NewButtonClickCommand
@@ -98,7 +72,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        public ObservableCollection<TabItem_ViewModel> TabItems
+        public ObservableCollection<TabItemViewModel> TabItems
         {
             get { return tabItems; }
             set
@@ -111,7 +85,7 @@ namespace PacketStudio.NewGUI
         {
             TabControlExt tabControl = parameter as TabControlExt;
             int count = tabControl.Items.Count + 1;
-            TabItem_ViewModel new_model1 = new TabItem_ViewModel()
+            TabItemViewModel new_model1 = new TabItemViewModel()
             {
                 Header = "tabItem" + count,
                 Content = "This is the content of " + count + " tabitem."
@@ -122,12 +96,12 @@ namespace PacketStudio.NewGUI
 
         public void PopulateCollection()
         {
-            TabItem_ViewModel model1 = new TabItem_ViewModel()
+            TabItemViewModel model1 = new TabItemViewModel()
             {
                 Header = "tabItem1",
                 Content = "This is the content of 1 tabitem."
             };
-            TabItem_ViewModel model2 = new TabItem_ViewModel()
+            TabItemViewModel model2 = new TabItemViewModel()
             {
                 Header = "tabItem2",
                 Content = "This is the content of 2 tabitem."
@@ -139,7 +113,7 @@ namespace PacketStudio.NewGUI
         }
         public ViewModel()
         {
-            tabItems = new ObservableCollection<TabItem_ViewModel>();
+            tabItems = new ObservableCollection<TabItemViewModel>();
             PopulateCollection();
             newButtonClickCommand = new DelegateCommand<object>(NewButtonClicked);
 
