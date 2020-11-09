@@ -129,7 +129,8 @@ namespace PacketStudio.Core
                 token.ThrowIfCancellationRequested();
 
                 string args = GetPdmlArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
-                Debug.WriteLine("GetPdml Args: " + args);
+                Debug.WriteLine(" @@@ [TShark] GetPdml Args: " + args);
+                Debug.WriteLine(" @@@ [TShark] GetPdml First Packet: " + packets.First());
                 ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
                 psi.UseShellExecute = false;
                 psi.RedirectStandardError = true;

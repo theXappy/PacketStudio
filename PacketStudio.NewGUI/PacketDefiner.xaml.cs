@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -137,7 +138,15 @@ namespace PacketStudio.NewGUI
 
             var assm = this.GetType().Assembly;
             var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
-            foreach (var packetTemplateType in packetTemplateTypes)
+            var sortedTemplateTypes = packetTemplateTypes.ToList();
+            sortedTemplateTypes.Sort((type1, type2) =>
+            {
+                var ord1 = type1.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
+                var ord2 = type2.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
+                return ord1.Order.CompareTo(ord2.Order);
+            });
+
+            foreach (var packetTemplateType in sortedTemplateTypes)
             {
                 DisplayNameAttribute attr = packetTemplateType.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault() as DisplayNameAttribute;
                 var name = attr.DisplayName;
