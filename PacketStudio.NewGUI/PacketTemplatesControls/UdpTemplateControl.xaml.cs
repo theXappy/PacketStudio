@@ -9,6 +9,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
     [DisplayName("UDP Packet")]
+    [Order(2)]
     public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
     {
         private static UdpPacketFactory _factory = new UdpPacketFactory();

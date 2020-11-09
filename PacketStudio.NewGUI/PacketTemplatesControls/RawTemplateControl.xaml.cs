@@ -10,6 +10,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
     [DisplayName("Raw Frame")]
+    [Order(0)]
     public partial class RawTemplateControl : UserControl, IPacketTemplateControl
     {
         private static Dictionary<string, LinkLayerType> _singletonMap = null;
@@ -56,7 +57,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         public (bool success, TempPacketSaveData packet, string error) GeneratePacket(byte[] rawHex)
         {
-            string name = linkLayersBox.SelectionBoxItem as string;
+            string name = linkLayersBox.SelectedItem as string;
             name = name.Substring(name.IndexOf(" ", StringComparison.Ordinal)).Trim();
             if (_map.TryGetValue(name, out LinkLayerType type))
                 return (true, new TempPacketSaveData(rawHex, type), null);

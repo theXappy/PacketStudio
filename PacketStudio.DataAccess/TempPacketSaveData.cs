@@ -10,5 +10,17 @@
             Data = data;
             LinkLayer = linkLayer;
         }
+
+        public override string ToString()
+        {
+            string ToHex(byte[] bs)
+            {
+                string outt = "";
+                foreach (byte b in bs)
+                    outt += b.ToString("X2");
+                return outt;
+            }
+            return $"{nameof(LinkLayer)}: {LinkLayer}, {nameof(Data)}: {ToHex(Data)}";
+        }
     }
 }

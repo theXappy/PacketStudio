@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Controls;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.DataAccess;
@@ -11,6 +12,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
     [DisplayName("SCTP Packet")]
+    [Order(3)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl
     {
         private static SctpPacketFactory _factory = new SctpPacketFactory();
@@ -72,7 +74,8 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         public (bool success, TempPacketSaveData packet, string error) GeneratePacket(byte[] rawHex)
         {
-            string name = ppidBox.SelectionBoxItem as string;
+            string name = ppidBox.SelectedItem as string;
+            Debug.WriteLine($@"@@@ [sctp] gen with ppid: '{name}'");
             name = name.Substring(name.IndexOf(" ", StringComparison.Ordinal)).Trim();
             if (!_map.TryGetValue(name, out var ppid))
                 return (false, null, $"Bad PPID value {name} at {this.GetType()}");
@@ -89,6 +92,11 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
 
-        private void ppidBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => Changed?.Invoke(this, e);
+        private void ppidBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            Debug.WriteLine($@"@@@ [sctp] SelectionChanged '{e.AddedItems[0]}', Selectd ppid (from box item): {ppidBox.SelectionBoxItem}, Selectd ppid (from item): {ppidBox.SelectedItem}");
+            Changed?.Invoke(this, e);
+        }
     }
 }

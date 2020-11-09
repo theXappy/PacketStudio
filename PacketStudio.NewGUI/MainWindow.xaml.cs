@@ -161,19 +161,25 @@ namespace PacketStudio.NewGUI
 
         private void ShowLivePreview()
         {
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Starting Live Preview iteration");
             TempPacketSaveData packetBytes = null;
             AutoResetEvent are = new AutoResetEvent(false);
-            this.Dispatcher.Invoke(() =>
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Calling dispatcher");
+            this.Dispatcher.BeginInvoke((Action)(() =>
             {
+                Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Dispatcher in progress");
                 packetBytes = CurrentTabItemModel.Packet;
-                are.Set();
-            });
-            are.WaitOne();
+            })).Task.Wait();
+
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Finished waiting for dispatcher. Packet Bytes: {packetBytes}");
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Getting PDML");
             var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
-            XElement a = tsharkTask.Result;
-            packetTreeView.PopulateLivePreview(a);
+            XElement packetPdml = tsharkTask.Result;
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Got PDML, populating");
+            packetTreeView.PopulateLivePreview(packetPdml);
+            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Tree populated");
         }
 
 

@@ -31,10 +31,14 @@ namespace PacketStudio.NewGUI
             InitializeComponent();
 			// Remove placeholder item
 			//previewTree.Items.Clear();
+            _treeViewItemsStlye = placeholderTreeViewItem.Style;
         }
 
 		private Brush _protoBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
 		private Brush _fieldBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+
+        private Style _treeViewItemsStlye;
 
 
         private Dictionary<TreeViewItem, BytesHiglightning> _bytesHiglightnings = new Dictionary<TreeViewItem, BytesHiglightning>();
@@ -43,6 +47,7 @@ namespace PacketStudio.NewGUI
 
 		public void PopulateLivePreview(XElement rootElement)
 		{
+			Debug.WriteLine("@@@ [PacketTree] populating tree");
 			_bytesHiglightnings.Clear();
 			this.Dispatcher.Invoke((Action)(() =>
 			{
@@ -103,7 +108,8 @@ namespace PacketStudio.NewGUI
 					{
 						Header = showname,
 						Background = isProtocolNode ? _protoBrush : _fieldBrush,
-						Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+						Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+						//Style = this._treeViewItemsStlye
 					};
                     nextNode.ToolTip = null;
 					string bytesIndexStr = nextElem.GetAttribute("pos")?.Value ?? "0";

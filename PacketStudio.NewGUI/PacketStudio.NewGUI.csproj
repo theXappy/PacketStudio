@@ -115,6 +115,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BytesHiglightning.cs" />
+    <Compile Include="PacketTemplatesControls\OrderAttribute.cs" />
     <Compile Include="PacketTemplatesControls\SctpTemplateControl.xaml.cs">
       <DependentUpon>SctpTemplateControl.xaml</DependentUpon>
     </Compile>
