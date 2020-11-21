@@ -45,7 +45,7 @@ namespace PacketStudio.Controls.PacketsDef
             this.packetTypeListBox.Name = "packetTypeListBox";
             this.packetTypeListBox.Size = new System.Drawing.Size(139, 82);
             this.packetTypeListBox.TabIndex = 14;
-            this.packetTypeListBox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.packetTypeListBox.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             // 
             // packetDefPanel
             // 
@@ -78,7 +78,7 @@ namespace PacketStudio.Controls.PacketsDef
             this.scintillaHexBox.TabIndex = 16;
             this.scintillaHexBox.WrapIndentMode = ScintillaNET.WrapIndentMode.Same;
             this.scintillaHexBox.WrapMode = ScintillaNET.WrapMode.Char;
-            this.scintillaHexBox.TextChanged += new System.EventHandler(this.scintillaHexBox_TextChanged);
+            this.scintillaHexBox.TextChanged += new System.EventHandler(this.ScintillaHexBox_TextChanged);
             // 
             // PacketDefineControl
             // 

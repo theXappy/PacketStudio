@@ -16,7 +16,7 @@ namespace PacketStudio.Controls.PacketsDef
 {
     public partial class PacketDefineControl : UserControl
     {
-        private HexDeserializer _deserializer;
+        private readonly HexDeserializer _deserializer;
         private HexTypeWrapper _packetType;
 
         public event EventHandler<EventArgs> ContentChanged;
@@ -185,34 +185,21 @@ namespace PacketStudio.Controls.PacketsDef
             this.scintillaHexBox.Text = finalHex;
         }
 
-        // Hack to allow CTRL+A to select all
-        private void textBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                scintillaHexBox.SelectAll();
-                // These prevent from the control to make the annoying 'error' sound
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-            }
-        }
 
         private void InvokeContentChanged() => ContentChanged?.Invoke(this, new EventArgs());
 
-        private void scintillaHexBox_TextChanged(object sender, EventArgs e)
+        private void ScintillaHexBox_TextChanged(object sender, EventArgs e)
         {
             InvokeContentChanged();
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             PacketType = (HexTypeWrapper)packetTypeListBox.SelectedItem;
             IPacketDefiner lastDefiner = GetCurrentDefiner();
             lastDefiner.PacketChanged -= PacketDefiner_PacketChanged;
             packetDefPanel.Controls.Clear();
-            Control packetDefControl;
-            Func<Control> controlCreatorFunc;
-            if (!PacketsDefinersDictionaries.StreamTypeToPacketDefineControlFactory.TryGetValue(PacketType.Type, out controlCreatorFunc))
+            if (!PacketsDefinersDictionaries.StreamTypeToPacketDefineControlFactory.TryGetValue(PacketType.Type, out var controlCreatorFunc))
             {
                 // Couldn't find a creation function
                 throw new ArgumentException($"Can't find creation method for packets of type '{PacketType}'.\r\n" +
@@ -220,7 +207,7 @@ namespace PacketStudio.Controls.PacketsDef
                     $"type without updating the {nameof(PacketDefineControl)} class.");
             }
             // Calling C'tor of the desired packet def control
-            packetDefControl = controlCreatorFunc();
+            Control packetDefControl = controlCreatorFunc();
 
             packetDefPanel.Controls.Add(packetDefControl);
             packetDefControl.Dock = DockStyle.Fill;
@@ -236,8 +223,7 @@ namespace PacketStudio.Controls.PacketsDef
 
         private IPacketDefiner GetCurrentDefiner()
         {
-            IPacketDefiner definer = packetDefPanel.Controls?[0] as IPacketDefiner;
-            if (definer == null)
+            if (!(packetDefPanel.Controls?[0] is IPacketDefiner definer))
             {
                 throw new Exception("Can't find packet definer control???");
             }

@@ -20,7 +20,7 @@
         <Label DockPanel.Dock="Left" MinWidth="60">Stream:</Label>
         <TextBox x:Name="streamTextbox" Grid.Column="1" TextChanged="StreamTextbox_OnTextChanged"/>
         <Label DockPanel.Dock="Left"  Grid.Row="1" MinWidth="60">Link Layer:</Label>
-        <ComboBox x:Name="ppidBox" Grid.Column="1" Grid.Row="1" SelectionChanged="ppidBox_SelectionChanged" />
+        <ComboBox x:Name="ppidBox" Grid.Column="1" Grid.Row="1" SelectionChanged="PpidBox_SelectionChanged" />
     </Grid>
 
 </UserControl>

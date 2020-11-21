@@ -15,10 +15,10 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [Order(3)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl
     {
-        private static SctpPacketFactory _factory = new SctpPacketFactory();
+        private static readonly SctpPacketFactory _factory = new SctpPacketFactory();
         private static Dictionary<string, SctpPayloadProtocol> _singletonMap;
 
-        private static Dictionary<string, SctpPayloadProtocol> _map
+        private static Dictionary<string, SctpPayloadProtocol> PpidsMap
         {
             get
             {
@@ -42,7 +42,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         {
             InitializeComponent();
 
-            foreach (KeyValuePair<string, SctpPayloadProtocol> nameAndType in _map)
+            foreach (KeyValuePair<string, SctpPayloadProtocol> nameAndType in PpidsMap)
             {
                 SctpPayloadProtocol type = nameAndType.Value;
                 string name = nameAndType.Key;
@@ -66,7 +66,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
             string name = ppidBox.SelectionBoxItem as string;
             name = name.Substring(name.IndexOf(" ", StringComparison.Ordinal)).Trim();
-            if (!_map.TryGetValue(name, out var type))
+            if (!PpidsMap.TryGetValue(name, out _))
                 return false;
             
             return raw.Length <= ushort.MaxValue;
@@ -75,9 +75,8 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         public (bool success, TempPacketSaveData packet, string error) GeneratePacket(byte[] rawHex)
         {
             string name = ppidBox.SelectedItem as string;
-            Debug.WriteLine($@"@@@ [sctp] gen with ppid: '{name}'");
             name = name.Substring(name.IndexOf(" ", StringComparison.Ordinal)).Trim();
-            if (!_map.TryGetValue(name, out var ppid))
+            if (!PpidsMap.TryGetValue(name, out var ppid))
                 return (false, null, $"Bad PPID value {name} at {this.GetType()}");
 
 
@@ -92,11 +91,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
 
-        private void ppidBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            Debug.WriteLine($@"@@@ [sctp] SelectionChanged '{e.AddedItems[0]}', Selectd ppid (from box item): {ppidBox.SelectionBoxItem}, Selectd ppid (from item): {ppidBox.SelectedItem}");
-            Changed?.Invoke(this, e);
-        }
+        private void PpidBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => Changed?.Invoke(this, e);
     }
 }

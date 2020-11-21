@@ -16,9 +16,9 @@ namespace PacketStudio.NewGUI
     {
 		public class PacketTreeSelectionChangedArgs : EventArgs
         {
-            public BytesHiglightning BytesHiglightning { get; private set; }
+            public BytesHighlightning BytesHiglightning { get; private set; }
 
-            public PacketTreeSelectionChangedArgs(BytesHiglightning bytesHiglightning)
+            public PacketTreeSelectionChangedArgs(BytesHighlightning bytesHiglightning)
             {
                 BytesHiglightning = bytesHiglightning;
             }
@@ -31,23 +31,18 @@ namespace PacketStudio.NewGUI
             InitializeComponent();
 			// Remove placeholder item
 			//previewTree.Items.Clear();
-            _treeViewItemsStlye = placeholderTreeViewItem.Style;
         }
 
-		private Brush _protoBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-		private Brush _fieldBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+		private readonly Brush _protoBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+		private readonly Brush _fieldBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
 
-        private Style _treeViewItemsStlye;
-
-
-        private Dictionary<TreeViewItem, BytesHiglightning> _bytesHiglightnings = new Dictionary<TreeViewItem, BytesHiglightning>();
+        private readonly Dictionary<TreeViewItem, BytesHighlightning> _bytesHiglightnings = new Dictionary<TreeViewItem, BytesHighlightning>();
 
 
 
 		public void PopulateLivePreview(XElement rootElement)
 		{
-			Debug.WriteLine("@@@ [PacketTree] populating tree");
 			_bytesHiglightnings.Clear();
 			this.Dispatcher.Invoke((Action)(() =>
 			{
@@ -104,21 +99,18 @@ namespace PacketStudio.NewGUI
 
 					bool isProtocolNode = !hasParent;
 
-					TreeViewItem nextNode = new TreeViewItem()
-					{
-						Header = showname,
-						Background = isProtocolNode ? _protoBrush : _fieldBrush,
-						Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-						//Style = this._treeViewItemsStlye
-					};
-                    nextNode.ToolTip = null;
-					string bytesIndexStr = nextElem.GetAttribute("pos")?.Value ?? "0";
-					int bytesIndex = 0;
-					int.TryParse(bytesIndexStr, out bytesIndex);
+                    TreeViewItem nextNode = new TreeViewItem
+                    {
+                        Header = showname,
+                        Background = isProtocolNode ? _protoBrush : _fieldBrush,
+                        Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                        ToolTip = null,
+                    };
+                    string bytesIndexStr = nextElem.GetAttribute("pos")?.Value ?? "0";
+                    int.TryParse(bytesIndexStr, out var bytesIndex);
 					string bytesLengthStr = nextElem.GetAttribute("size")?.Value ?? "0";
-					int bytesLength = 0;
-					int.TryParse(bytesLengthStr, out bytesLength);
-					_bytesHiglightnings[nextNode] = new BytesHiglightning(bytesIndex,bytesLength); 
+                    int.TryParse(bytesLengthStr, out var bytesLength);
+					_bytesHiglightnings[nextNode] = new BytesHighlightning(bytesIndex,bytesLength); 
 
 					nextNode.Selected += TreeItem_Selected;
 
@@ -131,7 +123,6 @@ namespace PacketStudio.NewGUI
 					else
 					{
 						// Insert at root level
-						Debug.WriteLine("@@@  Adding to root: "+nextNode.Header);
 						previewTree.Items.Insert(0, nextNode);
 					}
 				}
@@ -147,14 +138,11 @@ namespace PacketStudio.NewGUI
 			routedEventArgs.Handled = true;
 
 			TreeViewItem tvi = sender as TreeViewItem;
-			if (tvi == null)
+
+            if(!(tvi?.ToolTip is BytesHighlightning highlighting))
 				return;
 
-			BytesHiglightning bh = tvi.ToolTip as BytesHiglightning;
-			if(bh == null)
-				return;
-
-			SelectedItemChanged?.Invoke(this, new PacketTreeSelectionChangedArgs(bh));
+			SelectedItemChanged?.Invoke(this, new PacketTreeSelectionChangedArgs(highlighting));
 
 			this.Dispatcher.BeginInvoke((Action)(()=>{
 				tvi.Focus();

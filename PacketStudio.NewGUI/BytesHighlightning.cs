@@ -1,11 +1,11 @@
-namespace PacketStudio.NewGUI
+﻿namespace PacketStudio.NewGUI
 {
-	public class BytesHiglightning
+	public class BytesHighlightning
 	{
 		public int Offset { get; set; }
 		public int Length { get; set; }
 
-		public BytesHiglightning(int offset, int length)
+		public BytesHighlightning(int offset, int length)
 		{
 			Offset = offset;
 			Length = length;

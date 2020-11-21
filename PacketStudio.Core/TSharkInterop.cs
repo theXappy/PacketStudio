@@ -20,7 +20,7 @@ namespace PacketStudio.Core
     public class TSharkInterop
     {
         private string _tsharkPath;
-        private TempPacketsSaver _packetsSaver;
+        private readonly TempPacketsSaver _packetsSaver;
         private string _version;
 
         public string Version
@@ -35,10 +35,8 @@ namespace PacketStudio.Core
                 string[] splitted = Version?.Split('.');
                 if (splitted != null && splitted.Length >= 2)
                 {
-                    int major = 0;
-                    int minor = 0;
-                    int.TryParse(splitted[0], out major);
-                    int.TryParse(splitted[1], out minor);
+                    int.TryParse(splitted[0], out var major);
+                    int.TryParse(splitted[1], out var minor);
                     VersionMajor = major;
                     VersionMinor = minor;
                 }
@@ -91,7 +89,9 @@ namespace PacketStudio.Core
             CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             StringBuilder sb = new StringBuilder();
-            DataReceivedEventHandler dreh = (sender, eventArgs) => sb.Append(eventArgs.Data);
+            
+            // line below is a local func
+            void dataReceivedEventHandler(object sender, DataReceivedEventArgs eventArgs) => sb.Append(eventArgs.Data);
 
             string pcapPath = _packetsSaver.WritePackets(packets);
             string args = GetPdmlArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
@@ -104,11 +104,11 @@ namespace PacketStudio.Core
             pProcess.StartInfo.UseShellExecute = false;
             pProcess.StartInfo.RedirectStandardOutput = true;
             pProcess.EnableRaisingEvents = true;
-            pProcess.OutputDataReceived += dreh;
+            pProcess.OutputDataReceived += dataReceivedEventHandler;
             pProcess.Start();
             pProcess.BeginOutputReadLine();
             pProcess.WaitForExit();
-            pProcess.OutputDataReceived -= dreh;
+            pProcess.OutputDataReceived -= dataReceivedEventHandler;
             spw.Stop();
             Debug.WriteLine("Completed in : " +
                               spw.ElapsedMilliseconds.ToString()
@@ -131,12 +131,14 @@ namespace PacketStudio.Core
                 string args = GetPdmlArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
                 Debug.WriteLine(" @@@ [TShark] GetPdml Args: " + args);
                 Debug.WriteLine(" @@@ [TShark] GetPdml First Packet: " + packets.First());
-                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
-                psi.UseShellExecute = false;
-                psi.RedirectStandardError = true;
-                psi.RedirectStandardOutput = true;
-                psi.CreateNoWindow = true;
-                psi.WindowStyle = ProcessWindowStyle.Minimized;
+                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args)
+                {
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Minimized
+                };
                 // TODO CliWrap this
                 Process p = Process.Start(psi);
 
@@ -176,7 +178,7 @@ namespace PacketStudio.Core
             }), token);
         }
 
-        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             return Task.Run((() =>
             {
@@ -218,7 +220,7 @@ namespace PacketStudio.Core
             string newVersionArgs = $"-r {pcapPath} -2 -T pdml";
 
             string selected = oldVersionArgs;
-            if (isNewVersion())
+            if (IsNewVersion())
             {
                 selected = newVersionArgs;
             }
@@ -240,7 +242,7 @@ namespace PacketStudio.Core
             return selected;
         }
 
-        private bool isNewVersion()
+        private bool IsNewVersion()
         {
             if (VersionMajor == 2)
             {
@@ -261,7 +263,7 @@ namespace PacketStudio.Core
             string newVersionArgs = $"-r {pcapPath} -T tabs -2";
 
             string selected = oldVersionArgs;
-            if (isNewVersion())
+            if (IsNewVersion())
             {
                 selected = newVersionArgs;
             }
@@ -317,7 +319,7 @@ namespace PacketStudio.Core
 
         public Task<JObject> GetJsonRawAsync(IEnumerable<TempPacketSaveData> packets, int packetIndex, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            if (!isNewVersion())
+            if (!IsNewVersion())
             {
                 return Task.FromResult((JObject)null);
             }
@@ -368,7 +370,7 @@ namespace PacketStudio.Core
             string newVersionArgs = $"-r {pcapPath} -T jsonraw -2  --no-duplicate-keys -o nameres.use_external_name_resolver:FALSE";
 
             string selected = oldVersionArgs;
-            if (isNewVersion())
+            if (IsNewVersion())
             {
                 selected = newVersionArgs;
             }
@@ -492,12 +494,14 @@ namespace PacketStudio.Core
             return Task.Factory.StartNew(() =>
             {
                 string args = "-G heuristic-decodes";
-                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args);
-                psi.UseShellExecute = false;
-                psi.RedirectStandardError = true;
-                psi.RedirectStandardOutput = true;
-                psi.CreateNoWindow = true;
-                psi.WindowStyle = ProcessWindowStyle.Minimized;
+                ProcessStartInfo psi = new ProcessStartInfo(_tsharkPath, args)
+                {
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Minimized
+                };
                 Process p = Process.Start(psi);
 
                 StreamReader errorStream = p.StandardError;

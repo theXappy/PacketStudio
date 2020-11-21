@@ -106,7 +106,6 @@ namespace PacketStudio.NewGUI
         private void PacketDefinerPacketChanged(object sender, EventArgs e)
         {
             PacketDefiner definer = ((PacketDefiner)sender);
-            Debug.WriteLine($"@@@ PacketDefinerPacketChanged. IsValid: {definer.IsValid}");
             if (definer.IsValid)
             {
                 // Update HEX view
@@ -157,29 +156,22 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        TSharkInterop _tSharkInterop = new TSharkInterop(@"C:\Program Files\Wireshark\tshark.exe");
+        readonly TSharkInterop _tSharkInterop = new TSharkInterop(@"C:\Program Files\Wireshark\tshark.exe");
 
         private void ShowLivePreview()
         {
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Starting Live Preview iteration");
             TempPacketSaveData packetBytes = null;
             AutoResetEvent are = new AutoResetEvent(false);
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Calling dispatcher");
             this.Dispatcher.BeginInvoke((Action)(() =>
             {
-                Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Dispatcher in progress");
                 packetBytes = CurrentTabItemModel.Packet;
             })).Task.Wait();
 
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Finished waiting for dispatcher. Packet Bytes: {packetBytes}");
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Getting PDML");
             var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
             XElement packetPdml = tsharkTask.Result;
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Got PDML, populating");
             packetTreeView.PopulateLivePreview(packetPdml);
-            Debug.WriteLine($"@@@ [TID: {Thread.CurrentContext.ContextID}] Tree populated");
         }
 
 
@@ -194,12 +186,12 @@ namespace PacketStudio.NewGUI
 
                 // Else, More packet tabs exist. we can remove this one
                 tabControl.Items.Remove(sender);
-                tabControl_TabClosed(tabControl, new CloseTabEventArgs(sender as TabItemExt));
+                TabControl_TabClosed(tabControl, new CloseTabEventArgs(sender as TabItemExt));
             }
         }
 
 
-        private void tabControl_TabClosed(object sender, CloseTabEventArgs e)
+        private void TabControl_TabClosed(object sender, CloseTabEventArgs e)
         {
             if (tabControl.Items.Count == 1)
             {
@@ -281,7 +273,7 @@ namespace PacketStudio.NewGUI
             previewDelayTextBox.ScrollToEnd();
         }
 
-        private void previewDelayTextBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void PreviewDelayTextBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue == false) // - Keyboard focus is lost
             {
@@ -289,7 +281,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private void previewDelayTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void PreviewDelayTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -308,9 +300,8 @@ namespace PacketStudio.NewGUI
 
         private void ApplyNewPreviewDelayValue()
         {
-            int parsedValue;
             string valueString = previewDelayTextBox.Text;
-            if (!int.TryParse(valueString, out parsedValue))
+            if (!int.TryParse(valueString, out var parsedValue))
             {
                 MessageBox.Show("Invalid preview delay value. Couldn't parse to an integer.");
             }
@@ -323,7 +314,7 @@ namespace PacketStudio.NewGUI
 
         }
 
-        private void hexBox_LostFocus(object sender, RoutedEventArgs e)
+        private void HexBox_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
         }

@@ -30,7 +30,7 @@ namespace PacketStudio
             public string Proto { get; set; }
             public string Length { get; set; }
             public string Info { get; set; }
-            private TabPageAdv _tabPage;
+            private readonly TabPageAdv _tabPage;
 
             public LinkedParsedPacket(TabPageAdv tabPage)
             {
