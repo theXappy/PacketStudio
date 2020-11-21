@@ -10,29 +10,15 @@ namespace PacketStudio.NewGUI
         private string content;
         private string header;
         private PacketSaveData basePacket;
-        private TempPacketSaveData _packet;
 
         public bool IsValid { get; set; }
         public string ValidationError { get; set; }
 
-        public TempPacketSaveData Packet
-        {
-            get
-            {
-
-                Debug.WriteLine($"@@@ [TIVM] Packet prop RETRIEVED {_packet}");
-                return _packet;
-            }
-            set
-            {
-                Debug.WriteLine($"@@@ [TIVM] Packet prop updated to {value} (was: {_packet})");
-                _packet = value;
-            }
-        }
+        public TempPacketSaveData Packet { get; set; }
 
         public PacketSaveData BasePacket
         {
-            get { return basePacket; }
+            get => basePacket;
             set
             {
                 basePacket = value;
@@ -42,7 +28,7 @@ namespace PacketStudio.NewGUI
 
         public string Header
         {
-            get { return header; }
+            get => header;
             set
             {
                 header = value;
@@ -52,7 +38,7 @@ namespace PacketStudio.NewGUI
 
         public string Content
         {
-            get { return content; }
+            get => content;
             set
             {
                 content = value;

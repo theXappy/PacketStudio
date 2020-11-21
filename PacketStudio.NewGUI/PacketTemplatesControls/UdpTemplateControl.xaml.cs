@@ -12,7 +12,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [Order(2)]
     public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
     {
-        private static UdpPacketFactory _factory = new UdpPacketFactory();
+        private static readonly UdpPacketFactory _factory = new UdpPacketFactory();
 
         public UdpTemplateControl()
         {

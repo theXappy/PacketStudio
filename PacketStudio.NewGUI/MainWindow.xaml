@@ -30,9 +30,9 @@
                     <syncfusion:RibbonButton Focusable="False" IsLargeImageVisible="True" IsSmallImageVisible="True" Label="Normalize Hex" SizeForm="Large" Click="RibbonButton_Click"/>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Live Preview" IsLauncherButtonVisible="False" Margin="1,2" >
-                    <syncfusion:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Preview Enabled" IsChecked="True"/>
+                    <syncfusion:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Preview HeurDissectorsEnabled" IsChecked="True"/>
                     <syncfusion:RibbonButton x:Name="previewDelayButton" IconType="VectorImage" Label="Preivew Delay" Click="ShowPreviewDelayTextBox"/>
-                    <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="previewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="previewDelayTextBox_PreviewKeyDown"/>
+                    <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="PreviewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="PreviewDelayTextBox_PreviewKeyDown"/>
                 </syncfusion:RibbonBar>
             </syncfusion:RibbonTab>
         </syncfusion:Ribbon>

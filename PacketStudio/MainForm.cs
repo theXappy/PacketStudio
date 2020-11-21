@@ -52,30 +52,30 @@ namespace PacketStudio
         // InterOps
         private string _longStatus = "";
         private WiresharkInterop _wiresharkField;
-        private TempPacketsSaver _packetSaver = new TempPacketsSaver();
+        private readonly TempPacketsSaver _packetSaver = new TempPacketsSaver();
         private TSharkInterop _tshark;
 
         // Tshark Heuristic Dissectos
         private Task<List<TSharkHeuristicProtocolEntry>> _heurDissectorsTask;
-        private List<TSharkHeuristicProtocolEntry> heurDissectorsList => _heurDissectorsTask.Result;
+        private List<TSharkHeuristicProtocolEntry> HeurDissectorsList => _heurDissectorsTask.Result;
 
-        private WiresharkInterop _wireshark
+        private WiresharkInterop Wireshark
         {
             get => _wiresharkField;
             set
             {
-                WiresharkInteropUpdating(_wiresharkField, value);
+                WiresharkInteropUpdating(value);
                 _wiresharkField = value;
             }
         }
 
-        private HashSet<string> _lastWiresharksPaths;
+        private readonly HashSet<string> _lastWiresharksPaths;
 
         private CapInfosInterop _capinfos;
 
         // Unsaved changes members
         private bool _unsavedChangesExist;
-        private bool _askAboutUnsaved;
+        private readonly bool _askAboutUnsaved;
 
         // Intercept key press in tree view (for shift-right expanding)
         private bool _interceptingKeyDown;
@@ -108,23 +108,23 @@ namespace PacketStudio
         private bool _isUpdatingList;
 
         // Original form name
-        private string _rawFormName;
+        private readonly string _rawFormName;
 
         private Rectangle _rectangle = Rectangle.Empty;
 
         private TabPageAdv _tabRequestingRename;
 
         // Mapping the tab pages and their Packet Define Controls
-        private Dictionary<TabPageAdv, PacketDefineControl> _tabToPdc = new Dictionary<TabPageAdv, PacketDefineControl>();
+        private readonly Dictionary<TabPageAdv, PacketDefineControl> _tabToPdc = new Dictionary<TabPageAdv, PacketDefineControl>();
 
         private CancellationTokenSource _livePrevTokenSource;
         private CancellationTokenSource _packetListTokenSource;
 
         // Colors for the status bar
-        private Color _neutralStatusColor;
-        private Color _badStatusColor = Color.FromArgb(0xEA, 0x54, 0x55);
-        private Color _goodStatusColor = Color.FromArgb(0x28, 0xC7, 0x6F);
-        private Color _warnStatusColor = Color.FromArgb(241, 194, 107);
+        private readonly Color _neutralStatusColor;
+        private readonly Color _badStatusColor = Color.FromArgb(0xEA, 0x54, 0x55);
+        private readonly Color _goodStatusColor = Color.FromArgb(0x28, 0xC7, 0x6F);
+        private readonly Color _warnStatusColor = Color.FromArgb(241, 194, 107);
 
         private static readonly Color ERROR_PINK = Color.FromArgb(255, 92, 92); // Wireshark's error background color
 
@@ -179,11 +179,10 @@ namespace PacketStudio
 
             // TODO: This might throw...
             string wsPath = Path.GetDirectoryName(Settings.Default.lastWiresharkPath);
-            WiresharkDirectory dir;
             // Try to find the wireshark by the path saved in the settings
-            if (SharksFinder.TryGetByPath(wsPath, out dir))
+            if (SharksFinder.TryGetByPath(wsPath, out WiresharkDirectory dir))
             {
-                _wireshark = new WiresharkInterop(dir.WiresharkPath);
+                Wireshark = new WiresharkInterop(dir.WiresharkPath);
                 _tshark = new TSharkInterop(dir.TsharkPath);
                 _capinfos = new CapInfosInterop(dir.CapinfosPath);
             }
@@ -193,7 +192,7 @@ namespace PacketStudio
                 dir = SharksFinder.GetDirectories().FirstOrDefault();
                 if (dir != null)
                 {
-                    _wireshark = new WiresharkInterop(dir.WiresharkPath);
+                    Wireshark = new WiresharkInterop(dir.WiresharkPath);
                     _tshark = new TSharkInterop(dir.TsharkPath);
                     _capinfos = new CapInfosInterop(dir.CapinfosPath);
                 }
@@ -270,7 +269,7 @@ namespace PacketStudio
                         tabLabel = res.PacketName;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // TODO: Log this somewhere the user can see?
                     // We wont trow it further because we don't mind if a name wasn't saved
@@ -811,7 +810,7 @@ namespace PacketStudio
                 return;
             }
 
-            _wireshark.ExportToWsAsync(packets).Task.ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
+            Wireshark.ExportToWsAsync(packets).Task.ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
         }
 
         private PacketDefineControl GetCurrentPacketDefineControl()
@@ -975,7 +974,7 @@ namespace PacketStudio
                         // Raise list updated "event"
                         LastWiresharkPathsListUpdated();
                         
-                        _wireshark = new WiresharkInterop(wsDir.WiresharkPath);
+                        Wireshark = new WiresharkInterop(wsDir.WiresharkPath);
                         _tshark = new TSharkInterop(wsDir.TsharkPath);
                         _capinfos = new CapInfosInterop(wsDir.CapinfosPath);
                     }
@@ -1024,7 +1023,7 @@ namespace PacketStudio
                         Settings.Default.lastWiresharkPath = selectedPath;
                         Settings.Default.Save();
 
-                        _wireshark = new WiresharkInterop(wsDir.WiresharkPath);
+                        Wireshark = new WiresharkInterop(wsDir.WiresharkPath);
                         _tshark = new TSharkInterop(wsDir.TsharkPath);
                         _capinfos = new CapInfosInterop(wsDir.CapinfosPath);
 
@@ -1166,19 +1165,13 @@ namespace PacketStudio
             string rawInstructions = packetTreeView.SelectedNode.ToolTipText;
             string[] split = rawInstructions.Split(',');
 
-            // ReSharper disable InlineOutVariableDeclaration
-            int index; // in BYTES!
-            int length; // in BYTES!
-            int susFlagValue;
-            // ReSharper restore InlineOutVariableDeclaration
-
             bool suspicious = false;
             string hex = null;
             // Parse index,length and flag from tooltip text string
             if (split.Length < 2 ||
-                !int.TryParse(split[0], out index) ||
-                !int.TryParse(split[1], out length) ||
-                !int.TryParse(split[2], out susFlagValue))
+                !int.TryParse(split[0], out var index) ||
+                !int.TryParse(split[1], out var length) ||
+                !int.TryParse(split[2], out var susFlagValue))
             {
                 return;
             }
@@ -1282,28 +1275,30 @@ namespace PacketStudio
             packetTreeView.SelectedNode = node;
 
             ContextMenuStrip cms = new ContextMenuStrip();
-            ExpandingToolStripButton tsb = new ExpandingToolStripButton("Expand Subtrees");
-            tsb.Width = 110;
-            tsb.TextAlign = ContentAlignment.MiddleLeft;
+            ExpandingToolStripButton tsb = new ExpandingToolStripButton("Expand Subtrees")
+            {
+                Width = 110, TextAlign = ContentAlignment.MiddleLeft
+            };
             cms.Items.Add(tsb);
             cms.AutoClose = true;
 
-            ToolStripItemClickedEventHandler expandHandler = (obj, arg) =>
+            void clickedEventHandler(object obj, ToolStripItemClickedEventArgs arg)
             {
                 if (arg.ClickedItem == tsb)
                 {
                     node.ExpandAll();
                 }
-            };
-            ToolStripDropDownClosedEventHandler cleanUpHandler = null;
-            cleanUpHandler = (o, args) =>
+            }
+
+            void CleanUpHandler(object o, ToolStripDropDownClosedEventArgs args)
             {
                 cms.Items.Remove(tsb);
                 tsb.Dispose();
-                cms.Closed -= cleanUpHandler; // Is this even required? am I crazy?
-            };
-            cms.Closed += cleanUpHandler;
-            cms.ItemClicked += expandHandler;
+                cms.Closed -= CleanUpHandler; // Is this even required? am I crazy?
+            }
+
+            cms.Closed += CleanUpHandler;
+            cms.ItemClicked += clickedEventHandler;
             cms.AutoSize = true;
             Size pref = tsb.GetPreferredSize(packetTreeView.Size);
             pref.Width = tsb.Width;
@@ -1374,7 +1369,7 @@ namespace PacketStudio
             }
         }
 
-        private void previewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PreviewInBatPContextToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bool newVal = !_livePreviewInContext;
             _livePreviewInContext = newVal;
@@ -1844,7 +1839,7 @@ namespace PacketStudio
             {
                 try
                 {
-                    packetsTextLines = _tshark.GetTextOutputAsync(textOfPackets, 0, CancellationToken.None,
+                    packetsTextLines = _tshark.GetTextOutputAsync(textOfPackets, CancellationToken.None,
                         _needToBeEnabledHeuristics, _needToBeDisabledHeuristics).Result;
                     maxLine = packetsTextLines.Max(s => s.Length);
                 }
@@ -2033,18 +2028,18 @@ namespace PacketStudio
             }
         }
 
-        private void statusTextPanel_Click(object sender, EventArgs e)
+        private void StatusTextPanel_Click(object sender, EventArgs e)
         {
             ShowErrorMessageBox(_longStatus, MessageBoxIcon.Information);
         }
 
-        private void WiresharkInteropUpdating(WiresharkInterop oldWsInterop, WiresharkInterop newWsInterop)
+        private void WiresharkInteropUpdating(WiresharkInterop newWsInterop)
         {
             string dir = Path.GetDirectoryName(newWsInterop.WiresharkPath);
             wsVerPanel.Text = $"Wireshark {newWsInterop.Version}, Running from {dir}";
         }
 
-        private void insertAsciiToolStripButton_Click(object sender, EventArgs e)
+        private void InsertAsciiToolStripButton_Click(object sender, EventArgs e)
         {
             AsciiDialog asciiDialog = new AsciiDialog();
             DialogResult diagResult = asciiDialog.ShowDialog();
@@ -2087,7 +2082,7 @@ namespace PacketStudio
             }
         }
 
-        private void packetListPreviewToolStripButton_Click(object sender, EventArgs e)
+        private void PacketListPreviewToolStripButton_Click(object sender, EventArgs e)
         {
             if (sender is ToolStripButton tsb)
             {
@@ -2104,7 +2099,7 @@ namespace PacketStudio
         private List<string> _needToBeDisabledHeuristics = new List<string>();
         private List<string> _needToBeEnabledHeuristics = new List<string>();
 
-        private async void heurDissectorsToolStripButton_Click(object sender, EventArgs e)
+        private async void HeurDissectorsToolStripButton_Click(object sender, EventArgs e)
         {
             // Async-ly get dissectors list
             if (!_heurDissectorsTask.IsCompleted)
@@ -2116,8 +2111,8 @@ namespace PacketStudio
                 splash.Dispose();
             }
 
-            List<string> enabled = heurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
-            List<string> disabled = heurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+            List<string> enabled = HeurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+            List<string> disabled = HeurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
 
             bool isDefaultLists = false;
             if (_lastUserDisabledHeuristics == null)
@@ -2144,17 +2139,18 @@ namespace PacketStudio
                     // Async-ly get dissectors list
                     _heurDissectorsTask.Wait();
 
-                    enabled = heurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
-                    disabled = heurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
+                    enabled = HeurDissectorsList.Where(entry => entry.Enabled).Select(entry => entry.ShortName).ToList();
+                    disabled = HeurDissectorsList.Where(entry => !entry.Enabled).Select(entry => entry.ShortName).ToList();
 
                     // Keeping old dialog's location
                     Point oldLocation = hdd.Location;
                     // Setting new dialog now, in the next loop iteration it will be shown
                     hdd.Dispose();
-                    hdd = new HeurDissectorsDialog(disabled, enabled, true);
+                    hdd = new HeurDissectorsDialog(disabled, enabled, true)
+                    {
+                        StartPosition = FormStartPosition.Manual, Location = oldLocation
+                    };
                     // Forcing new dialog to show where the old dialog was
-                    hdd.StartPosition = FormStartPosition.Manual;
-                    hdd.Location = oldLocation;
 
                     // Reset all saved lists
                     _lastUserDisabledHeuristics = null;
@@ -2168,7 +2164,7 @@ namespace PacketStudio
 
             if (res == DialogResult.OK)
             {
-                _lastUserEnabledHeuristics = hdd.Enabled;
+                _lastUserEnabledHeuristics = hdd.HeurDissectorsEnabled;
                 HashSet<string> diagEnabledSet = new HashSet<string>(_lastUserEnabledHeuristics);
                 diagEnabledSet.ExceptWith(enabled);
                 _needToBeEnabledHeuristics = diagEnabledSet.ToList();
@@ -2209,7 +2205,7 @@ namespace PacketStudio
             }
         }
 
-        private void _packetsListDataGrid_SelectionChanged(object sender, EventArgs e)
+        private void PacketsListDataGrid_SelectionChanged(object sender, EventArgs e)
         {
             if (_packetsListDataGrid.SelectedRows.Count == 0)
                 return;
@@ -2223,90 +2219,7 @@ namespace PacketStudio
 
         }
 
-        TouchStyleColorTable lightColorTable = new TouchStyleColorTable()
-        {
-            BackStageButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123))))),
-            BackStageButtonForeColor = System.Drawing.Color.White,
-            BackStageButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            BackStageCaptionColor = System.Drawing.Color.White,
-            BackStageCloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80))))),
-            BackStageCloseButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
-            BackStageCloseButtonHoverForeColor = System.Drawing.Color.White,
-            BackStageCloseButtonPressedForeColor = System.Drawing.Color.White,
-            BackStageMaximizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
-            BackStageMaximizeButtonHoverForeColor = System.Drawing.Color.White,
-            BackStageMaximizeButtonPressedForeColor = System.Drawing.Color.White,
-            BackStageMinimizeButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
-            BackStageMinimizeButtonHoverForeColor = System.Drawing.Color.White,
-            BackStageMinimizeButtonPressedForeColor = System.Drawing.Color.White,
-            BackStageNavigationButtonBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(57)))), ((int)(((byte)(123))))),
-            BackStageNavigationButtonForeColor = System.Drawing.Color.White,
-            BackStageRestoreButtonForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(114)))), ((int)(((byte)(198))))),
-            BackStageRestoreButtonHoverForeColor = System.Drawing.Color.White,
-            BackStageRestoreButtonPressedForeColor = System.Drawing.Color.White,
-            BackStageSysytemButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            BackStageTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            BackStageTabForeColor = System.Drawing.Color.White,
-            BackStageTabHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            BottomToolStripBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ButtonCheckedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211))))),
-            ButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242))))),
-            ButtonPressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211))))),
-            CheckBoxForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(66)))), ((int)(((byte)(139))))),
-            CheckedToolstripTabItemForeColor = System.Drawing.Color.Black,
-            CloseButtonBackground = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(80)))), ((int)(((byte)(80))))),
-            CloseButtonForeColor = System.Drawing.Color.White,
-            CloseButtonHoverForeColor = System.Drawing.Color.White,
-            CloseButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(61)))), ((int)(((byte)(61))))),
-            CloseButtonPressedForeColor = System.Drawing.Color.White,
-            DropDownBodyColor = System.Drawing.Color.White,
-            DropDownMenuItemBackground = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            DropDownSelectedTextForeColor = System.Drawing.Color.White,
-            DropDownTextForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            DropDownTitleBackground = System.Drawing.Color.White,
-            HeaderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            HoverTabBackColor = System.Drawing.Color.White,
-            HoverTabForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ImageMargin = System.Drawing.Color.White,
-            InActiveToolStripTabItemBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            MaximizeButtonForeColor = System.Drawing.Color.White,
-            MaximizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            MaximizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            MenuButtonArrowColor = System.Drawing.Color.White,
-            MenuButtonHoverArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            MinimizeButtonForeColor = System.Drawing.Color.White,
-            MinimizeButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            MinimizeButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            OverFlowArrowColor = System.Drawing.Color.White,
-            QATButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(239)))), ((int)(((byte)(242))))),
-            QATDownArrowColor = System.Drawing.Color.White,
-            RestoreButtonForeColor = System.Drawing.Color.White,
-            RestoreButtonHoverForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            RestoreButtonPressedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            RibbonPanelBackColor = System.Drawing.Color.White,
-            SplitButtonPressed = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            SplitButtonSelected = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(143)))), ((int)(((byte)(201))))),
-            SystemButtonBackground = System.Drawing.Color.White,
-            SystemButtonPressed = System.Drawing.Color.White,
-            TabGroupColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(203)))), ((int)(((byte)(29))))),
-            TabScrollArrowColor = System.Drawing.Color.White,
-            TitleColor = System.Drawing.Color.White,
-            ToolstripActiveTabItemForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolStripArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolStripBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolstripButtonPressedBorder = System.Drawing.Color.Black,
-            ToolStripDropDownBackColor = System.Drawing.Color.White,
-            ToolStripDropDownButtonHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(247)))), ((int)(((byte)(247))))),
-            ToolStripDropDownButtonSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240))))),
-            ToolstripSelectedTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolStripSpliterColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolstripTabItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(73)))), ((int)(((byte)(255))))),
-            ToolstripTabItemCheckedGradientBegin = System.Drawing.Color.Empty,
-            ToolstripTabItemForeColor = System.Drawing.Color.White,
-            ToolstripTabItemSelectedGradientBegin = System.Drawing.Color.Empty
-        };
-
-        private void sendToStripButton_Click(object sender, EventArgs e)
+        private void SendToStripButton_Click(object sender, EventArgs e)
         {
             if (sendToComboBox.SelectedItem is CapDeviceToken t)
             {

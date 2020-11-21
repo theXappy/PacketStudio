@@ -22,7 +22,7 @@ namespace PacketStudio.NewGUI
     {
         public event EventHandler PacketChanged;
 
-        private HexDeserializer _deserializer = new HexDeserializer();
+        private readonly HexDeserializer _deserializer = new HexDeserializer();
 
         private IPacketTemplateControl PacketTemplateControl => packetTemplatePanel.Children.Count != 0 ? (packetTemplatePanel.Children[0] as IPacketTemplateControl) : null;
 
@@ -60,14 +60,12 @@ namespace PacketStudio.NewGUI
         {
             get
             {
-                Debug.WriteLine($"@@@ At Packet prop");
                 IPacketTemplateControl templateControl = PacketTemplateControl;
                 if (templateControl == null)
                     return null;
 
                 if (!_deserializer.TryDeserialize(this.hexTextBox.Text, out byte[] bytes)) return null;
 
-                Debug.WriteLine($"@@@ Calling GenPacket in templateControl");
                 var (success, res, _) = templateControl.GeneratePacket(bytes);
                 return success ? res : null;
 
@@ -81,12 +79,12 @@ namespace PacketStudio.NewGUI
             InitializeComponent();
         }
 
-        private void hexTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void HexTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             PacketChanged?.Invoke(this, new EventArgs());
         }
 
-        private void hexTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void HexTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
         }
@@ -130,7 +128,7 @@ namespace PacketStudio.NewGUI
 
         }
 
-        private Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
+        private readonly Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -184,6 +182,8 @@ namespace PacketStudio.NewGUI
                     packetTemplatePanel.Children.Add(newControl);
                 }
             }
+
+            this.PacketChanged?.Invoke(this,e);
         }
 
         private void PacketTemplateControlChanged(object sender, EventArgs e) => this.PacketChanged?.Invoke(this,e);

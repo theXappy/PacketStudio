@@ -75,7 +75,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(142, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Enabled Heuristic Dissectors";
+            this.label2.Text = "HeurDissectorsEnabled Heuristic Dissectors";
             // 
             // enableDissectorButton
             // 
@@ -131,7 +131,7 @@
             this.okButton.TabIndex = 8;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // cancelButton
             // 
@@ -141,7 +141,7 @@
             this.cancelButton.TabIndex = 9;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // reloadButton
             // 
@@ -151,7 +151,7 @@
             this.reloadButton.TabIndex = 10;
             this.reloadButton.Text = "⭮ Reload";
             this.reloadButton.UseVisualStyleBackColor = true;
-            this.reloadButton.Click += new System.EventHandler(this.reloadButton_Click);
+            this.reloadButton.Click += new System.EventHandler(this.ReloadButton_Click);
             // 
             // HeurDissectorsDialog
             // 

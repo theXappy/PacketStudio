@@ -256,7 +256,7 @@ namespace PacketStudio
             this._packetsListDataGrid.ShowCellToolTips = false;
             this._packetsListDataGrid.Size = new System.Drawing.Size(1387, 241);
             this._packetsListDataGrid.TabIndex = 2;
-            this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this._packetsListDataGrid_SelectionChanged);
+            this._packetsListDataGrid.SelectionChanged += new System.EventHandler(this.PacketsListDataGrid_SelectionChanged);
             // 
             // HexViewPanel
             // 
@@ -641,7 +641,7 @@ namespace PacketStudio
             this.insertAsciiToolStripButton.Size = new System.Drawing.Size(69, 57);
             this.insertAsciiToolStripButton.Text = "Insert ASCII";
             this.insertAsciiToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.insertAsciiToolStripButton.Click += new System.EventHandler(this.insertAsciiToolStripButton_Click);
+            this.insertAsciiToolStripButton.Click += new System.EventHandler(this.InsertAsciiToolStripButton_Click);
             // 
             // wiresharkToolStrip
             // 
@@ -732,7 +732,7 @@ namespace PacketStudio
             this.sendToStripButton.Size = new System.Drawing.Size(40, 62);
             this.sendToStripButton.Text = "Send!";
             this.sendToStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.sendToStripButton.Click += new System.EventHandler(this.sendToStripButton_Click);
+            this.sendToStripButton.Click += new System.EventHandler(this.SendToStripButton_Click);
             // 
             // previewToolStripTabItem
             // 
@@ -837,7 +837,7 @@ namespace PacketStudio
             this.previewContextToolStripButton.Size = new System.Drawing.Size(111, 56);
             this.previewContextToolStripButton.Text = "Preview In Context";
             this.previewContextToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.previewContextToolStripButton.Click += new System.EventHandler(this.previewInBatPContextToolStripMenuItem_Click);
+            this.previewContextToolStripButton.Click += new System.EventHandler(this.PreviewInBatPContextToolStripMenuItem_Click);
             // 
             // packetListPreviewToolStripButton
             // 
@@ -850,7 +850,7 @@ namespace PacketStudio
             this.packetListPreviewToolStripButton.Text = "Get Packet List Details";
             this.packetListPreviewToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.packetListPreviewToolStripButton.ToolTipText = "Experimental!";
-            this.packetListPreviewToolStripButton.Click += new System.EventHandler(this.packetListPreviewToolStripButton_Click);
+            this.packetListPreviewToolStripButton.Click += new System.EventHandler(this.PacketListPreviewToolStripButton_Click);
             // 
             // heurDissectorsToolStripButton
             // 
@@ -862,7 +862,7 @@ namespace PacketStudio
             this.heurDissectorsToolStripButton.Size = new System.Drawing.Size(116, 56);
             this.heurDissectorsToolStripButton.Text = "Heuristic Dissectors";
             this.heurDissectorsToolStripButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.heurDissectorsToolStripButton.Click += new System.EventHandler(this.heurDissectorsToolStripButton_Click);
+            this.heurDissectorsToolStripButton.Click += new System.EventHandler(this.HeurDissectorsToolStripButton_Click);
             // 
             // exitOfficeButton
             // 
@@ -927,7 +927,7 @@ namespace PacketStudio
             this.statusTextPanel.SizeToContent = true;
             this.statusTextPanel.TabIndex = 0;
             this.statusTextPanel.Text = "Status";
-            this.statusTextPanel.Click += new System.EventHandler(this.statusTextPanel_Click);
+            this.statusTextPanel.Click += new System.EventHandler(this.StatusTextPanel_Click);
             // 
             // wsVerPanel
             // 

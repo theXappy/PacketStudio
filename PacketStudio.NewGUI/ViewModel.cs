@@ -15,7 +15,7 @@ namespace PacketStudio.NewGUI
         private bool isNewButtonClosedonNoChild = true;
         private bool isNewButtonEnabled = true;
         private ObservableCollection<TabItemViewModel> tabItems;
-        private DelegateCommand<object> newButtonClickCommand;
+        private readonly DelegateCommand<object> newButtonClickCommand;
 
         public ICommand NewButtonClickCommand
         {

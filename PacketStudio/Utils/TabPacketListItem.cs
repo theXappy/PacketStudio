@@ -4,7 +4,7 @@ namespace PacketStudio.Utils
 {
 	public class TabPacketListItem
 	{
-		private string _prefix; // Usually the packet's number
+		private readonly string _prefix; // Usually the packet's number
 		public TabPage Page { get; set; }
 
 		public TabPacketListItem(string prefix, TabPage page)

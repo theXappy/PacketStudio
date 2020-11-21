@@ -12,7 +12,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [Order(1)]
     public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
     {
-        private static TcpPacketFactory _factory = new TcpPacketFactory();
+        private static readonly TcpPacketFactory _factory = new TcpPacketFactory();
 
         public TcpTemplateControl()
         {

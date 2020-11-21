@@ -23,8 +23,8 @@
                   Grid.Row="0"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
-                 TextChanged="hexTextBox_TextChanged"
-                 LostFocus="hexTextBox_LostFocus" 
+                 TextChanged="HexTextBox_TextChanged"
+                 LostFocus="HexTextBox_LostFocus" 
                   VerticalContentAlignment="Top"/>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
             <ListBox x:Name="templatesListBox" 

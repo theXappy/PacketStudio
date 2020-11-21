@@ -13,17 +13,17 @@ namespace PacketStudio
     public partial class HeurDissectorsDialog : Form
     {
         public List<string> Available { get; set; }
-        public List<string> Enabled { get; set; }
+        public List<string> HeurDissectorsEnabled { get; set; }
 
-        public HeurDissectorsDialog(List<string> availableList,List<string> enabledList,bool isDefaultLists)
+        public HeurDissectorsDialog(List<string> availableList,List<string> heurDissectorsEnabledList,bool isDefaultLists)
         {
             InitializeComponent();
 
             Available = availableList;
-            Enabled = enabledList;
+            HeurDissectorsEnabled = heurDissectorsEnabledList;
 
             this.availableList.Items.AddRange(availableList.ToArray());
-            this.enabledList.Items.AddRange(enabledList.ToArray());
+            this.enabledList.Items.AddRange(heurDissectorsEnabledList.ToArray());
 
             if (isDefaultLists)
             {
@@ -74,22 +74,22 @@ namespace PacketStudio
             fromBox.Items.Clear();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
             this.Available = availableList.Items.Cast<string>().ToList();
-            this.Enabled = enabledList.Items.Cast<string>().ToList();
+            this.HeurDissectorsEnabled = enabledList.Items.Cast<string>().ToList();
 
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void reloadButton_Click(object sender, EventArgs e)
+        private void ReloadButton_Click(object sender, EventArgs e)
         {
             DialogResult res = MessageBox.Show("Are you sure you'd like to reload TShark's default enabled/disabled lists?\r\n" +
                             "All changes will be reset.","PacketStudio",MessageBoxButtons.YesNo,MessageBoxIcon.Warning);
