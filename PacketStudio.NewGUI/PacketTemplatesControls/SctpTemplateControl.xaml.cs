@@ -13,6 +13,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// </summary>
     [DisplayName("SCTP Packet")]
     [Order(3)]
+    [HexStreamType(HexStreamType.SctpPayload)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl
     {
         private static readonly SctpPacketFactory _factory = new SctpPacketFactory();
@@ -87,6 +88,16 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             }
 
             return (false, null, $"Unknown error in {this.GetType()}");
+        }
+
+        public string GenerateSaveDataJson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadSaveDataJson(string json)
+        {
+            throw new NotImplementedException();
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);

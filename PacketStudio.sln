@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet", "PacketDotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.NetAccess", "PacketStudio.NetAccess\PacketStudio.NetAccess.csproj", "{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Tests", "PacketStudio.Tests\PacketStudio.Tests.csproj", "{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,18 @@ Global
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|Any CPU.Build.0 = Release|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|x86.ActiveCfg = Release|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|x86.Build.0 = Release|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|x86.Build.0 = Release|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|Any CPU.Build.0 = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|x86.ActiveCfg = Debug|Any CPU
+		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

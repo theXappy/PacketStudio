@@ -158,8 +158,26 @@ namespace PacketStudio.NewGUI
 
         readonly TSharkInterop _tSharkInterop = new TSharkInterop(@"C:\Program Files\Wireshark\tshark.exe");
 
+        private void SetPacketTreeInProgress()
+        {
+            // TODO: De-uglify this
+            Dispatcher.Invoke(() =>
+            {
+                packetTreeView.previewTree.Items.Clear();
+                packetTreeView.previewTree.Items.Add("Loading...");
+                this.packetTreeView.previewTree.Background = new SolidColorBrush(Colors.HotPink);
+            });
+        }
+        private void UnsetPacketTreeInProgress()
+        {
+            Dispatcher.Invoke(() => this.packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
+        }
+
         private void ShowLivePreview()
         {
+            Debug.WriteLine(" @@@ Live Preview Triggered");
+            SetPacketTreeInProgress();
+
             TempPacketSaveData packetBytes = null;
             AutoResetEvent are = new AutoResetEvent(false);
             this.Dispatcher.BeginInvoke((Action)(() =>
@@ -169,9 +187,12 @@ namespace PacketStudio.NewGUI
 
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
+            Debug.WriteLine(" @@@ Calling TShark");
             var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
             XElement packetPdml = tsharkTask.Result;
+            Debug.WriteLine(" @@@ TShark Returned");
             packetTreeView.PopulateLivePreview(packetPdml);
+            UnsetPacketTreeInProgress();
         }
 
 

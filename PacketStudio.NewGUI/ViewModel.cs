@@ -1,7 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
 
@@ -99,12 +102,16 @@ namespace PacketStudio.NewGUI
             TabItemViewModel model1 = new TabItemViewModel()
             {
                 Header = "tabItem1",
-                Content = "This is the content of 1 tabitem."
+                Content = "This is the content of 1 tabitem.",
+                CorePacket = new PacketSaveDataV3("aabb11223344556677889900",HexStreamType.UdpPayload,LinkLayerType.Ethernet.ToString(),"2","2", ""),
+                Packet = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet )
             };
             TabItemViewModel model2 = new TabItemViewModel()
             {
                 Header = "tabItem2",
-                Content = "This is the content of 2 tabitem."
+                Content = "This is the content of 2 tabitem.",
+                CorePacket = new PacketSaveDataV3("ccbb00998877665544332211",HexStreamType.Raw,LinkLayerType.Ethernet.ToString(),"2","2", ""),
+                Packet = new TempPacketSaveData(new byte[3],LinkLayerType.A653Icm )
             };
 
             //Adding tab item details to the collection

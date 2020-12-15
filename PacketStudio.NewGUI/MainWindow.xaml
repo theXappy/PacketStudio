@@ -80,8 +80,8 @@
                                     <DataTemplate>
                                         <local:PacketDefiner
                                                     PacketChanged="PacketDefinerPacketChanged"
-                                                    BasePacket="{Binding
-                                                    BasePacket}"
+                                                    CorePacket="{Binding
+                                                    CorePacket}"
                                                     Margin="-2,-2"
                                                     Background="{Binding
                                                     Background,

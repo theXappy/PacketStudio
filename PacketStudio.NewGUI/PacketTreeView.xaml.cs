@@ -41,7 +41,7 @@ namespace PacketStudio.NewGUI
 
 
 
-		public void PopulateLivePreview(XElement rootElement)
+		public void PopulatePacketTree(XElement rootElement)
 		{
 			_bytesHiglightnings.Clear();
 			this.Dispatcher.Invoke((Action)(() =>
