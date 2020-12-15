@@ -191,7 +191,7 @@ namespace PacketStudio.NewGUI
             var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
             XElement packetPdml = tsharkTask.Result;
             Debug.WriteLine(" @@@ TShark Returned");
-            packetTreeView.PopulateLivePreview(packetPdml);
+            packetTreeView.PopulatePacketTree(packetPdml);
             UnsetPacketTreeInProgress();
         }
 
@@ -344,6 +344,20 @@ namespace PacketStudio.NewGUI
         {
             // TODO:
             //CurrentTabItemModel.NormalizeHex();
+        }
+
+        private void PacketTreeView_OnSelectedItemChanged(object sender, PacketTreeView.PacketTreeSelectionChangedArgs e)
+        {
+            if (e.BytesHiglightning == BytesHighlightning.Empty)
+            {
+                hexEditor.SelectionStop = -1;
+                hexEditor.SelectionStart = -1;
+            }
+            else
+            {
+                hexEditor.SelectionStart = e.BytesHiglightning.Offset;
+                hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
+            }
         }
     }
 }
