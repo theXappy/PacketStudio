@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
 using System.Windows.Controls;
+using System.Xml;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.Json;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {
@@ -11,6 +15,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// </summary>
     [DisplayName("Raw Frame")]
     [Order(0)]
+    [HexStreamType(HexStreamType.Raw)]
     public partial class RawTemplateControl : UserControl, IPacketTemplateControl
     {
         private static Dictionary<string, LinkLayerType> _singletonMap = null;
@@ -62,6 +67,19 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             if (_map.TryGetValue(name, out LinkLayerType type))
                 return (true, new TempPacketSaveData(rawHex, type), null);
             return (false, null, "Couldn't result Link Layer type");
+        }
+
+        public string GenerateSaveDataJson()
+        {
+            var saveData = new Dictionary<string, object>();
+            saveData["EtherType"] = linkLayersBox.Text;
+            DictJsonSerializer s = new DictJsonSerializer();
+            return s.Serialize(saveData);
+        }
+
+        public void LoadSaveDataJson(string json)
+        {
+            throw new NotImplementedException();
         }
 
         private void LinkLayersBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>

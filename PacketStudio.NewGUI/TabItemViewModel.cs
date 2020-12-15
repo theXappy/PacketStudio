@@ -9,20 +9,29 @@ namespace PacketStudio.NewGUI
     {
         private string content;
         private string header;
-        private PacketSaveData basePacket;
+        private PacketSaveData _corePacket;
+        private TempPacketSaveData _packet;
 
         public bool IsValid { get; set; }
         public string ValidationError { get; set; }
 
-        public TempPacketSaveData Packet { get; set; }
-
-        public PacketSaveData BasePacket
+        public TempPacketSaveData Packet
         {
-            get => basePacket;
+            get => _packet;
             set
             {
-                basePacket = value;
-                this.RaisePropertyChanged(nameof(BasePacket));
+                _packet = value;
+                this.RaisePropertyChanged(nameof(Packet));
+            }
+        }
+
+        public PacketSaveData CorePacket
+        {
+            get => _corePacket;
+            set
+            {
+                _corePacket = value;
+                this.RaisePropertyChanged(nameof(CorePacket));
             }
         }
 

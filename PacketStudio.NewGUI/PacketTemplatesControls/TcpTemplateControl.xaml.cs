@@ -10,6 +10,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// </summary>
     [DisplayName("TCP Packet")]
     [Order(1)]
+    [HexStreamType(HexStreamType.TcpPayload)]
     public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
     {
         private static readonly TcpPacketFactory _factory = new TcpPacketFactory();
@@ -37,6 +38,16 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             }
 
             return (false, null, $"Unknown error in {this.GetType()}");
+        }
+
+        public string GenerateSaveDataJson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadSaveDataJson(string json)
+        {
+            throw new NotImplementedException();
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);

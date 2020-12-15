@@ -22,6 +22,11 @@ namespace PacketStudio.NewGUI
     {
         public event EventHandler PacketChanged;
 
+        public void OnPacketChanged(object sender, EventArgs args)
+        {
+            PacketChanged?.Invoke(sender,args);
+        }
+
         private readonly HexDeserializer _deserializer = new HexDeserializer();
 
         private IPacketTemplateControl PacketTemplateControl => packetTemplatePanel.Children.Count != 0 ? (packetTemplatePanel.Children[0] as IPacketTemplateControl) : null;
@@ -42,17 +47,43 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        public static readonly DependencyProperty BasePacketProperty = DependencyProperty.Register(nameof(BasePacket), typeof(PacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(null));
+        #region Dependency Props Stuff
 
-        public PacketSaveData BasePacket
+        public static readonly DependencyProperty CorePacketProperty = DependencyProperty.Register(nameof(CorePacket), typeof(PacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(CorePacketPropertyChangedCallback));
+        public static readonly DependencyProperty PacketProperty = DependencyProperty.Register(nameof(Packet), typeof(TempPacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(PacketPropertyChangedCallback));
+        private static void CorePacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as PacketDefiner).CorePacketPropertyChangedCallback(e);
+        }
+        private void CorePacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
+        {
+            var newval = e.NewValue as PacketSaveData;
+            Console.WriteLine($"@@@ WOOT (personal)! psd: {newval}");
+            if (newval is PacketSaveDataV3 v3)
+            {
+                var listItem = _streamTypeToListItems[v3.Type];
+                templatesListBox.SelectedItem = listItem;
+                hexTextBox.Text = v3.Text;
+            }
+
+        }
+        private static void PacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Console.WriteLine("@@@ WOOT!");
+        }
+
+        #endregion
+
+        public PacketSaveData CorePacket
         {
             get
             {
-                return GetValue(BasePacketProperty) as PacketSaveData;
+                return GetValue(CorePacketProperty) as PacketSaveData;
             }
             set
             {
-                SetValue(BasePacketProperty, value);
+                Console.WriteLine($"@@@ CorePacket setter called with value : {value}");
+                SetValue(CorePacketProperty, value);
             }
         }
 
@@ -68,20 +99,58 @@ namespace PacketStudio.NewGUI
 
                 var (success, res, _) = templateControl.GeneratePacket(bytes);
                 return success ? res : null;
-
+            }
+            set
+            {
+                SetValue(PacketProperty, value);
             }
         }
-
+        
         public bool IsHexStream => _deserializer.IsHexStream(this.hexTextBox.Text);
 
         public PacketDefiner()
         {
             InitializeComponent();
+
+            templatesListBox.Items.Clear();
+
+            var assm = this.GetType().Assembly;
+            var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
+            var sortedTemplateTypes = packetTemplateTypes.ToList();
+            sortedTemplateTypes.Sort((type1, type2) =>
+            {
+                var ord1 = type1.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
+                var ord2 = type2.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
+                return ord1.Order.CompareTo(ord2.Order);
+            });
+
+            foreach (var packetTemplateType in sortedTemplateTypes)
+            {
+                DisplayNameAttribute attr = packetTemplateType.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault() as DisplayNameAttribute;
+                var name = attr.DisplayName;
+
+                HexStreamTypeAttribute typeAttr = packetTemplateType.GetCustomAttributes(typeof(HexStreamTypeAttribute), false).FirstOrDefault() as HexStreamTypeAttribute;
+                HexStreamType sType = typeAttr.StreamType;
+
+                ListBoxItem lbi = new ListBoxItem()
+                {
+                    Content = name
+                };
+
+                _templatesBoxItemsToControlsCreators[lbi] = () => (UserControl) Activator.CreateInstance(packetTemplateType);
+
+                templatesListBox.Items.Add(lbi);
+
+
+                _streamTypeToListItems[sType] = lbi;
+            }
+
+            templatesListBox.SelectedIndex = 0;
         }
 
         private void HexTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            PacketChanged?.Invoke(this, new EventArgs());
+            OnPacketChanged(this, new EventArgs());
         }
 
         private void HexTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -128,39 +197,16 @@ namespace PacketStudio.NewGUI
 
         }
 
+        private  readonly Dictionary<HexStreamType,ListBoxItem> _streamTypeToListItems = new Dictionary<HexStreamType, ListBoxItem>();
+
         private readonly Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            templatesListBox.Items.Clear();
-
-            var assm = this.GetType().Assembly;
-            var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
-            var sortedTemplateTypes = packetTemplateTypes.ToList();
-            sortedTemplateTypes.Sort((type1, type2) =>
-            {
-                var ord1 = type1.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
-                var ord2 = type2.GetCustomAttributes(typeof(OrderAttribute)).Single() as OrderAttribute;
-                return ord1.Order.CompareTo(ord2.Order);
-            });
-
-            foreach (var packetTemplateType in sortedTemplateTypes)
-            {
-                DisplayNameAttribute attr = packetTemplateType.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault() as DisplayNameAttribute;
-                var name = attr.DisplayName;
-
-
-                ListBoxItem lbi = new ListBoxItem()
-                {
-                    Content = name
-                };
-
-                _templatesBoxItemsToControlsCreators[lbi] = () => (UserControl) Activator.CreateInstance(packetTemplateType);
-
-                templatesListBox.Items.Add(lbi);
-            }
-
-            templatesListBox.SelectedIndex = 0;
+            // We might have loaded a saved packet into the control before it 
+            // finished creating so previous tries to notify of the new packet were swallowd (since no one listened to the event)
+            // Invoking the event again here makes sure the packet is notices
+            OnPacketChanged(this, new EventArgs());
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -183,10 +229,10 @@ namespace PacketStudio.NewGUI
                 }
             }
 
-            this.PacketChanged?.Invoke(this,e);
+            this.OnPacketChanged(this,e);
         }
 
-        private void PacketTemplateControlChanged(object sender, EventArgs e) => this.PacketChanged?.Invoke(this,e);
+        private void PacketTemplateControlChanged(object sender, EventArgs e) => this.OnPacketChanged(this,e);
 
     }
 }

@@ -65,8 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HexStreamTypeAttribute.cs" />
     <Compile Include="HexStreamType.cs" />
     <Compile Include="HexUtils.cs" />
+    <Compile Include="Json\DictJsonSerializer.cs" />
     <Compile Include="Json\V3Ext1JsonSerializer.cs" />
     <Compile Include="Providers\PssFileProvider.cs" />
     <Compile Include="Json\PssFileSaver.cs" />

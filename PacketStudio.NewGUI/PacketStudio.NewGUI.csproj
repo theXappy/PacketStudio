@@ -122,6 +122,7 @@
     <Compile Include="PacketTemplatesControls\TcpTemplateControl.xaml.cs">
       <DependentUpon>TcpTemplateControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SctpPacketFactory.cs" />
     <Compile Include="TabControlWrapper.xaml.cs">
       <DependentUpon>TabControlWrapper.xaml</DependentUpon>

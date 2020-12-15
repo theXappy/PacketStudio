@@ -10,6 +10,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// </summary>
     [DisplayName("UDP Packet")]
     [Order(2)]
+    [HexStreamType(HexStreamType.UdpPayload)]
     public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
     {
         private static readonly UdpPacketFactory _factory = new UdpPacketFactory();
@@ -37,6 +38,16 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             }
 
             return (false, null, $"Unknown error in {this.GetType()}");
+        }
+
+        public string GenerateSaveDataJson()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadSaveDataJson(string json)
+        {
+            throw new NotImplementedException();
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
