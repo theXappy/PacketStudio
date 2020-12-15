@@ -24,7 +24,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        public EventHandler<PacketTreeSelectionChangedArgs> SelectedItemChanged;
+        public event EventHandler<PacketTreeSelectionChangedArgs> SelectedItemChanged;
 
         public PacketTreeView()
         {
@@ -110,8 +110,15 @@ namespace PacketStudio.NewGUI
                     int.TryParse(bytesIndexStr, out var bytesIndex);
 					string bytesLengthStr = nextElem.GetAttribute("size")?.Value ?? "0";
                     int.TryParse(bytesLengthStr, out var bytesLength);
-					_bytesHiglightnings[nextNode] = new BytesHighlightning(bytesIndex,bytesLength); 
 
+					// Save aside the bite highlighting instructions
+					BytesHighlightning bHighlightning = new BytesHighlightning(bytesIndex,bytesLength);
+                    if (bytesLength == 0)
+                    {
+                        bHighlightning.Offset = 0;
+                    }
+                    _bytesHiglightnings[nextNode] = bHighlightning;
+                    
 					nextNode.Selected += TreeItem_Selected;
 
 					elementNodes[nextElem] = nextNode;
@@ -139,10 +146,10 @@ namespace PacketStudio.NewGUI
 
 			TreeViewItem tvi = sender as TreeViewItem;
 
-            if(!(tvi?.ToolTip is BytesHighlightning highlighting))
+            if(!_bytesHiglightnings.TryGetValue(tvi, out BytesHighlightning bHighlightning))
 				return;
 
-			SelectedItemChanged?.Invoke(this, new PacketTreeSelectionChangedArgs(highlighting));
+			SelectedItemChanged?.Invoke(this, new PacketTreeSelectionChangedArgs(bHighlightning));
 
 			this.Dispatcher.BeginInvoke((Action)(()=>{
 				tvi.Focus();

@@ -112,7 +112,7 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black"/>
+                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
