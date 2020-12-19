@@ -11,7 +11,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("SCTP Packet")]
+    [DisplayName("SCTP ExportPacket")]
     [Order(3)]
     [HexStreamType(HexStreamType.SctpPayload)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl

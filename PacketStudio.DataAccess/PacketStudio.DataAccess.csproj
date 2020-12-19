@@ -77,6 +77,7 @@
     <Compile Include="SaveData\Extensions\V3Ext1.cs" />
     <Compile Include="SaveData\PacketSaveData.cs" />
     <Compile Include="SaveData\PacketSaveDataFactory.cs" />
+    <Compile Include="SaveData\PacketSaveDataNG.cs" />
     <Compile Include="SaveData\PacketSaveDataV1.cs" />
     <Compile Include="SaveData\PacketSaveDataV2.cs" />
     <Compile Include="SaveData\PacketSaveDataV3.cs" />

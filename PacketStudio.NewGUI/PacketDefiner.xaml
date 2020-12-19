@@ -18,14 +18,14 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Border Margin="2,2,2,5"  Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1">
         <TextBox  x:Name="hexTextBox"
-                  Grid.ColumnSpan="2" 
-                  Grid.Row="0"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
                  TextChanged="HexTextBox_TextChanged"
                  LostFocus="HexTextBox_LostFocus" 
                   VerticalContentAlignment="Top"/>
+        </Border>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
             <ListBox x:Name="templatesListBox" 
                   SelectionChanged="ListBox_SelectionChanged">

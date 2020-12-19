@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,21 +13,15 @@ namespace PacketStudio.NewGUI
 {
     public class ViewModel : NotificationObject
     {
+        private const string TAB_HEADER_PREFIX = "Packet";
+        private int nextTabNumber = 1;
+
         private NewButtonAlignment newButtonAlignment = NewButtonAlignment.Last;
         private Brush newButtonBackground = Brushes.DimGray;
-        private Thickness newButtonMargin = new Thickness(5,1,5,1); 
+        private Thickness newButtonMargin = new Thickness(50,1,50,1); 
         private bool isNewButtonClosedonNoChild = true;
         private bool isNewButtonEnabled = true;
         private ObservableCollection<TabItemViewModel> tabItems;
-        private readonly DelegateCommand<object> newButtonClickCommand;
-
-        public ICommand NewButtonClickCommand
-        {
-            get
-            {
-                return newButtonClickCommand;
-            }
-        }
 
         public Thickness NewButtonMargin
         {
@@ -84,14 +79,18 @@ namespace PacketStudio.NewGUI
                 this.RaisePropertyChanged(nameof(TabItems));
             }
         }
-        public void NewButtonClicked(object parameter)
+
+        
+
+        public void AddNewPacket()
         {
-            TabControlExt tabControl = parameter as TabControlExt;
-            int count = tabControl.Items.Count + 1;
+            int tabNumber = nextTabNumber++;
             TabItemViewModel new_model1 = new TabItemViewModel()
             {
-                Header = "tabItem" + count,
-                Content = "This is the content of " + count + " tabitem."
+                Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
+                Content = $"Content?",
+                SessionPacket = new PacketSaveDataNG(HexStreamType.Raw,$"aabbccdd0{tabNumber}"),
+                ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
             };
             tabItems.Add(new_model1);
         }
@@ -99,30 +98,14 @@ namespace PacketStudio.NewGUI
 
         public void PopulateCollection()
         {
-            TabItemViewModel model1 = new TabItemViewModel()
-            {
-                Header = "tabItem1",
-                Content = "This is the content of 1 tabitem.",
-                CorePacket = new PacketSaveDataV3("aabb11223344556677889900",HexStreamType.UdpPayload,LinkLayerType.Ethernet.ToString(),"2","2", ""),
-                Packet = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet )
-            };
-            TabItemViewModel model2 = new TabItemViewModel()
-            {
-                Header = "tabItem2",
-                Content = "This is the content of 2 tabitem.",
-                CorePacket = new PacketSaveDataV3("ccbb00998877665544332211",HexStreamType.Raw,LinkLayerType.Ethernet.ToString(),"2","2", ""),
-                Packet = new TempPacketSaveData(new byte[3],LinkLayerType.A653Icm )
-            };
+            // Add first packet
+            AddNewPacket();
 
-            //Adding tab item details to the collection
-            tabItems.Add(model1);
-            tabItems.Add(model2);
         }
         public ViewModel()
         {
             tabItems = new ObservableCollection<TabItemViewModel>();
             PopulateCollection();
-            newButtonClickCommand = new DelegateCommand<object>(NewButtonClicked);
 
             // Register self with parent MainWindow
             MainWindow.TabControlViewModel = this;

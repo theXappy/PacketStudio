@@ -19,10 +19,11 @@ namespace PacketStudio.NewGUI
             var _6 = _5.Single(info => info.Name.GetHashCode() == 0x273060c7);
             object[] _7 = new object[]
             {
-                "MzQ4MDQ2QDMxMzgyZTMzMmUzMEVsVFV6N2tPS0tJMitVR05L" +
-                "QXRDNTN1bWJtWHlUZUg3dzlFbytuYlUrSkE9;MzQ4MDQ3QDM" +
-                "xMzgyZTMzMmUzMENaazhtZmRYVEVHV1M3MDBhaWZueU83WnR" +
-                "mR0dhUEtBK0x5bWhxSHZHNzA9"
+                "MzY4NzcwQDMxMzgyZT" +
+                "M0MmUzME9OeDQ3cVV2Z" +
+                "EY4eE5WNHd6RmlEem93T" +
+                "UdaZnp5WWxpYzIwbVB5" +
+                "ZTlTVnM9"
             };
             _6.Invoke(null, _7);
        }

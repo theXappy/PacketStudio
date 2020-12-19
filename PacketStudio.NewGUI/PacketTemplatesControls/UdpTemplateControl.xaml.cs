@@ -8,7 +8,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("UDP Packet")]
+    [DisplayName("UDP ExportPacket")]
     [Order(2)]
     [HexStreamType(HexStreamType.UdpPayload)]
     public partial class UdpTemplateControl : UserControl, IPacketTemplateControl

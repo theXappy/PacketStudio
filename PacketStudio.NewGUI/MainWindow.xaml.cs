@@ -29,7 +29,7 @@ namespace PacketStudio.NewGUI
         public static ViewModel TabControlViewModel;
 
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
-        
+
         private static int _packetsCounter = 0;
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -49,7 +49,7 @@ namespace PacketStudio.NewGUI
         public MainWindow()
         {
             SfSkinManager.SetTheme(this, new Theme("MaterialDarkBlue"));
-            
+
 
             InitializeComponent();
 
@@ -70,6 +70,8 @@ namespace PacketStudio.NewGUI
 
         private void AddNewPacketTab(object sender, EventArgs e)
         {
+            TabControlViewModel?.AddNewPacket();
+            return;
             TabControlWrapper mnw = new TabControlWrapper();
 
             _packetsCounter++;
@@ -109,7 +111,7 @@ namespace PacketStudio.NewGUI
             if (definer.IsValid)
             {
                 // Update HEX view
-                byte[] bytes = definer.Packet.Data;
+                byte[] bytes = definer.ExportPacket.Data;
 
 
                 // Some WPF hacking is going on here:
@@ -124,14 +126,14 @@ namespace PacketStudio.NewGUI
                 {
                     hexEditor.Visibility = Visibility.Hidden;
                     hexEditor.Stream = new MemoryStream(bytes);
+                    hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                    hexEditor.ForegroundSecondColor = hexEditor.Foreground;
                     hexEditor.Visibility = Visibility.Visible;
                 }
-                hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                hexEditor.ForegroundSecondColor = hexEditor.Foreground;
 
                 // Update Tab's ViewModel
                 CurrentTabItemModel.IsValid = true;
-                CurrentTabItemModel.Packet = definer.Packet;
+                CurrentTabItemModel.ExportPacket = definer.ExportPacket;
 
                 // Call Live Update
                 if (previewEnabledCheckbox.IsChecked == true)
@@ -142,17 +144,21 @@ namespace PacketStudio.NewGUI
             else
             {
                 CurrentTabItemModel.IsValid = false;
-                CurrentTabItemModel.Packet = null;
+                CurrentTabItemModel.ExportPacket = null;
 
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
                  {
-                     hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
-                     hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                     using (var d = Dispatcher.DisableProcessing())
+                     {
+                         hexEditor.Visibility = Visibility.Hidden;
+                         hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
+                         hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                         hexEditor.Visibility = Visibility.Visible;
+                     }
                  }));
-                return;
             }
         }
 
@@ -165,7 +171,8 @@ namespace PacketStudio.NewGUI
             {
                 packetTreeView.previewTree.Items.Clear();
                 packetTreeView.previewTree.Items.Add("Loading...");
-                this.packetTreeView.previewTree.Background = new SolidColorBrush(Colors.HotPink);
+                var loadingColor = DockManager.Background;
+                this.packetTreeView.previewTree.Background = loadingColor;
             });
         }
         private void UnsetPacketTreeInProgress()
@@ -182,7 +189,7 @@ namespace PacketStudio.NewGUI
             AutoResetEvent are = new AutoResetEvent(false);
             this.Dispatcher.BeginInvoke((Action)(() =>
             {
-                packetBytes = CurrentTabItemModel.Packet;
+                packetBytes = CurrentTabItemModel.ExportPacket;
             })).Task.Wait();
 
             if (packetBytes == null || packetBytes.Data.Length == 0)
@@ -232,7 +239,7 @@ namespace PacketStudio.NewGUI
 
             if (packetValid)
             {
-                byte[] packet = CurrentTabItemModel.Packet.Data;
+                byte[] packet = CurrentTabItemModel.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = string.Join(", ", bytesAsStrings);
                 Clipboard.SetText(combinedString);
@@ -249,7 +256,7 @@ namespace PacketStudio.NewGUI
 
             if (packetValid)
             {
-                byte[] packet = CurrentTabItemModel.Packet.Data;
+                byte[] packet = CurrentTabItemModel.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
                 Clipboard.SetText(combinedString);
