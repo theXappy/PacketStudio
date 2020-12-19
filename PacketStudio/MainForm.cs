@@ -810,7 +810,7 @@ namespace PacketStudio
                 return;
             }
 
-            Wireshark.ExportToWsAsync(packets).Task.ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
+            Wireshark.ExportToWsAsync(packets).CliTask.Task.ContinueWith((task) => Invoke((Action)QueueLivePreviewUpdate));
         }
 
         private PacketDefineControl GetCurrentPacketDefineControl()

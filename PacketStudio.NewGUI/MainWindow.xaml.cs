@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -347,7 +348,7 @@ namespace PacketStudio.NewGUI
             e.Handled = true;
         }
 
-        private void RibbonButton_Click(object sender, RoutedEventArgs e)
+        private void NormalizeHex(object sender, RoutedEventArgs e)
         {
             // TODO:
             //CurrentTabItemModel.NormalizeHex();
@@ -365,6 +366,28 @@ namespace PacketStudio.NewGUI
                 hexEditor.SelectionStart = e.BytesHiglightning.Offset;
                 hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
             }
+        }
+
+        private void ExportToWireshark(object sender, RoutedEventArgs e)
+        {
+            var items = TabControlViewModel.TabItems;
+            List<TempPacketSaveData> exportedPackets = items.Select(tabViewModel => tabViewModel.ExportPacket).ToList();
+            TempPacketsSaver saver = new TempPacketsSaver();
+
+            // TODO: Make this configurable
+            var wsPath = SharksFinder.GetDirectories().First().WiresharkPath;
+            WiresharkInterop wsInterop = new WiresharkInterop(wsPath);
+            var wsSessionTask = wsInterop.ExportToWsAsync(exportedPackets);
+
+            // When Wireshark exits we want to trigger a preview update because use might have changed preferences
+            wsSessionTask.CliTask.Task.ContinueWith(_ =>
+            {
+                Debug.WriteLine($"@@@ Cont'ing interop task, Changed found: {wsSessionTask.PreferencesChanged}");
+                if (wsSessionTask.PreferencesChanged)
+                {
+                    ShowLivePreview();
+                }
+            });
         }
     }
 }
