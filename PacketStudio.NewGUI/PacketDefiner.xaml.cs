@@ -49,21 +49,24 @@ namespace PacketStudio.NewGUI
 
         #region Dependency Props Stuff
 
-        public static readonly DependencyProperty CorePacketProperty = DependencyProperty.Register(nameof(CorePacket), typeof(PacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(CorePacketPropertyChangedCallback));
-        public static readonly DependencyProperty PacketProperty = DependencyProperty.Register(nameof(Packet), typeof(TempPacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(PacketPropertyChangedCallback));
-        private static void CorePacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public static readonly DependencyProperty SessionPacketProperty = DependencyProperty.Register(nameof(SessionPacket), typeof(PacketSaveDataNG), typeof(PacketDefiner), new FrameworkPropertyMetadata(SessionPacketPropertyChangedCallback));
+        public static readonly DependencyProperty ExportPacketProperty = DependencyProperty.Register(nameof(ExportPacket), typeof(TempPacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(PacketPropertyChangedCallback));
+        private static void SessionPacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as PacketDefiner).CorePacketPropertyChangedCallback(e);
+            (d as PacketDefiner).SessionPacketPropertyChangedCallback(e);
         }
-        private void CorePacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
+        private void SessionPacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
         {
-            var newval = e.NewValue as PacketSaveData;
-            Console.WriteLine($"@@@ WOOT (personal)! psd: {newval}");
-            if (newval is PacketSaveDataV3 v3)
+            var newPacket = e.NewValue as PacketSaveDataNG;
+            Console.WriteLine($"@@@ WOOT (personal)! psd: {newPacket}");
+            if (newPacket != null)
             {
-                var listItem = _streamTypeToListItems[v3.Type];
+                // Getting the right listbox item of the "packet types list"
+                var listItem = _streamTypeToListItems[newPacket.Type];
+
+                // Switching to the new packet type to bring up the new packet template control
                 templatesListBox.SelectedItem = listItem;
-                hexTextBox.Text = v3.Text;
+                hexTextBox.Text = newPacket.PacketData;
             }
 
         }
@@ -74,20 +77,20 @@ namespace PacketStudio.NewGUI
 
         #endregion
 
-        public PacketSaveData CorePacket
+        public PacketSaveData SessionPacket
         {
             get
             {
-                return GetValue(CorePacketProperty) as PacketSaveData;
+                return GetValue(SessionPacketProperty) as PacketSaveData;
             }
             set
             {
-                Console.WriteLine($"@@@ CorePacket setter called with value : {value}");
-                SetValue(CorePacketProperty, value);
+                Console.WriteLine($"@@@ SessionPacket setter called with value : {value}");
+                SetValue(SessionPacketProperty, value);
             }
         }
 
-        public TempPacketSaveData Packet
+        public TempPacketSaveData ExportPacket
         {
             get
             {
@@ -102,7 +105,7 @@ namespace PacketStudio.NewGUI
             }
             set
             {
-                SetValue(PacketProperty, value);
+                SetValue(ExportPacketProperty, value);
             }
         }
         

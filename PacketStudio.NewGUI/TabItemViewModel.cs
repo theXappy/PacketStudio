@@ -9,29 +9,35 @@ namespace PacketStudio.NewGUI
     {
         private string content;
         private string header;
-        private PacketSaveData _corePacket;
-        private TempPacketSaveData _packet;
+        private PacketSaveDataNG _sessionPacket;
+        private TempPacketSaveData _exportPacket;
 
         public bool IsValid { get; set; }
         public string ValidationError { get; set; }
 
-        public TempPacketSaveData Packet
+        public TempPacketSaveData ExportPacket
         {
-            get => _packet;
+            get => _exportPacket;
             set
             {
-                _packet = value;
-                this.RaisePropertyChanged(nameof(Packet));
+                _exportPacket = value;
+                this.RaisePropertyChanged(nameof(ExportPacket));
             }
         }
 
-        public PacketSaveData CorePacket
+        public PacketSaveDataNG SessionPacket
         {
-            get => _corePacket;
+            get => _sessionPacket;
             set
             {
-                _corePacket = value;
-                this.RaisePropertyChanged(nameof(CorePacket));
+                _sessionPacket = value;
+                this.RaisePropertyChanged(nameof(SessionPacket));
+                if (value == null) return;
+                // Check for specific header name
+                if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.HEADER_FIELD, out string newHeader))
+                {
+                    Header = newHeader;
+                }
             }
         }
 

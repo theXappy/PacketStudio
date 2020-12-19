@@ -35,35 +35,19 @@
                     <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="PreviewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="PreviewDelayTextBox_PreviewKeyDown"/>
                 </syncfusion:RibbonBar>
             </syncfusion:RibbonTab>
-        </syncfusion:Ribbon>
-        <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False" >
+        </syncfusion:Ribbon>    
+        <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
                 <newGui:TabControlWrapper x:Name="tabControl"
                                           ItemsSource="{Binding TabItems}"
-                                           NewButtonBackground="{Binding NewButtonBackground}"
-                                           IsNewButtonClosedonNoChild="{Binding IsNewButtonClosedonNoChild}"
-                                           IsNewButtonEnabled="{Binding IsNewButtonEnabled}"
-                                           NewButtonAlignment="{Binding NewButtonAlignment}"
+                                          NewButtonAlignment="First"
+                                           IsNewButtonEnabled="True"
                                            Margin="5"
+                                          NewButtonBackground="Transparent"
+                                           NewButtonClick="AddNewPacketTab"
                                            TabPanelBackground="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type newGui:MainWindow}}}"
-
-                                           >
-                    <!--Custom UI for the NewButton -->
-                    <syncfusion:TabControlExt.NewTabButtonTemplate>
-                        <DataTemplate>
-                            <Button Background="{Binding NewButtonBackground}" 
-                                    Content=" + "
-                                    Width="20">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <i:InvokeCommandAction Command="{Binding NewButtonClickCommand}"
-                                                               CommandParameter="{Binding ElementName=tabControlExt}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </Button>
-                        </DataTemplate>
-                    </syncfusion:TabControlExt.NewTabButtonTemplate>
-
+                                           syncfusion:SfSkinManager.VisualStyle="MaterialDark"
+                                            >
 
                     <!--Binding the header text for the Tab item-->
                     <syncfusion:TabControlExt.ItemContainerStyle >
@@ -80,11 +64,10 @@
                                     <DataTemplate>
                                         <local:PacketDefiner
                                                     PacketChanged="PacketDefinerPacketChanged"
-                                                    CorePacket="{Binding
-                                                    CorePacket}"
+                                                    SessionPacket="{Binding
+                                                    SessionPacket}"
                                                     Margin="-2,-2"
-                                                    Background="{Binding
-                                                    Background,
+                                                    Background="{Binding Background,
                                                     RelativeSource={RelativeSource
                                                     FindAncestor,
                                                     AncestorType={x:Type
@@ -121,7 +104,7 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Bottom" 
                        syncfusion:DockingManager.DesiredHeightInDockedMode="200">
-                <wpfHexaEditor:HexEditor x:Name="hexEditor" ReadOnlyMode="True" FontSize="14" FontFamily="Consolas"/>
+                <wpfHexaEditor:HexEditor x:Name="hexEditor" ReadOnlyMode="True" FontSize="14" FontFamily="Consolas" AllowAutoHighLightSelectionByte="False"/>
             </DockPanel>
         </syncfusion:DockingManager>
     </DockPanel>
