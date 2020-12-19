@@ -27,11 +27,12 @@
                         <syncfusion:DropDownMenuItem Header="0xAA, 0xBB" Click="CopyCSharpShort"/>
                         <syncfusion:DropDownMenuItem Header="new byte[]{0xAA, 0xBB};" Click="CopyCSharpLong"/>
                     </syncfusion:SplitButton>
-                    <syncfusion:RibbonButton Focusable="False" IsLargeImageVisible="True" IsSmallImageVisible="True" Label="Normalize Hex" SizeForm="Large" Click="RibbonButton_Click"/>
+                    <syncfusion:RibbonButton Focusable="False" IsLargeImageVisible="True" IsSmallImageVisible="True" Label="Normalize Hex" SizeForm="Large" Click="NormalizeHex"/>
+                    <syncfusion:RibbonButton Label="Export to Wireshark" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png" ScrollViewer.CanContentScroll="True" Width="35" Click="ExportToWireshark"/>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Live Preview" IsLauncherButtonVisible="False" Margin="1,2" >
-                    <syncfusion:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Preview HeurDissectorsEnabled" IsChecked="True"/>
-                    <syncfusion:RibbonButton x:Name="previewDelayButton" IconType="VectorImage" Label="Preivew Delay" Click="ShowPreviewDelayTextBox"/>
+                    <syncfusion:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Enable Preview" IsChecked="True"/>
+                    <syncfusion:RibbonButton x:Name="previewDelayButton" IconType="VectorImage" Label="Preview Delay" Click="ShowPreviewDelayTextBox"/>
                     <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="PreviewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="PreviewDelayTextBox_PreviewKeyDown"/>
                 </syncfusion:RibbonBar>
             </syncfusion:RibbonTab>

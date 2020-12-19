@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,6 +10,15 @@ namespace PacketStudio.Core
 {
 	public class WiresharkInterop
 	{
+        public class WiresharkInteropTask
+        {
+			/// <summary>
+			/// Whether wireshark saved new preferences when running. Value only guaranteed to be correct after <see cref="CliTask"/> finished.
+			/// </summary>
+           public bool PreferencesChanged { get; set; }
+           public CommandTask<CommandResult> CliTask { get; set; }
+        }
+
 		private string _wiresharkPath;
 		private TempPacketsSaver _packetsSaver;
 
@@ -37,21 +47,51 @@ namespace PacketStudio.Core
 			_packetsSaver = new TempPacketsSaver();
 		}
 
-		public CommandTask<CommandResult> ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
+		public WiresharkInteropTask ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
 		{
 			string savedPcapPath = _packetsSaver.WritePackets(packets);
-			// Running wireshark
-			// Note that when wireshark exists it triggers a live preview update since
-			// the user might have enabled/disabled some protocols/preferences so we need to update the current view!
+		
+			// Output. Empty for now, will be updated below
+			WiresharkInteropTask outputTask = new WiresharkInteropTask();
+            
+			// Setting up preferences monitor
+            var wsPrefDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "wireshark");
+            FileSystemWatcher fsw  = new FileSystemWatcher(wsPrefDir);
+            fsw.IncludeSubdirectories = true;
+
+            void FswChanged(object o, FileSystemEventArgs args)
+            {
+				// In change in the preferences directory is treated the same
+				Debug.WriteLine($" $$$ Chane deteceted. File: {args.Name}, Type: {args.ChangeType}");
+                var filteredFile = new List<string> {"recent", "recent_common"};
+                if (!filteredFile.Contains(args.Name))
+                {
+                    outputTask.PreferencesChanged = true;
+                }
+            }
+
+            fsw.Changed += FswChanged;
+            fsw.EnableRaisingEvents = true;
+            
+            // Running wireshark
             var wsCli = Cli.Wrap(_wiresharkPath)
                            .WithArguments(savedPcapPath);
-			return wsCli.ExecuteAsync();
-		}
+			CommandTask<CommandResult> cliTask =  wsCli.ExecuteAsync();
+            cliTask.Task.ContinueWith(_ =>
+            {
+                fsw.EnableRaisingEvents = false;
+                fsw.Changed -= FswChanged;
+                fsw.Dispose();
+            });
+            outputTask.CliTask = cliTask;
+
+            return outputTask;
+        }
 		public void ExportToWs(IEnumerable<TempPacketSaveData> packets)
 		{
 			try
 			{
-				ExportToWsAsync(packets).Task.Wait();
+				ExportToWsAsync(packets).CliTask.Task.Wait();
 			}
 			catch
 			{
