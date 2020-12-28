@@ -160,11 +160,11 @@ namespace PacketStudio.NewGUI
             }
         }
 
+        // TODO: Make this configurable
         readonly TSharkInterop _tSharkInterop = new TSharkInterop(@"C:\Program Files\Wireshark\tshark.exe");
 
         private void SetPacketTreeInProgress()
         {
-            // TODO: De-uglify this
             Dispatcher.Invoke(() =>
             {
                 packetTreeView.previewTree.Items.Clear();
