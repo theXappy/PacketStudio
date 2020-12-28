@@ -44,56 +44,110 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Compression.Base, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Compression.Base.18.4.0.30\lib\net46\Syncfusion.Compression.Base.dll</HintPath>
+    <Reference Include="Syncfusion.Compression.Base, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Compression.Base.18.4.0.31\lib\net46\Syncfusion.Compression.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.DocIO.Base, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.DocIO.Wpf.18.4.0.30\lib\net46\Syncfusion.DocIO.Base.dll</HintPath>
+    <Reference Include="Syncfusion.DocIO.Base, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.DocIO.Wpf.18.4.0.31\lib\net46\Syncfusion.DocIO.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Licensing, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Licensing.18.4.0.30\lib\net46\Syncfusion.Licensing.dll</HintPath>
+    <Reference Include="Syncfusion.Edit.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Edit.WPF.18.4.0.31\lib\net46\Syncfusion.Edit.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.OfficeChart.Base, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.OfficeChart.Base.18.4.0.30\lib\net46\Syncfusion.OfficeChart.Base.dll</HintPath>
+    <Reference Include="Syncfusion.GridCommon.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.GridCommon.Wpf.18.4.0.31\lib\net46\Syncfusion.GridCommon.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfRichTextBoxAdv.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.SfRichTextBoxAdv.WPF.18.4.0.30\lib\net46\Syncfusion.SfRichTextBoxAdv.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Licensing, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Licensing.18.4.0.31\lib\net46\Syncfusion.Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfRichTextRibbon.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.SfRichTextRibbon.WPF.18.4.0.30\lib\net46\Syncfusion.SfRichTextRibbon.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.OfficeChart.Base, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.OfficeChart.Base.18.4.0.31\lib\net46\Syncfusion.OfficeChart.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.SfSkinManager.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.SfSkinManager.WPF.18.4.0.30\lib\net46\Syncfusion.SfSkinManager.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.SfRichTextBoxAdv.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.SfRichTextBoxAdv.WPF.18.4.0.31\lib\net46\Syncfusion.SfRichTextBoxAdv.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Shared.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Shared.WPF.18.4.0.30\lib\net46\Syncfusion.Shared.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.SfRichTextRibbon.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.SfRichTextRibbon.WPF.18.4.0.31\lib\net46\Syncfusion.SfRichTextRibbon.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Shared.WPF.Classic, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Shared.WPF.Classic.18.4.0.30\lib\net46\Syncfusion.Shared.WPF.Classic.dll</HintPath>
+    <Reference Include="Syncfusion.SfSkinManager.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.SfSkinManager.WPF.18.4.0.31\lib\net46\Syncfusion.SfSkinManager.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Themes.Blend.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Themes.Blend.WPF.18.4.0.30\lib\net46\Syncfusion.Themes.Blend.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Shared.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Shared.WPF.18.4.0.31\lib\net46\Syncfusion.Shared.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Themes.MaterialDarkBlue.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Themes.MaterialDarkBlue.WPF.18.4.0.30\lib\net46\Syncfusion.Themes.MaterialDarkBlue.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Syncfusion.Themes.Metro.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Themes.Metro.WPF.18.4.0.30\lib\net46\Syncfusion.Themes.Metro.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Syncfusion.Themes.Office2013White.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Themes.Office2013White.WPF.18.4.0.30\lib\net46\Syncfusion.Themes.Office2013White.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Shared.WPF.Classic, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Shared.WPF.Classic.18.4.0.31\lib\net46\Syncfusion.Shared.WPF.Classic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Themes.VisualStudio2015.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Themes.VisualStudio2015.WPF.18.4.0.30\lib\net46\Syncfusion.Themes.VisualStudio2015.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Themes.Blend.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Blend.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Blend.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Tools.WPF, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Tools.WPF.18.4.0.30\lib\net46\Syncfusion.Tools.WPF.dll</HintPath>
+    <Reference Include="Syncfusion.Themes.Lime.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Lime.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Lime.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Syncfusion.Tools.WPF.Classic, Version=18.4460.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <HintPath>..\packages\Syncfusion.Tools.WPF.Classic.18.4.0.30\lib\net46\Syncfusion.Tools.WPF.Classic.dll</HintPath>
+    <Reference Include="Syncfusion.Themes.MaterialDark.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.MaterialDark.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.MaterialDark.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.MaterialDarkBlue.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.MaterialDarkBlue.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.MaterialDarkBlue.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.MaterialLight.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.MaterialLight.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.MaterialLight.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.MaterialLightBlue.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.MaterialLightBlue.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.MaterialLightBlue.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Metro.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Metro.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Metro.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2010Black.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2010Black.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2010Black.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2013DarkGray.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2013DarkGray.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2013DarkGray.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2013LightGray.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2013LightGray.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2013LightGray.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2013White.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2013White.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2013White.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2016Colorful.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2016Colorful.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2016Colorful.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2016DarkGray.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2016DarkGray.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2016DarkGray.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2016White.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2016White.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2016White.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2019Colorful.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2019Colorful.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2019Colorful.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2019DarkGray.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2019DarkGray.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2019DarkGray.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office2019HighContrast.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office2019HighContrast.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office2019HighContrast.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Office365.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Office365.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Office365.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.Saffron.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.Saffron.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.Saffron.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.VisualStudio2013.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.VisualStudio2013.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.VisualStudio2013.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Themes.VisualStudio2015.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Themes.VisualStudio2015.WPF.18.4.0.31\lib\net46\Syncfusion.Themes.VisualStudio2015.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Tools.WPF, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Tools.WPF.18.4.0.31\lib\net46\Syncfusion.Tools.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Tools.WPF.Classic, Version=18.4460.0.31, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Syncfusion.Tools.WPF.Classic.18.4.0.31\lib\net46\Syncfusion.Tools.WPF.Classic.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -181,7 +235,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ByteArrayToIndexedHexStringConverter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -268,6 +321,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\edit-copy_csharp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\hammer-32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\shark-32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\shark-dir-32.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

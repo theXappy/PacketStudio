@@ -6,21 +6,17 @@
              xmlns:local="clr-namespace:PacketStudio.NewGUI.PacketTemplatesControls"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="350">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="80"/>
-            <ColumnDefinition Width="8*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Label DockPanel.Dock="Left" MinWidth="60">Stream:</Label>
-        <TextBox x:Name="streamTextbox" Grid.Column="1" TextChanged="StreamTextbox_OnTextChanged"/>
-        <Label DockPanel.Dock="Left"  Grid.Row="1" MinWidth="60">Link Layer:</Label>
-        <ComboBox x:Name="ppidBox" Grid.Column="1" Grid.Row="1" SelectionChanged="PpidBox_SelectionChanged" />
-    </Grid>
+    <StackPanel Orientation="Vertical" Margin="5">
+
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Left" MinWidth="60">Stream:</Label>
+            <TextBox x:Name="streamTextbox" DockPanel.Dock="Left" TextChanged="StreamTextbox_OnTextChanged"/>
+        </DockPanel>
+        <DockPanel LastChildFill="True">
+            <Label DockPanel.Dock="Left" MinWidth="60">PPID:</Label>
+            <ComboBox x:Name="ppidBox" DockPanel.Dock="Left" SelectionChanged="PpidBox_SelectionChanged"/>
+        </DockPanel>
+
+    </StackPanel>
 
 </UserControl>

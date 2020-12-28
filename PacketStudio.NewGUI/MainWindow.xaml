@@ -9,7 +9,7 @@
         xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
-        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=MaterialDarkBlue}"
+        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=Blend}"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
         x:Class="PacketStudio.NewGUI.MainWindow"
@@ -20,15 +20,30 @@
     </controls:RibbonWindow.DataContext>
 
     <DockPanel>
-        <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167">
-            <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23">
+        <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167" >
+            <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23" syncfusion:Ribbon.KeyTip="H">
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="1,2">
-                    <syncfusion:SplitButton x:Name="copyForCSharpButton" Label="Copy For C#" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png" ScrollViewer.CanContentScroll="True" Width="35" Click="CopyCSharpShort">
+                    <syncfusion:SplitButton x:Name="copyForCSharpButton" Label="Copy For C#" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"
+                                            LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png"
+                                            Click="CopyCSharpShort"
+                                            syncfusion:Ribbon.KeyTip="C">
                         <syncfusion:DropDownMenuItem Header="0xAA, 0xBB" Click="CopyCSharpShort"/>
                         <syncfusion:DropDownMenuItem Header="new byte[]{0xAA, 0xBB};" Click="CopyCSharpLong"/>
                     </syncfusion:SplitButton>
-                    <syncfusion:RibbonButton Focusable="False" IsLargeImageVisible="True" IsSmallImageVisible="True" Label="Normalize Hex" SizeForm="Large" Click="NormalizeHex"/>
-                    <syncfusion:RibbonButton Label="Export to Wireshark" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" LargeIcon="pack://siteoforigin:,,,/Resources/edit-copy_csharp.png" ScrollViewer.CanContentScroll="True" Width="35" Click="ExportToWireshark"/>
+                    <syncfusion:RibbonButton Label="Normalize Hex" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"
+                                             LargeIcon="pack://siteoforigin:,,,/Resources/hammer-32.png"
+                                             Click="NormalizeHex"
+                                             syncfusion:Ribbon.KeyTip="N"/>
+                </syncfusion:RibbonBar>
+                <syncfusion:RibbonBar  Focusable="False" Header="Wireshark" IsLauncherButtonVisible="False" Margin="1,2">
+                    <syncfusion:RibbonButton Label="Export to Wireshark" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"
+                                             LargeIcon="pack://siteoforigin:,,,/Resources/shark-32.png"
+                                             Click="ExportToWireshark"
+                                             syncfusion:Ribbon.KeyTip="W"/>
+                    <syncfusion:RibbonButton Label="Select Wireshark Version" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"
+                                             LargeIcon="pack://siteoforigin:,,,/Resources/shark-dir-32.png"
+                                             Click="ExportToWireshark"
+                                             syncfusion:Ribbon.KeyTip="V"/>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Live Preview" IsLauncherButtonVisible="False" Margin="1,2" >
                     <syncfusion:RibbonCheckBox x:Name="previewEnabledCheckbox" Content="Enable Preview" IsChecked="True"/>
@@ -43,16 +58,15 @@
                                           ItemsSource="{Binding TabItems}"
                                           NewButtonAlignment="First"
                                            IsNewButtonEnabled="True"
-                                           Margin="5"
                                           NewButtonBackground="Transparent"
                                            NewButtonClick="AddNewPacketTab"
-                                           TabPanelBackground="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type newGui:MainWindow}}}"
                                            syncfusion:SfSkinManager.VisualStyle="MaterialDark"
-                                            >
+                >
 
                     <!--Binding the header text for the Tab item-->
                     <syncfusion:TabControlExt.ItemContainerStyle >
-                        <Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource BlendTabItemExtStyle}">
+                        <!--<Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource BlendTabItemExtStyle}">-->
+                        <Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource MetroTabItemExtStyle}">
                             <Setter Property="HeaderTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
@@ -67,13 +81,10 @@
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     SessionPacket="{Binding
                                                     SessionPacket}"
-                                                    Margin="-2,-2"
-                                                    Background="{Binding Background,
-                                                    RelativeSource={RelativeSource
-                                                    FindAncestor,
-                                                    AncestorType={x:Type
-                                                    newGui:MainWindow}},
-                                                    FallbackValue=#152549}"/>
+                                                    Background="#323232"
+                                                    Margin="0"
+                                                    syncfusion:SfSkinManager.VisualStyle="MaterialDark"                                                    
+                                                    />
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>

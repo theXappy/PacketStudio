@@ -77,11 +77,24 @@ namespace PacketStudio.NewGUI
 
         #endregion
 
-        public PacketSaveData SessionPacket
+        public PacketSaveDataNG SessionPacket
         {
             get
             {
-                return GetValue(SessionPacketProperty) as PacketSaveData;
+                IPacketTemplateControl templateControl = PacketTemplateControl;
+                if (templateControl == null)
+                    return null;
+
+
+                var details = templateControl.GenerateSaveDetails();
+
+                string typeName = ((ListBoxItem) templatesListBox.SelectedItem).Content.ToString();
+                HexStreamType type = _namesToHexType[typeName];
+
+                string text = hexTextBox.Text;
+
+                PacketSaveDataNG psd = new PacketSaveDataNG(type, text) {Details = details};
+                return psd;
             }
             set
             {
@@ -114,7 +127,9 @@ namespace PacketStudio.NewGUI
         public PacketDefiner()
         {
             InitializeComponent();
-
+            // Remove placeholder text
+            hexTextBox.Text = string.Empty;
+            // Remove place holder item from packet types list box
             templatesListBox.Items.Clear();
 
             var assm = this.GetType().Assembly;
@@ -146,6 +161,7 @@ namespace PacketStudio.NewGUI
 
 
                 _streamTypeToListItems[sType] = lbi;
+                _namesToHexType[name] = sType;
             }
 
             templatesListBox.SelectedIndex = 0;
@@ -201,8 +217,8 @@ namespace PacketStudio.NewGUI
         }
 
         private  readonly Dictionary<HexStreamType,ListBoxItem> _streamTypeToListItems = new Dictionary<HexStreamType, ListBoxItem>();
-
         private readonly Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
+        private readonly Dictionary<string, HexStreamType> _namesToHexType = new Dictionary<string, HexStreamType>();
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {

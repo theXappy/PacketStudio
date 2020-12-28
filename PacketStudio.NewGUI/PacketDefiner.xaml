@@ -7,7 +7,6 @@
              mc:Ignorable="d" d:DesignHeight="350" d:DesignWidth="300" Loaded="UserControl_Loaded"
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
-        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=MaterialDarkBlue}"
              >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -18,19 +17,19 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Margin="2,2,2,5"  Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1">
+        <Border Margin="2,2,2,5"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1">
         <TextBox  x:Name="hexTextBox"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
                  TextChanged="HexTextBox_TextChanged"
                  LostFocus="HexTextBox_LostFocus" 
-                  VerticalContentAlignment="Top"/>
+                 Text="AA BB CC ..."
+                  VerticalContentAlignment="Top" FontFamily="Consolas" FontSize="16"/>
         </Border>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
             <ListBox x:Name="templatesListBox" 
                   SelectionChanged="ListBox_SelectionChanged">
-                <ListBoxItem>Placeholder</ListBoxItem>
-
+                <ListBoxItem>Packet Type Placeholder</ListBoxItem>
             </ListBox>
         </Border>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">

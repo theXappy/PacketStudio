@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Xml;
@@ -69,17 +70,20 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             return (false, null, "Couldn't result Link Layer type");
         }
 
-        public string GenerateSaveDataJson()
+        public Dictionary<string, string> GenerateSaveDetails()
         {
-            var saveData = new Dictionary<string, object>();
+            var saveData = new Dictionary<string, string>();
             saveData["EtherType"] = linkLayersBox.Text;
-            DictJsonSerializer s = new DictJsonSerializer();
-            return s.Serialize(saveData);
+            return saveData;
         }
 
-        public void LoadSaveDataJson(string json)
+
+        public void LoadSaveDetails(Dictionary<string, string> data)
         {
-            throw new NotImplementedException();
+            string etherType = data["EtherType"];
+            ComboBoxItem boxItem = linkLayersBox.Items.Cast<ComboBoxItem>()
+                .Single(item => (item.Content as string).Contains(etherType));
+            linkLayersBox.SelectedItem = boxItem;
         }
 
         private void LinkLayersBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
