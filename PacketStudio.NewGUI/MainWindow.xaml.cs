@@ -49,9 +49,6 @@ namespace PacketStudio.NewGUI
 
         public MainWindow()
         {
-            SfSkinManager.SetTheme(this, new Theme("MaterialDarkBlue"));
-
-
             InitializeComponent();
 
             // TODO: remove
@@ -116,12 +113,12 @@ namespace PacketStudio.NewGUI
 
 
                 // Some WPF hacking is going on here:
-                // I want to update hexEditor's "Stream" to the packet's bytes
+                // I want to update hexEditor's source (called "Stream") to the packet's bytes
                 // setting this property gives hexEditor focus
-                // I couldn't get the focus back to the sender (Main textbox, stream textbox, etc...)
+                // I couldn't get the focus back to the sender (Main textbox, IP stream textbox, etc...)
                 // no matter what I tried.
                 // To solve that I hide & unhide the hexeditor
-                // this causes FLICKERING of the editors sometimes
+                // this, in turn, causes FLICKERING of the editors sometimes
                 // to stop that from happening I disable the Dispatcher's processing and then reactivate (end of 'using')
                 using (var d = Dispatcher.DisableProcessing())
                 {
@@ -371,6 +368,16 @@ namespace PacketStudio.NewGUI
         private void ExportToWireshark(object sender, RoutedEventArgs e)
         {
             var items = TabControlViewModel.TabItems;
+            var invalidItems = items.Where(tabViewModel => !tabViewModel.IsValid);
+            if (invalidItems.Any())
+            {
+                string invalidItemsNames = string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.Header}\""));
+                string error = "Can not export to Wireshark because some tabs contain invalid packet definitions.\n\n" +
+                    $"Invalid tabs: {invalidItemsNames}";
+                MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             List<TempPacketSaveData> exportedPackets = items.Select(tabViewModel => tabViewModel.ExportPacket).ToList();
             TempPacketsSaver saver = new TempPacketsSaver();
 

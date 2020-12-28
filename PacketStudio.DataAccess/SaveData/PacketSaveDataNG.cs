@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PacketStudio.DataAccess.SaveData
 {
@@ -15,6 +16,14 @@ namespace PacketStudio.DataAccess.SaveData
             PacketData = packetData;
             Metadata = new Dictionary<string, string>();
             Details = new Dictionary<string, string>();
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Type)}: {Type}, " +
+                   $"{nameof(PacketData)}: {PacketData}, " +
+                   $"{nameof(Metadata)}: {{{string.Join(",", Metadata.Select(kvp => $"{kvp.Key}={kvp.Value}").ToArray())}}}," +
+                   $"{nameof(Details)}: {{{string.Join(",", Details.Select(kvp => $"{kvp.Key}={kvp.Value}").ToArray())}}},";
         }
     }
 

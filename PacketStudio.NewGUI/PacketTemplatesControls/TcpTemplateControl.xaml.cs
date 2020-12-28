@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 using PacketStudio.DataAccess;
@@ -8,7 +9,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("TCP ExportPacket")]
+    [DisplayName("TCP Packet")]
     [Order(1)]
     [HexStreamType(HexStreamType.TcpPayload)]
     public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
@@ -40,12 +41,12 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             return (false, null, $"Unknown error in {this.GetType()}");
         }
 
-        public string GenerateSaveDataJson()
+        public Dictionary<string, string> GenerateSaveDetails()
         {
             throw new NotImplementedException();
         }
 
-        public void LoadSaveDataJson(string json)
+        public void LoadSaveDetails(Dictionary<string, string> data)
         {
             throw new NotImplementedException();
         }

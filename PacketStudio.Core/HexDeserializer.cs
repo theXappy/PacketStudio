@@ -70,23 +70,41 @@ namespace PacketStudio.Core
 		/// <param name="output">Deserialized byte array or null if failed to deserialize</param>
 		public bool TryDeserialize(string rawHex, out byte[] output)
 		{
+            // Removing comments
+            var lines = rawHex.Split('\n');
+            string noCommentsHex = "";
+            foreach (var line in lines)
+            {
+                // ReSharper disable once StringIndexOfIsCultureSpecific.1
+                int commentStart = line.IndexOf(@"//");
+                if (commentStart != -1)
+                {
+                    noCommentsHex += line.Substring(0, commentStart);
+                }
+                else
+                {
+                    noCommentsHex += line;
+                }
+                noCommentsHex += "\n";
+            }
+
 			output = null;
-		    if (rawHex.StartsWith("0000   ")) // this is a wireshark hex dump string
+		    if (noCommentsHex.StartsWith("0000   ")) // this is a wireshark hex dump string
 		    {
-			    rawHex = HandleWiresharkDump(rawHex);
+			    noCommentsHex = HandleWiresharkDump(noCommentsHex);
 		    }
-		    if (IsWiresharkEscapedString(rawHex))
+		    if (IsWiresharkEscapedString(noCommentsHex))
 		    {
-			    rawHex = HandleWiresharkEscapedString(rawHex);
+			    noCommentsHex = HandleWiresharkEscapedString(noCommentsHex);
 		    }
-		    rawHex = rawHex.Replace("\r", string.Empty)
+		    noCommentsHex = noCommentsHex.Replace("\r", string.Empty)
 			    .Replace("\n", string.Empty)
 			    .Replace("\t", string.Empty)
 			    .Replace(" ", string.Empty)
 			    .Replace("0x", string.Empty)
 			    .Replace(",", string.Empty);
 
-		    if (string.IsNullOrEmpty(rawHex))
+		    if (string.IsNullOrEmpty(noCommentsHex))
 		    {
 			    return false;
 		    }
@@ -94,17 +112,17 @@ namespace PacketStudio.Core
 		    // since the hexRegex could return false for IsMatch for two reason - if the length is odd or invalid characters are present
 		    // So first, I'm checking if the length is odd so if the IsMatch function returns false I KNOW it's invalid characters
 
-		    if (rawHex.Length % 2 == 1)
+		    if (noCommentsHex.Length % 2 == 1)
 		    {
 			    return false;
 		    }
 
-		    if (!hexRegex.IsMatch(rawHex))
+		    if (!hexRegex.IsMatch(noCommentsHex))
 		    {
 			    return false;
 		    }
 
-		    output = StringToByteArray(rawHex);
+		    output = StringToByteArray(noCommentsHex);
 		    return true;
 	    }
 

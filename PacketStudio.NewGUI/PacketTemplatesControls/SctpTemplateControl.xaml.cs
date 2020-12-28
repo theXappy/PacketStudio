@@ -11,7 +11,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("SCTP ExportPacket")]
+    [DisplayName("SCTP Packet")]
     [Order(3)]
     [HexStreamType(HexStreamType.SctpPayload)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl
@@ -90,12 +90,12 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             return (false, null, $"Unknown error in {this.GetType()}");
         }
 
-        public string GenerateSaveDataJson()
+        public Dictionary<string, string> GenerateSaveDetails()
         {
             throw new NotImplementedException();
         }
 
-        public void LoadSaveDataJson(string json)
+        public void LoadSaveDetails(Dictionary<string, string> data)
         {
             throw new NotImplementedException();
         }
@@ -103,5 +103,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
 
         private void PpidBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => Changed?.Invoke(this, e);
+
     }
 }
