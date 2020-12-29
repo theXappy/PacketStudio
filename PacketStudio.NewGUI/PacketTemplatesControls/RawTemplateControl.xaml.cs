@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Xml;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Json;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {
@@ -73,14 +74,14 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         public Dictionary<string, string> GenerateSaveDetails()
         {
             var saveData = new Dictionary<string, string>();
-            saveData["EtherType"] = linkLayersBox.Text;
+            saveData[PacketSaveDataNGProtoFields.ENCAPS_TYPE] = linkLayersBox.Text;
             return saveData;
         }
 
 
         public void LoadSaveDetails(Dictionary<string, string> data)
         {
-            string etherType = data["EtherType"];
+            string etherType = data[PacketSaveDataNGProtoFields.ENCAPS_TYPE];
             ComboBoxItem boxItem = linkLayersBox.Items.Cast<ComboBoxItem>()
                 .Single(item => (item.Content as string).Contains(etherType));
             linkLayersBox.SelectedItem = boxItem;

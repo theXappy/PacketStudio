@@ -31,4 +31,9 @@ namespace PacketStudio.DataAccess.SaveData
     {
         public static string HEADER_FIELD = "header";
     }
+
+    public static class PacketSaveDataNGProtoFields
+    {
+        public static string ENCAPS_TYPE = "EncapsType";
+    }
 }

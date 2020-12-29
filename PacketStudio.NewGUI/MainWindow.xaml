@@ -21,6 +21,13 @@
 
     <DockPanel>
         <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167" >
+            <syncfusion:Ribbon.ApplicationMenu>
+                <syncfusion:ApplicationMenu IsPopupOpen="False">
+                    <syncfusion:ApplicationMenu.ApplicationItems>
+                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Open" Click="OpenMenuItemClicked"/>
+                    </syncfusion:ApplicationMenu.ApplicationItems>
+                </syncfusion:ApplicationMenu>
+            </syncfusion:Ribbon.ApplicationMenu>
             <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23" syncfusion:Ribbon.KeyTip="H">
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="1,2">
                     <syncfusion:SplitButton x:Name="copyForCSharpButton" Label="Copy For C#" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"

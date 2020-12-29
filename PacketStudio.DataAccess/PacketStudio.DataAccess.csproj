@@ -70,6 +70,9 @@
     <Compile Include="HexUtils.cs" />
     <Compile Include="Json\DictJsonSerializer.cs" />
     <Compile Include="Json\V3Ext1JsonSerializer.cs" />
+    <Compile Include="Providers\P2sFileProviderNG.cs" />
+    <Compile Include="Providers\PcapNGProviderNG.cs" />
+    <Compile Include="Providers\PcapProviderNG.cs" />
     <Compile Include="Providers\PssFileProvider.cs" />
     <Compile Include="Json\PssFileSaver.cs" />
     <Compile Include="LinkLayerType.cs" />
