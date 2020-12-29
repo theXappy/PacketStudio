@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using PacketStudio.DataAccess.SaveData;
 using PcapngUtils.Common;
@@ -9,29 +7,30 @@ using PcapngUtils.Pcap;
 
 namespace PacketStudio.DataAccess.Providers
 {
-    public class PcapProvider : IPacketsProvider
+    public class PcapProviderNG : IPacketsProviderNG
     {
 
         private string _fileName;
         private PcapngUtils.Pcap.PcapReader pReader;
 
-        public PcapProvider(string fileName)
+        public PcapProviderNG(string fileName)
         {
             _fileName = fileName;
         }
 
-        public IEnumerator<PacketSaveData> GetEnumerator()
+        public IEnumerator<PacketSaveDataNG> GetEnumerator()
         {
 
             try
             {
-                List<PacketSaveData> blockCol = new List<PacketSaveData>();
-                 pReader = new PcapReader(_fileName);
+                List<PacketSaveDataNG> blockCol = new List<PacketSaveDataNG>();
+                pReader = new PcapReader(_fileName);
                 string linkLayer = ((int) pReader.Header.LinkType).ToString();
                 pReader.OnReadPacketEvent += delegate(object context, IPacket packet)
                 {
-                    PacketSaveData psd = new PacketSaveDataV3(packet.Data.ToHex(),HexStreamType.Raw,linkLayer, "1", "1", "");
-                    blockCol.Add(psd);
+                    PacketSaveDataNG psdng = new PacketSaveDataNG(HexStreamType.Raw,packet.Data.ToHex());
+                    psdng.Details[PacketSaveDataNGProtoFields.ENCAPS_TYPE] = linkLayer;
+                    blockCol.Add(psdng);
                 };
                 pReader.ReadPackets(CancellationToken.None);
 

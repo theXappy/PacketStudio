@@ -58,7 +58,6 @@ namespace PacketStudio.NewGUI
         private void SessionPacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
         {
             var newPacket = e.NewValue as PacketSaveDataNG;
-            Console.WriteLine($"@@@ WOOT (personal)! psd: {newPacket}");
             if (newPacket != null)
             {
                 // Getting the right listbox item of the "packet types list"
@@ -72,7 +71,7 @@ namespace PacketStudio.NewGUI
         }
         private static void PacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Console.WriteLine("@@@ WOOT!");
+            // ?
         }
 
         #endregion

@@ -62,7 +62,6 @@ namespace PacketStudio.Core
             void FswChanged(object o, FileSystemEventArgs args)
             {
 				// In change in the preferences directory is treated the same
-				Debug.WriteLine($" $$$ Chane deteceted. File: {args.Name}, Type: {args.ChangeType}");
                 var filteredFile = new List<string> {"recent", "recent_common"};
                 if (!filteredFile.Contains(args.Name))
                 {

@@ -12,8 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.Providers;
 using Syncfusion.SfSkinManager;
 using Syncfusion.Windows.Tools.Controls;
 using Clipboard = System.Windows.Clipboard;
@@ -105,6 +107,9 @@ namespace PacketStudio.NewGUI
 
         private void PacketDefinerPacketChanged(object sender, EventArgs e)
         {
+            if(_loading) return;
+            
+
             PacketDefiner definer = ((PacketDefiner)sender);
             if (definer.IsValid)
             {
@@ -395,6 +400,59 @@ namespace PacketStudio.NewGUI
                     ShowLivePreview();
                 }
             });
+        }
+
+        private bool _loading = false;
+
+        private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd  = new OpenFileDialog()
+            {
+                Multiselect = false,
+                Filter = "All Capture Files|*.p2s;*.pcap;*.pcapng|" +
+                         "PacketStudio 2 Session file (*.p2s)|*.p2s|" +
+                         "Wireshark Capture files (*.pcap,*.pcapng)|*.pcap;*.pcapng"
+            };
+            var res = ofd.ShowDialog(this);
+            if (res == true)
+            {
+                PacketsProvidersFactory ppf = new PacketsProvidersFactory();
+                var provider = ppf.Create(ofd.FileName);
+                using (Dispatcher.DisableProcessing())
+                {
+                    _loading = true;
+                    TabControlViewModel.LoadFile(provider);
+                    _loading = false;
+                }
+            }
+        }
+    }
+
+    class PacketsProvidersFactory
+    {
+        public IPacketsProviderNG Create(string path)
+        {
+            IPacketsProviderNG provider = null;
+            string ext = Path.GetExtension(path);
+            switch (ext)
+            {
+                case "p2s":
+                case ".p2s":
+                    provider = new P2sFileProviderNG(path);
+                    break;
+                case "pcap":
+                case ".pcap":
+                    provider = new PcapProviderNG(path);
+                    break;
+                case "pcapng":
+                case ".pcapng":
+                    provider = new PcapNGProviderNG(path);
+                    break;
+                default:
+                    throw new ArgumentException($"Can't create provider for extension '{ext}'");
+            }
+
+            return provider;
         }
     }
 }

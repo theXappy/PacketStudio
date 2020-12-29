@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
@@ -82,15 +85,20 @@ namespace PacketStudio.NewGUI
 
         
 
-        public void AddNewPacket()
+        public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
+            if (psdng == null)
+            {
+                psdng = new PacketSaveDataNG(HexStreamType.Raw,String.Empty);
+            }
+
             int tabNumber = nextTabNumber++;
             TabItemViewModel new_model1 = new TabItemViewModel()
             {
                 Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
                 Content = $"Content?",
-                SessionPacket = new PacketSaveDataNG(HexStreamType.Raw,$"aabbccdd0{tabNumber}"),
-                ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
+                SessionPacket = psdng,
+                //ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
             };
             tabItems.Add(new_model1);
 
@@ -101,7 +109,7 @@ namespace PacketStudio.NewGUI
         public void PopulateCollection()
         {
             // Add first packet
-            AddNewPacket();
+            AddNewPacket(null);
 
         }
         public ViewModel()
@@ -111,6 +119,16 @@ namespace PacketStudio.NewGUI
 
             // Register self with parent MainWindow
             MainWindow.TabControlViewModel = this;
+        }
+
+        public void LoadFile(IPacketsProviderNG provider)
+        {
+            tabItems.Clear();
+            nextTabNumber = 1;
+            foreach (PacketSaveDataNG packet in provider)
+            {
+              AddNewPacket(packet);  
+            }
         }
     }
 }

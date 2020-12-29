@@ -8,5 +8,8 @@ namespace PacketStudio.DataAccess.Providers
 	{
 	}
 
+	public interface IPacketsProviderNG : IEnumerable<PacketSaveDataNG>, IDisposable
+	{
+	}
 
 }
