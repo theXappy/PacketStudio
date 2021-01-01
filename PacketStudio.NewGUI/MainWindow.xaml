@@ -24,7 +24,8 @@
             <syncfusion:Ribbon.ApplicationMenu>
                 <syncfusion:ApplicationMenu IsPopupOpen="False">
                     <syncfusion:ApplicationMenu.ApplicationItems>
-                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Open" Click="OpenMenuItemClicked"/>
+                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Open" Click="OpenMenuItemClicked" IsMenuItem="True"/>
+                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Save" Click="SaveMenuItemClicked" IsMenuItem="True"/>
                     </syncfusion:ApplicationMenu.ApplicationItems>
                 </syncfusion:ApplicationMenu>
             </syncfusion:Ribbon.ApplicationMenu>

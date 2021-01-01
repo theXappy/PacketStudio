@@ -66,11 +66,14 @@ namespace PacketStudio.NewGUI
                 // Switching to the new packet type to bring up the new packet template control
                 templatesListBox.SelectedItem = listItem;
                 hexTextBox.Text = newPacket.PacketData;
+
+                this.PacketTemplateControl.LoadSaveDetails(newPacket.Details);
             }
 
         }
         private static void PacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            Debugger.Break();
             // ?
         }
 
@@ -99,6 +102,7 @@ namespace PacketStudio.NewGUI
             {
                 Console.WriteLine($"@@@ SessionPacket setter called with value : {value}");
                 SetValue(SessionPacketProperty, value);
+                this.PacketTemplateControl.LoadSaveDetails(SessionPacket.Details);
             }
         }
 

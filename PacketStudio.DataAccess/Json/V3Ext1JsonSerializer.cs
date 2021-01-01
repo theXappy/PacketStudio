@@ -16,7 +16,7 @@ namespace PacketStudio.DataAccess.Json
         /// </summary>
         public string SerializeToString(V3Ext1 ext)
         {
-            JsonSerializer jSerializer = new JsonSerializer();
+            Newtonsoft.Json.JsonSerializer jSerializer = new Newtonsoft.Json.JsonSerializer();
             jSerializer.Formatting = Formatting.Indented;
             TextWriter tWriter = new StringWriter();
             jSerializer.Serialize(tWriter, ext);
@@ -30,7 +30,7 @@ namespace PacketStudio.DataAccess.Json
 
         public V3Ext1 Deserialize(string json)
         {
-            JsonSerializer jSerializer = new JsonSerializer();
+            Newtonsoft.Json.JsonSerializer jSerializer = new Newtonsoft.Json.JsonSerializer();
             TextReader tReader = new StringReader(json);
             JsonReader jReader = new JsonTextReader(tReader);
             return jSerializer.Deserialize<V3Ext1>(jReader);

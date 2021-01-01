@@ -20,7 +20,7 @@ namespace PacketStudio.DataAccess.Providers
         {
             // TODO: This loads entire file to memory at once, maybe a 'lazy' approach can be made
             // using some sort of lazy json parsing from json.NET?
-            SaveDataV3JsonSerializer deSerializer = new SaveDataV3JsonSerializer();
+            var deSerializer = new JsonSerializer<PacketSaveDataV3>();
             string wholeJson = File.ReadAllText(_path);
             PacketSaveDataV3[] packets = deSerializer.Deserialize(wholeJson);
             return packets.Cast<PacketSaveData>().GetEnumerator();

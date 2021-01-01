@@ -8,7 +8,7 @@ namespace PacketStudio.DataAccess.Json
     {
         public void Save(string path, IEnumerable<PacketSaveDataV3> packets)
         {
-            SaveDataV3JsonSerializer serializer = new SaveDataV3JsonSerializer();
+            JsonSerializer<PacketSaveDataV3> serializer = new JsonSerializer<PacketSaveDataV3>();
             byte[] json = serializer.Serialize(packets);
             File.WriteAllBytes(path, json);
         }

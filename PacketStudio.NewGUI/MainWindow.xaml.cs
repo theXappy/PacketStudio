@@ -16,6 +16,8 @@ using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
+using PacketStudio.DataAccess.SaveData;
+using PacketStudio.DataAccess.Saver;
 using Syncfusion.SfSkinManager;
 using Syncfusion.Windows.Tools.Controls;
 using Clipboard = System.Windows.Clipboard;
@@ -35,6 +37,7 @@ namespace PacketStudio.NewGUI
 
         private static int _packetsCounter = 0;
         private int _livePreviewDelay;
+
         private int LivePreviewDelay
         {
             get => _livePreviewDelay;
@@ -63,7 +66,7 @@ namespace PacketStudio.NewGUI
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
 
-            hexEditor.Stream = new MemoryStream(new byte[] { 0xaa, 0xbb, 0xcc });
+            hexEditor.Stream = new MemoryStream(new byte[] {0xaa, 0xbb, 0xcc});
 
 
         }
@@ -107,10 +110,13 @@ namespace PacketStudio.NewGUI
 
         private void PacketDefinerPacketChanged(object sender, EventArgs e)
         {
-            if(_loading) return;
-            
+            if (_loading) return;
 
-            PacketDefiner definer = ((PacketDefiner)sender);
+
+            PacketDefiner definer = ((PacketDefiner) sender);
+
+            CurrentTabItemModel.SessionPacket = definer.SessionPacket;
+
             if (definer.IsValid)
             {
                 // Update HEX view
@@ -152,16 +158,16 @@ namespace PacketStudio.NewGUI
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                 {
-                     using (var d = Dispatcher.DisableProcessing())
-                     {
-                         hexEditor.Visibility = Visibility.Hidden;
-                         hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
-                         hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                         hexEditor.Visibility = Visibility.Visible;
-                     }
-                 }));
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (() =>
+                {
+                    using (var d = Dispatcher.DisableProcessing())
+                    {
+                        hexEditor.Visibility = Visibility.Hidden;
+                        hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
+                        hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                        hexEditor.Visibility = Visibility.Visible;
+                    }
+                }));
             }
         }
 
@@ -178,6 +184,7 @@ namespace PacketStudio.NewGUI
                 this.packetTreeView.previewTree.Background = loadingColor;
             });
         }
+
         private void UnsetPacketTreeInProgress()
         {
             Dispatcher.Invoke(() => this.packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
@@ -190,10 +197,8 @@ namespace PacketStudio.NewGUI
 
             TempPacketSaveData packetBytes = null;
             AutoResetEvent are = new AutoResetEvent(false);
-            this.Dispatcher.BeginInvoke((Action)(() =>
-            {
-                packetBytes = CurrentTabItemModel.ExportPacket;
-            })).Task.Wait();
+            this.Dispatcher.BeginInvoke((Action) (() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
+                .Wait();
 
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
@@ -264,6 +269,7 @@ namespace PacketStudio.NewGUI
                 string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
                 Clipboard.SetText(combinedString);
             }
+
             copyForCSharpButton.IsDropDownOpen = false;
         }
 
@@ -286,6 +292,7 @@ namespace PacketStudio.NewGUI
                 MessageBox.Show("Error in the packet definer: \r\n" + error);
                 return false;
             }
+
             return true;
         }
 
@@ -306,7 +313,7 @@ namespace PacketStudio.NewGUI
 
         private void PreviewDelayTextBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue == false) // - Keyboard focus is lost
+            if ((bool) e.NewValue == false) // - Keyboard focus is lost
             {
                 ApplyNewPreviewDelayValue();
             }
@@ -341,6 +348,7 @@ namespace PacketStudio.NewGUI
                 // Note: Setting the value below also updates the label of the 'preview delay button'
                 LivePreviewDelay = parsedValue;
             }
+
             HidePreviewDelayTextBoxShow();
 
         }
@@ -356,7 +364,8 @@ namespace PacketStudio.NewGUI
             //CurrentTabItemModel.NormalizeHex();
         }
 
-        private void PacketTreeView_OnSelectedItemChanged(object sender, PacketTreeView.PacketTreeSelectionChangedArgs e)
+        private void PacketTreeView_OnSelectedItemChanged(object sender,
+            PacketTreeView.PacketTreeSelectionChangedArgs e)
         {
             if (e.BytesHiglightning == BytesHighlightning.Empty)
             {
@@ -376,9 +385,10 @@ namespace PacketStudio.NewGUI
             var invalidItems = items.Where(tabViewModel => !tabViewModel.IsValid);
             if (invalidItems.Any())
             {
-                string invalidItemsNames = string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.Header}\""));
+                string invalidItemsNames =
+                    string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.Header}\""));
                 string error = "Can not export to Wireshark because some tabs contain invalid packet definitions.\n\n" +
-                    $"Invalid tabs: {invalidItemsNames}";
+                               $"Invalid tabs: {invalidItemsNames}";
                 MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -406,7 +416,7 @@ namespace PacketStudio.NewGUI
 
         private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd  = new OpenFileDialog()
+            OpenFileDialog ofd = new OpenFileDialog()
             {
                 Multiselect = false,
                 Filter = "All Capture Files|*.p2s;*.pcap;*.pcapng|" +
@@ -426,33 +436,51 @@ namespace PacketStudio.NewGUI
                 }
             }
         }
-    }
 
-    class PacketsProvidersFactory
-    {
-        public IPacketsProviderNG Create(string path)
+        private void SaveMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            IPacketsProviderNG provider = null;
-            string ext = Path.GetExtension(path);
-            switch (ext)
+            SaveFileDialog sfd = new SaveFileDialog()
             {
-                case "p2s":
-                case ".p2s":
-                    provider = new P2sFileProviderNG(path);
-                    break;
-                case "pcap":
-                case ".pcap":
-                    provider = new PcapProviderNG(path);
-                    break;
-                case "pcapng":
-                case ".pcapng":
-                    provider = new PcapNGProviderNG(path);
-                    break;
-                default:
-                    throw new ArgumentException($"Can't create provider for extension '{ext}'");
-            }
+                AddExtension = true,
+                Filter = "PacketStudio 2 Session file|*.p2s",
+                DefaultExt = ".p2s"
+            };
+            var res = sfd.ShowDialog(this);
+            if (!res.HasValue || res.Value == false)
+                return;
 
-            return provider;
+
+            var sessionPackets = TabControlViewModel.TabItems.Select(model => model.SessionPacket);
+            var p2SSaver = new P2sSaver();
+            p2SSaver.Save(sfd.FileName, sessionPackets);
+        }
+
+        class PacketsProvidersFactory
+        {
+            public IPacketsProviderNG Create(string path)
+            {
+                IPacketsProviderNG provider = null;
+                string ext = Path.GetExtension(path);
+                switch (ext)
+                {
+                    case "p2s":
+                    case ".p2s":
+                        provider = new P2sFileProviderNG(path);
+                        break;
+                    case "pcap":
+                    case ".pcap":
+                        provider = new PcapProviderNG(path);
+                        break;
+                    case "pcapng":
+                    case ".pcapng":
+                        provider = new PcapNGProviderNG(path);
+                        break;
+                    default:
+                        throw new ArgumentException($"Can't create provider for extension '{ext}'");
+                }
+
+                return provider;
+            }
         }
     }
 }

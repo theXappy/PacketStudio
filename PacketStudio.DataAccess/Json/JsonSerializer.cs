@@ -7,29 +7,29 @@ using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.DataAccess.Json
 {
-    public class SaveDataV3JsonSerializer
+    public class JsonSerializer<T>
     {
-        public byte[] Serialize(IEnumerable<PacketSaveDataV3> psd)
+        public byte[] Serialize(IEnumerable<T> psd)
         {
-            PacketSaveDataV3[] psdArray = psd as PacketSaveDataV3[] ?? psd.ToArray();
-            JsonSerializer jSerializer = new JsonSerializer();
+            T[] psdArray = psd as T[] ?? psd.ToArray();
+            Newtonsoft.Json.JsonSerializer jSerializer = new Newtonsoft.Json.JsonSerializer();
             jSerializer.Formatting = Formatting.Indented;
             TextWriter tWriter = new StringWriter();
             jSerializer.Serialize(tWriter, psdArray);
             return Encoding.UTF8.GetBytes(tWriter.ToString());
         }
 
-        public PacketSaveDataV3[] Deserialize(byte[] utf8Json)
+        public T[] Deserialize(byte[] utf8Json)
         {
             return Deserialize(Encoding.UTF8.GetString(utf8Json));
         }
 
-        public PacketSaveDataV3[] Deserialize(string json)
+        public T[] Deserialize(string json)
         {
-            JsonSerializer jSerializer = new JsonSerializer();
+            Newtonsoft.Json.JsonSerializer jSerializer = new Newtonsoft.Json.JsonSerializer();
             TextReader tReader = new StringReader(json);
             JsonReader jReader = new JsonTextReader(tReader);
-            return jSerializer.Deserialize<PacketSaveDataV3[]>(jReader);
+            return jSerializer.Deserialize<T[]>(jReader);
         }
 
     }
