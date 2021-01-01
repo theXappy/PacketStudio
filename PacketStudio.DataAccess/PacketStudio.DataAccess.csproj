@@ -76,7 +76,7 @@
     <Compile Include="Providers\PssFileProvider.cs" />
     <Compile Include="Json\PssFileSaver.cs" />
     <Compile Include="LinkLayerType.cs" />
-    <Compile Include="Json\SaveDataV3JsonSerializer.cs" />
+    <Compile Include="Json\JsonSerializer.cs" />
     <Compile Include="SaveData\Extensions\V3Ext1.cs" />
     <Compile Include="SaveData\PacketSaveData.cs" />
     <Compile Include="SaveData\PacketSaveDataFactory.cs" />
@@ -89,6 +89,7 @@
     <Compile Include="Providers\IPacketsProvider.cs" />
     <Compile Include="Providers\PcapNGProvider.cs" />
     <Compile Include="Providers\PcapProvider.cs" />
+    <Compile Include="Saver\P2sSaver.cs" />
     <Compile Include="TempPacketSaveData.cs" />
     <Compile Include="TempPacketsSaver.cs" />
   </ItemGroup>
@@ -96,5 +97,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -74,17 +75,20 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         public Dictionary<string, string> GenerateSaveDetails()
         {
             var saveData = new Dictionary<string, string>();
-            saveData[PacketSaveDataNGProtoFields.ENCAPS_TYPE] = linkLayersBox.Text;
+            saveData[PacketSaveDataNGProtoFields.ENCAPS_TYPE] = linkLayersBox.SelectedItem as string;
             return saveData;
         }
 
 
         public void LoadSaveDetails(Dictionary<string, string> data)
         {
-            string etherType = data[PacketSaveDataNGProtoFields.ENCAPS_TYPE];
-            ComboBoxItem boxItem = linkLayersBox.Items.Cast<ComboBoxItem>()
-                .Single(item => (item.Content as string).Contains(etherType));
-            linkLayersBox.SelectedItem = boxItem;
+            if (data.TryGetValue(PacketSaveDataNGProtoFields.ENCAPS_TYPE, out string etherType))
+            {
+                string correctItem =linkLayersBox.Items.Cast<string>()
+                    .SingleOrDefault(item => item.Contains(etherType));
+                if(string.IsNullOrEmpty(correctItem))
+                    linkLayersBox.SelectedItem = correctItem;
+            }
         }
 
         private void LinkLayersBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
