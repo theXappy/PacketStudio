@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {
@@ -43,12 +44,16 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         public Dictionary<string, string> GenerateSaveDetails()
         {
-            throw new NotImplementedException();
+            var dict = new Dictionary<string, string>();
+            dict[PacketSaveDataNGProtoFields.STREAM_ID] = streamTextbox.Text;
+            return dict;
         }
 
         public void LoadSaveDetails(Dictionary<string, string> data)
         {
-            throw new NotImplementedException();
+            string streamId;
+            if (data.TryGetValue(PacketSaveDataNGProtoFields.STREAM_ID, out streamId))
+                streamTextbox.Text = streamId;
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);

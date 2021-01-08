@@ -108,12 +108,9 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private void PacketDefinerPacketChanged(object sender, EventArgs e)
+        private void UpdatePacketState(PacketDefiner invoker)
         {
-            if (_loading) return;
-
-
-            PacketDefiner definer = ((PacketDefiner) sender);
+            PacketDefiner definer = invoker;
 
             CurrentTabItemModel.SessionPacket = definer.SessionPacket;
 
@@ -131,14 +128,25 @@ namespace PacketStudio.NewGUI
                 // To solve that I hide & unhide the hexeditor
                 // this, in turn, causes FLICKERING of the editors sometimes
                 // to stop that from happening I disable the Dispatcher's processing and then reactivate (end of 'using')
-                using (var d = Dispatcher.DisableProcessing())
+                Dispatcher.BeginInvoke(DispatcherPriority.Background,(Action)(() =>
                 {
-                    hexEditor.Visibility = Visibility.Hidden;
-                    hexEditor.Stream = new MemoryStream(bytes);
-                    hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                    hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                    hexEditor.Visibility = Visibility.Visible;
-                }
+                    using (var d = Dispatcher.DisableProcessing())
+                    {
+                        hexEditor.Visibility = Visibility.Hidden;
+                        try
+                        {
+                            hexEditor.Stream = new MemoryStream(bytes);
+                        }
+                        catch(InvalidOperationException)
+                        {
+                            // Don't care
+                        }
+
+                        hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                        hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                        hexEditor.Visibility = Visibility.Visible;
+                    }
+                }));
 
                 // Update Tab's ViewModel
                 CurrentTabItemModel.IsValid = true;
@@ -169,6 +177,13 @@ namespace PacketStudio.NewGUI
                     }
                 }));
             }
+        }
+
+        private void PacketDefinerPacketChanged(object sender, EventArgs e)
+        {
+            if (_loading) return;
+
+            UpdatePacketState(sender as PacketDefiner);
         }
 
         // TODO: Make this configurable
