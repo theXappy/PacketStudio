@@ -50,7 +50,7 @@
                                              syncfusion:Ribbon.KeyTip="W"/>
                     <syncfusion:RibbonButton Label="Select Wireshark Version" IsLargeImageVisible="True" SizeForm="Large" Margin="10,3" Padding="0" MinWidth="55" ScrollViewer.CanContentScroll="True"
                                              LargeIcon="pack://siteoforigin:,,,/Resources/shark-dir-32.png"
-                                             Click="ExportToWireshark"
+                                             Click="ChangeWsDir"
                                              syncfusion:Ribbon.KeyTip="V"/>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Live Preview" IsLauncherButtonVisible="False" Margin="1,2" >

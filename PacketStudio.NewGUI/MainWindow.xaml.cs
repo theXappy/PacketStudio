@@ -31,6 +31,27 @@ namespace PacketStudio.NewGUI
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        // TODO: Load last/Load from available list in start up instead
+        WiresharkDirectory _wiresharkDirectory ;
+        private WiresharkInterop _wsInterOp = null;
+        private TSharkInterop _tsharkInterOp = null;
+
+        public WiresharkDirectory WiresharkDir
+        {
+            get => _wiresharkDirectory;
+            set
+            {
+                _wiresharkDirectory = value;
+                _wsInterOp = null;
+                _tsharkInterOp = null;
+                if (value != null) {
+                    _wsInterOp = new WiresharkInterop(value.WiresharkPath);
+                    _tsharkInterOp = new TSharkInterop(value.TsharkPath);
+                }
+            }
+        }
+
+
         public static ViewModel TabControlViewModel;
 
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
@@ -56,19 +77,12 @@ namespace PacketStudio.NewGUI
         {
             InitializeComponent();
 
-            // TODO: remove
-            if (false)
-            {
-                tabControl.Items.Clear(); // Remove "Packet 1"
-                AddNewPacketTab(null, null); // Re-add "Packet 1"
-            }
+            WiresharkDir = new WiresharkDirectory(@"C:\Program Files\Wireshark\");
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
 
-            hexEditor.Stream = new MemoryStream(new byte[] {0xaa, 0xbb, 0xcc});
-
-
+            hexEditor.Stream = new MemoryStream(new byte[0]);
         }
 
         private void AddNewPacketTab(object sender, EventArgs e)
@@ -186,8 +200,6 @@ namespace PacketStudio.NewGUI
             UpdatePacketState(sender as PacketDefiner);
         }
 
-        // TODO: Make this configurable
-        readonly TSharkInterop _tSharkInterop = new TSharkInterop(@"C:\Program Files\Wireshark\tshark.exe");
 
         private void SetPacketTreeInProgress()
         {
@@ -218,7 +230,7 @@ namespace PacketStudio.NewGUI
             if (packetBytes == null || packetBytes.Data.Length == 0)
                 return;
             Debug.WriteLine(" @@@ Calling TShark");
-            var tsharkTask = _tSharkInterop.GetPdmlAsync(packetBytes);
+            var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes);
             XElement packetPdml = tsharkTask.Result;
             Debug.WriteLine(" @@@ TShark Returned");
             packetTreeView.PopulatePacketTree(packetPdml);
@@ -495,6 +507,36 @@ namespace PacketStudio.NewGUI
                 }
 
                 return provider;
+            }
+        }
+
+        private void ChangeWsDir(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "Wireshark.exe|Wireshark.exe"
+            };
+            try
+            {
+                ofd.InitialDirectory = Path.GetDirectoryName(WiresharkDir.WiresharkPath);
+            }
+            catch
+            {
+                // IDK...
+            }
+            bool? res = ofd.ShowDialog();
+            if (res != true) return;
+            
+            if (!ofd.CheckFileExists) return;
+
+            string dirPath = Path.GetDirectoryName(ofd.FileName);
+            if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
+            {
+                string selectedPath = ofd.FileName;
+                // Update settings
+
+                // Raise list updated "event"
+                WiresharkDir = wsDir;
             }
         }
     }
