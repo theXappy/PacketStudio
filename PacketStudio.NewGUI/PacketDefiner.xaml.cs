@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
@@ -254,7 +255,9 @@ namespace PacketStudio.NewGUI
             this.OnPacketChanged(this,e);
         }
 
-        private void PacketTemplateControlChanged(object sender, EventArgs e) => this.OnPacketChanged(this,e);
-
+        private void PacketTemplateControlChanged(object sender, EventArgs e)
+        {
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Background,(Action)(()=>this.OnPacketChanged(this, e)));
+        }
     }
 }

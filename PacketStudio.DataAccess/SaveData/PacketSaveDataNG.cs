@@ -36,5 +36,6 @@ namespace PacketStudio.DataAccess.SaveData
     {
         public static string ENCAPS_TYPE = "EncapsType";
         public static string STREAM_ID = "StreamId";
+        public static string PPID_ID = "PayloadProtoId";
     }
 }

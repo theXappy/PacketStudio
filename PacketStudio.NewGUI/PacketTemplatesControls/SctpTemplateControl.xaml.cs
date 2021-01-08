@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.DataAccess;
+using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {
@@ -92,12 +93,18 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         public Dictionary<string, string> GenerateSaveDetails()
         {
-            throw new NotImplementedException();
+            var dict = new Dictionary<string,string>();
+            dict[PacketSaveDataNGProtoFields.STREAM_ID] = streamTextbox.Text;
+            dict[PacketSaveDataNGProtoFields.PPID_ID] = ppidBox.Text;
+            return dict;
         }
 
         public void LoadSaveDetails(Dictionary<string, string> data)
         {
-            throw new NotImplementedException();
+            if(data.TryGetValue(PacketSaveDataNGProtoFields.STREAM_ID, out string streamId))
+                streamTextbox.Text = streamId;
+            if(data.TryGetValue(PacketSaveDataNGProtoFields.PPID_ID, out string ppid))
+                ppidBox.Text = ppid;
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
