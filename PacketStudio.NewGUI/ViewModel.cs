@@ -106,16 +106,18 @@ namespace PacketStudio.NewGUI
         }
 
 
-        public void PopulateCollection()
+        public void ResetItemsCollection()
         {
+            tabItems.Clear();
             // Add first packet
+            nextTabNumber = 1;
             AddNewPacket(null);
 
         }
         public ViewModel()
         {
             tabItems = new ObservableCollection<TabItemViewModel>();
-            PopulateCollection();
+            ResetItemsCollection();
 
             // Register self with parent MainWindow
             MainWindow.TabControlViewModel = this;

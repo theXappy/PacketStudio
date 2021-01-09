@@ -539,5 +539,24 @@ namespace PacketStudio.NewGUI
                 WiresharkDir = wsDir;
             }
         }
+
+        private void TabControl_OnOnCloseButtonClick(object sender, CloseTabEventArgs e)
+        {
+            // When closing last tab immediately open a new empty tab.
+            int numTabs = tabControl.ItemsSource.OfType<object>().Count();
+            Debug.WriteLine("Number of tabs: "+numTabs);
+            if (numTabs == 1)
+            {
+                e.Cancel = true;
+                TabControlViewModel.ResetItemsCollection();
+            }
+        }
+
+        private void TabControl_OnOnCloseAllTabs(object sender, CloseTabEventArgs e)
+        {
+            // Closing all tabs but making a new empty one.
+            e.Cancel = true;
+            TabControlViewModel.ResetItemsCollection();
+        }
     }
 }

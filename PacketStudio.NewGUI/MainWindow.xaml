@@ -65,10 +65,14 @@
                 <newGui:TabControlWrapper x:Name="tabControl"
                                           ItemsSource="{Binding TabItems}"
                                           NewButtonAlignment="First"
-                                           IsNewButtonEnabled="True"
+                                          IsNewButtonEnabled="True"
                                           NewButtonBackground="Transparent"
-                                           NewButtonClick="AddNewPacketTab"
-                                           syncfusion:SfSkinManager.VisualStyle="MaterialDark"
+                                          NewButtonClick="AddNewPacketTab"
+                                          syncfusion:SfSkinManager.VisualStyle="MaterialDark"
+                                          CloseButtonType="Individual"
+                                          OnCloseButtonClick="TabControl_OnOnCloseButtonClick"
+                                          CloseMode="Delete"
+                                          OnCloseAllTabs="TabControl_OnOnCloseAllTabs"
                 >
 
                     <!--Binding the header text for the Tab item-->
