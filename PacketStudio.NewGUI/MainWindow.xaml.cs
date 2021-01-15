@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -16,13 +14,8 @@ using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
-using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.Saver;
-using Syncfusion.SfSkinManager;
 using Syncfusion.Windows.Tools.Controls;
-using Clipboard = System.Windows.Clipboard;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MessageBox = System.Windows.MessageBox;
 
 namespace PacketStudio.NewGUI
 {
@@ -33,9 +26,8 @@ namespace PacketStudio.NewGUI
     {
         // TODO: Load last/Load from available list in start up instead
         WiresharkDirectory _wiresharkDirectory ;
-        private WiresharkInterop _wsInterOp = null;
-        private TSharkInterop _tsharkInterOp = null;
-
+        private WiresharkInterop _wsInterOp;
+        private TSharkInterop _tsharkInterOp;
         public WiresharkDirectory WiresharkDir
         {
             get => _wiresharkDirectory;
@@ -51,14 +43,13 @@ namespace PacketStudio.NewGUI
             }
         }
 
+        private readonly SessionState _sessionState = new SessionState();
+
 
         public static ViewModel TabControlViewModel;
-
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
 
-        private static int _packetsCounter = 0;
         private int _livePreviewDelay;
-
         private int LivePreviewDelay
         {
             get => _livePreviewDelay;
@@ -88,38 +79,7 @@ namespace PacketStudio.NewGUI
         private void AddNewPacketTab(object sender, EventArgs e)
         {
             TabControlViewModel?.AddNewPacket();
-            return;
-            TabControlWrapper mnw = new TabControlWrapper();
-
-            _packetsCounter++;
-            DockPanel panel = new DockPanel()
-            {
-                LastChildFill = true
-            };
-            PacketDefiner pd = new PacketDefiner()
-            {
-                Margin = new Thickness(5),
-                Width = Double.NaN, // This means 'Auto'
-                Height = Double.NaN // This means 'Auto'
-            };
-            panel.Children.Add(pd);
-            panel.Children.Add(mnw);
-            pd.PacketChanged += PacketDefinerPacketChanged;
-            TabItemExt newTab = new TabItemExt()
-            {
-                Header = $"Packet {_packetsCounter}",
-                Margin = new Thickness(1),
-                Padding = new Thickness(0, 0, 5, 0),
-                Content = panel
-            };
-            newTab.MouseDown += PacketTab_MouseDown;
-
-            tabControl.Items.Add(newTab);
-
-            if (tabControl.Items.Count > 1)
-            {
-                tabControl.CloseButtonType = CloseButtonType.Individual;
-            }
+            _sessionState.HasUnsavedChanges = true;
         }
 
         private void UpdatePacketState(PacketDefiner invoker)
@@ -142,6 +102,11 @@ namespace PacketStudio.NewGUI
                 // To solve that I hide & unhide the hexeditor
                 // this, in turn, causes FLICKERING of the editors sometimes
                 // to stop that from happening I disable the Dispatcher's processing and then reactivate (end of 'using')
+                //
+                // Next, I had an issue where doing so on the current invoking thread (it's probably the UI thread)
+                // causes the cursor of the textbox act strange (updates only sometimes...).
+                // To overcome this I 'enqueue' the update of the hexEditor after the UI thread finishes handling 
+                // the current event. This is done by the 'BeginInvoke' call.
                 Dispatcher.BeginInvoke(DispatcherPriority.Background,(Action)(() =>
                 {
                     using (var d = Dispatcher.DisableProcessing())
@@ -180,7 +145,7 @@ namespace PacketStudio.NewGUI
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (() =>
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (() =>
                 {
                     using (var d = Dispatcher.DisableProcessing())
                     {
@@ -198,6 +163,7 @@ namespace PacketStudio.NewGUI
             if (_loading) return;
 
             UpdatePacketState(sender as PacketDefiner);
+            _sessionState.HasUnsavedChanges = true;
         }
 
 
@@ -208,63 +174,33 @@ namespace PacketStudio.NewGUI
                 packetTreeView.previewTree.Items.Clear();
                 packetTreeView.previewTree.Items.Add("Loading...");
                 var loadingColor = DockManager.Background;
-                this.packetTreeView.previewTree.Background = loadingColor;
+                packetTreeView.previewTree.Background = loadingColor;
             });
         }
 
         private void UnsetPacketTreeInProgress()
         {
-            Dispatcher.Invoke(() => this.packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
+            Dispatcher.Invoke(() => packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
         }
 
         private void ShowLivePreview()
         {
-            Debug.WriteLine(" @@@ Live Preview Triggered");
             SetPacketTreeInProgress();
 
             TempPacketSaveData packetBytes = null;
-            AutoResetEvent are = new AutoResetEvent(false);
-            this.Dispatcher.BeginInvoke((Action) (() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
+            Dispatcher.BeginInvoke((Action) (() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
                 .Wait();
 
-            if (packetBytes == null || packetBytes.Data.Length == 0)
-                return;
-            Debug.WriteLine(" @@@ Calling TShark");
-            var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes);
-            XElement packetPdml = tsharkTask.Result;
-            Debug.WriteLine(" @@@ TShark Returned");
-            packetTreeView.PopulatePacketTree(packetPdml);
+            if (packetBytes != null && packetBytes.Data.Length != 0)
+            {
+                var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes);
+                XElement packetPdml = tsharkTask.Result;
+                packetTreeView.PopulatePacketTree(packetPdml);
+            }
+
             UnsetPacketTreeInProgress();
         }
 
-
-        private void PacketTab_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Allowing users to close tabs using the middle mouse button
-
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                if (tabControl.Items.Count == 1) // User is trying to remove the last tab
-                    return; // Don't let them
-
-                // Else, More packet tabs exist. we can remove this one
-                tabControl.Items.Remove(sender);
-                TabControl_TabClosed(tabControl, new CloseTabEventArgs(sender as TabItemExt));
-            }
-        }
-
-
-        private void TabControl_TabClosed(object sender, CloseTabEventArgs e)
-        {
-            if (tabControl.Items.Count == 1)
-            {
-                // We are closing the 1 before last tab
-                // So we hide the 'close' button on the last tab
-                // ( So the user can't stay with 0 packet tabs)
-                tabControl.CloseButtonType = CloseButtonType.Hide;
-            }
-
-        }
 
         // This method copies the current showing packet to the clipboard
         // The format of the data will be '0xAA, 0xBB'
@@ -380,10 +316,6 @@ namespace PacketStudio.NewGUI
 
         }
 
-        private void HexBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-        }
 
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
@@ -439,11 +371,38 @@ namespace PacketStudio.NewGUI
             });
         }
 
-        private bool _loading = false;
+        private bool _loading;
 
-        private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
+        private void OpenMenuItemClicked(object sender, MouseButtonEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog()
+            if(_sessionState.HasUnsavedChanges)
+            {
+                // Prompt user about unsaved changes in current session
+                var userSelection = MessageBox.Show("Unsaved Changes Alert",
+                    "You have unsaved changes in the current session.\r\n" +
+                    "\r\n" +
+                    "Save changes?", MessageBoxButton.YesNoCancel);
+
+                if (userSelection == MessageBoxResult.Cancel)
+                {
+                    // User wants to stay in current session
+                    return;
+                }
+
+                if (userSelection == MessageBoxResult.Yes)
+                {
+                    // Save or Save As according to currently associated file
+                    UserDecision finalSaveDecision = DoSave();
+
+                    if (finalSaveDecision == UserDecision.Cancel)
+                    {
+                        // User cancelled while saving - interpret as "stay in current session"
+                        return;
+                    }
+                }
+            }
+
+            OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
                 Filter = "All Capture Files|*.p2s;*.pcap;*.pcapng|" +
@@ -451,22 +410,51 @@ namespace PacketStudio.NewGUI
                          "Wireshark Capture files (*.pcap,*.pcapng)|*.pcap;*.pcapng"
             };
             var res = ofd.ShowDialog(this);
-            if (res == true)
+            if (res != true) return;
+
+            string filePath = ofd.FileName;
+            PacketsProvidersFactory ppf = new PacketsProvidersFactory();
+            var provider = ppf.Create(ofd.FileName);
+            using (Dispatcher.DisableProcessing())
             {
-                PacketsProvidersFactory ppf = new PacketsProvidersFactory();
-                var provider = ppf.Create(ofd.FileName);
-                using (Dispatcher.DisableProcessing())
-                {
-                    _loading = true;
-                    TabControlViewModel.LoadFile(provider);
-                    _loading = false;
-                }
+                _loading = true;
+                TabControlViewModel.LoadFile(provider);
+                _loading = false;
+            }
+
+            _sessionState.Reset();
+            if (filePath.EndsWith(".p2s"))
+            {
+                // Only 'associating' session if opened a p2s file. pcap/pcapng aren't treated like that.
+                _sessionState.AssociatedFilePath = ofd.FileName;
             }
         }
 
-        private void SaveMenuItemClicked(object sender, RoutedEventArgs e)
+        // *************************************************
+        //
+        //                Saving to file
+        //
+        // *************************************************
+
+
+        private UserDecision DoSave()
         {
-            SaveFileDialog sfd = new SaveFileDialog()
+            if (_sessionState.HasAssociatedFile)
+            {
+                if (_sessionState.HasUnsavedChanges)
+                {
+                    SaveSession(_sessionState.AssociatedFilePath);
+                }
+                // Else - Current state already saved to file, do nothing
+                return UserDecision.Save;
+            }
+
+            // Not associated with a file - treat as "Save As..." (prompt for path)
+            return DoSaveAs();
+        }
+        private UserDecision DoSaveAs()
+        {
+            SaveFileDialog sfd = new SaveFileDialog
             {
                 AddExtension = true,
                 Filter = "PacketStudio 2 Session file|*.p2s",
@@ -474,41 +462,25 @@ namespace PacketStudio.NewGUI
             };
             var res = sfd.ShowDialog(this);
             if (!res.HasValue || res.Value == false)
-                return;
+                return UserDecision.Cancel;
 
+            SaveSession(sfd.FileName);
+            return UserDecision.Save;
+        }
 
+        private void SaveMenuItemClicked(object sender, MouseButtonEventArgs e) => DoSave();
+        private void SaveAsMenuItemClicked(object sender, MouseButtonEventArgs e) => DoSaveAs();
+
+        private void SaveSession(string path)
+        {
             var sessionPackets = TabControlViewModel.TabItems.Select(model => model.SessionPacket);
             var p2SSaver = new P2sSaver();
-            p2SSaver.Save(sfd.FileName, sessionPackets);
+            p2SSaver.Save(path, sessionPackets);
+
+            _sessionState.AssociatedFilePath = path;
+            _sessionState.HasUnsavedChanges = false;
         }
 
-        class PacketsProvidersFactory
-        {
-            public IPacketsProviderNG Create(string path)
-            {
-                IPacketsProviderNG provider = null;
-                string ext = Path.GetExtension(path);
-                switch (ext)
-                {
-                    case "p2s":
-                    case ".p2s":
-                        provider = new P2sFileProviderNG(path);
-                        break;
-                    case "pcap":
-                    case ".pcap":
-                        provider = new PcapProviderNG(path);
-                        break;
-                    case "pcapng":
-                    case ".pcapng":
-                        provider = new PcapNGProviderNG(path);
-                        break;
-                    default:
-                        throw new ArgumentException($"Can't create provider for extension '{ext}'");
-                }
-
-                return provider;
-            }
-        }
 
         private void ChangeWsDir(object sender, RoutedEventArgs e)
         {
@@ -550,6 +522,7 @@ namespace PacketStudio.NewGUI
                 e.Cancel = true;
                 TabControlViewModel.ResetItemsCollection();
             }
+            _sessionState.HasUnsavedChanges = true;
         }
 
         private void TabControl_OnOnCloseAllTabs(object sender, CloseTabEventArgs e)
@@ -557,6 +530,114 @@ namespace PacketStudio.NewGUI
             // Closing all tabs but making a new empty one.
             e.Cancel = true;
             TabControlViewModel.ResetItemsCollection();
+            _sessionState.HasUnsavedChanges = true;
         }
+
+        private void MenuButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            Debug.WriteLine(e.Key);
+            if(!e.IsDown)
+                return;
+            if(e.Key != Key.Down && e.Key != Key.Up && 
+               e.Key != Key.Enter && e.Key == Key.Return)
+                return;
+
+            MenuButton invokingButton = sender as MenuButton;
+            Debug.WriteLine(e.Key);
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+            {
+                switch (invokingButton.Name)
+                {
+                    case "newMenuButton":
+                        NewSessionMenuItemClicked(sender,null);
+                        break;
+                    case "openMenuButton":
+                        OpenMenuItemClicked(sender,null);
+                        break;
+                    case "saveMenuButton":
+                        SaveMenuItemClicked(sender,null);
+                        break;
+                    case "saveAsMenuButton":
+                        SaveAsMenuItemClicked(sender,null);
+                        break;
+                }
+
+                e.Handled = true;
+                return;
+            }
+
+            MenuButton next = null;
+            if (e.Key == Key.Down)
+            {
+                next = _applicationMenu.Items[0] as MenuButton;
+                for (int i = 0; i < _applicationMenu.Items.Count -1; i++)
+                {
+                    var candidate = _applicationMenu.Items[i] as MenuButton;
+                    if (candidate == invokingButton)
+                    {
+                        next = _applicationMenu.Items[i + 1] as MenuButton;
+                        break;
+                    }
+                }
+            }
+            else // Key ip UP
+            {
+                next = _applicationMenu.Items[_applicationMenu.Items.Count-1] as MenuButton;
+                for (int i = 1; i < _applicationMenu.Items.Count; i++)
+                {
+                    var candidate = _applicationMenu.Items[i] as MenuButton;
+                    if (candidate == invokingButton)
+                    {
+                        next = _applicationMenu.Items[i - 1] as MenuButton;
+                        break;
+                    }
+                }
+                
+            }
+
+            _applicationMenu.SelectedItem = next;
+            next?.Focus();
+            e.Handled = true;
+        }
+
+        private void NewSessionMenuItemClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (_sessionState.HasUnsavedChanges)
+            {
+                // Prompt user about unsaved changes in current session
+                var userSelection = MessageBox.Show("Unsaved Changes Alert",
+                    "You have unsaved changes in the current session.\r\n" +
+                    "\r\n" +
+                    "Save changes?", MessageBoxButton.YesNoCancel);
+
+                if (userSelection == MessageBoxResult.Cancel)
+                {
+                    // User wants to stay in current session
+                    return;
+                }
+
+                if (userSelection == MessageBoxResult.Yes)
+                {
+                    // Save or Save As according to currently associated file
+                    UserDecision finalSaveDecision = DoSave();
+
+                    if (finalSaveDecision == UserDecision.Cancel)
+                    {
+                        // User cancelled while saving - interpret as "stay in current session"
+                        return;
+                    }
+                }
+            }
+
+            // Starting a new sessions!
+            _sessionState.Reset();
+            TabControlViewModel.ResetItemsCollection();
+        }
+    }
+
+    internal enum UserDecision
+    {
+        Save,
+        Cancel
     }
 }

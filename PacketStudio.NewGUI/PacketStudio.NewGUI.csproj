@@ -208,6 +208,7 @@
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SctpPacketFactory.cs" />
+    <Compile Include="SessionState.cs" />
     <Compile Include="TabControlWrapper.xaml.cs">
       <DependentUpon>TabControlWrapper.xaml</DependentUpon>
     </Compile>
@@ -324,6 +325,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\hammer-32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\new.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\open.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\save_as.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\shark-32.png">

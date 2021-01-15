@@ -22,11 +22,47 @@
     <DockPanel>
         <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167" >
             <syncfusion:Ribbon.ApplicationMenu>
-                <syncfusion:ApplicationMenu IsPopupOpen="False">
-                    <syncfusion:ApplicationMenu.ApplicationItems>
-                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Open" Click="OpenMenuItemClicked" IsMenuItem="True"/>
-                        <syncfusion:RibbonButton Focusable="False" syncfusion:Ribbon.IsQATItem="False" Label="Save" Click="SaveMenuItemClicked" IsMenuItem="True"/>
-                    </syncfusion:ApplicationMenu.ApplicationItems>
+                <syncfusion:ApplicationMenu
+                        Name="_applicationMenu"
+                        Width="38"
+                        Height="38"
+                        IsBelowAppButton="True"
+                        syncfusion:Ribbon.KeyTip="F"
+                        IsPopupOpen="False"
+                        >
+                    <syncfusion:MenuButton
+                            x:Name="newMenuButton"
+                            Width="200"
+                            Label="New Session"
+                            Icon="Resources/new.png"
+                            MouseLeftButtonUp="NewSessionMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"
+                            />
+                    <syncfusion:MenuButton
+                            x:Name="openMenuButton"
+                            Width="200"
+                            Label="Open"
+                            Icon="Resources/open.png"
+                            MouseLeftButtonUp="OpenMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"
+                            />
+                    <syncfusion:MenuButton
+                            x:Name="saveMenuButton"
+                            Width="200"
+                            Label="Save"
+                            Icon="Resources/save.png"
+                            MouseLeftButtonUp="SaveMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"
+                            />
+                    <syncfusion:MenuButton
+                            x:Name="saveAsMenuButton"
+                            Width="200"
+                            Label="Save As..."
+                            Icon="Resources/save_as.png"
+                            MouseLeftButtonUp="SaveAsMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"
+                            />
+
                 </syncfusion:ApplicationMenu>
             </syncfusion:Ribbon.ApplicationMenu>
             <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23" syncfusion:Ribbon.KeyTip="H">
@@ -59,7 +95,7 @@
                     <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="PreviewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="PreviewDelayTextBox_PreviewKeyDown"/>
                 </syncfusion:RibbonBar>
             </syncfusion:RibbonTab>
-        </syncfusion:Ribbon>    
+        </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
                 <newGui:TabControlWrapper x:Name="tabControl"

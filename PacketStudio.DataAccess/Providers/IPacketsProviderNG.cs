@@ -4,7 +4,7 @@ using PacketStudio.DataAccess.SaveData;
 
 namespace PacketStudio.DataAccess.Providers
 {
-	public interface IPacketsProvider : IEnumerable<PacketSaveData>, IDisposable
-	{
-	}
+    public interface IPacketsProviderNG : IEnumerable<PacketSaveDataNG>, IDisposable
+    {
     }
+}
