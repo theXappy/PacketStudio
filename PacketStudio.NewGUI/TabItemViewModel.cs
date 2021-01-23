@@ -60,5 +60,11 @@ namespace PacketStudio.NewGUI
                 this.RaisePropertyChanged(nameof(Content));
             }
         }
+
+        public void NormalizeHex()
+        {
+            var expPacket = ExportPacket;
+            SessionPacket = new PacketSaveDataNG(HexStreamType.Raw, expPacket.Data.ToHex());
+        }
     }
 }

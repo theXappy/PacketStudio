@@ -25,7 +25,7 @@ namespace PacketStudio.NewGUI
 
         public void OnPacketChanged(object sender, EventArgs args)
         {
-            PacketChanged?.Invoke(sender,args);
+            PacketChanged?.Invoke(sender, args);
         }
 
         private readonly HexDeserializer _deserializer = new HexDeserializer();
@@ -91,12 +91,12 @@ namespace PacketStudio.NewGUI
 
                 var details = templateControl.GenerateSaveDetails();
 
-                string typeName = ((ListBoxItem) templatesListBox.SelectedItem).Content.ToString();
+                string typeName = ((ListBoxItem)templatesListBox.SelectedItem).Content.ToString();
                 HexStreamType type = _namesToHexType[typeName];
 
                 string text = hexTextBox.Text;
 
-                PacketSaveDataNG psd = new PacketSaveDataNG(type, text) {Details = details};
+                PacketSaveDataNG psd = new PacketSaveDataNG(type, text) { Details = details };
                 return psd;
             }
             set
@@ -125,7 +125,7 @@ namespace PacketStudio.NewGUI
                 SetValue(ExportPacketProperty, value);
             }
         }
-        
+
         public bool IsHexStream => _deserializer.IsHexStream(this.hexTextBox.Text);
 
         public PacketDefiner()
@@ -159,7 +159,7 @@ namespace PacketStudio.NewGUI
                     Content = name
                 };
 
-                _templatesBoxItemsToControlsCreators[lbi] = () => (UserControl) Activator.CreateInstance(packetTemplateType);
+                _templatesBoxItemsToControlsCreators[lbi] = () => (UserControl)Activator.CreateInstance(packetTemplateType);
 
                 templatesListBox.Items.Add(lbi);
 
@@ -181,46 +181,7 @@ namespace PacketStudio.NewGUI
             e.Handled = true;
         }
 
-        internal void NormalizeHex()
-        {
-            bool padded = false;
-            byte[] bytes = null;
-            try
-            {
-                bytes = _deserializer.Deserialize(hexTextBox.Text);
-            }
-            catch (FormatException)
-            {
-                bool throwOrg = false;
-                try
-                {
-                    bytes = _deserializer.Deserialize(hexTextBox.Text + "0");
-                    padded = true;
-                }
-                catch
-                {
-                    throwOrg = true;
-                }
-                if (throwOrg)
-                {
-                    throw;
-                }
-            }
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in bytes)
-            {
-                sb.Append(b.ToString("X2"));
-            }
-            string normalized = sb.ToString();
-            if (padded)
-            {
-                normalized.Substring(0, normalized.Length - 1);
-            }
-            hexTextBox.Text = normalized;
-
-        }
-
-        private  readonly Dictionary<HexStreamType,ListBoxItem> _streamTypeToListItems = new Dictionary<HexStreamType, ListBoxItem>();
+        private readonly Dictionary<HexStreamType, ListBoxItem> _streamTypeToListItems = new Dictionary<HexStreamType, ListBoxItem>();
         private readonly Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
         private readonly Dictionary<string, HexStreamType> _namesToHexType = new Dictionary<string, HexStreamType>();
 
@@ -246,18 +207,18 @@ namespace PacketStudio.NewGUI
                     packetTemplatePanel.Children.Clear();
 
                     var newControl = creator();
-                    if(newControl is IPacketTemplateControl newPacketTemplateControl)
+                    if (newControl is IPacketTemplateControl newPacketTemplateControl)
                         newPacketTemplateControl.Changed += PacketTemplateControlChanged;
                     packetTemplatePanel.Children.Add(newControl);
                 }
             }
 
-            this.OnPacketChanged(this,e);
+            this.OnPacketChanged(this, e);
         }
 
         private void PacketTemplateControlChanged(object sender, EventArgs e)
         {
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Background,(Action)(()=>this.OnPacketChanged(this, e)));
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => this.OnPacketChanged(this, e)));
         }
     }
 }

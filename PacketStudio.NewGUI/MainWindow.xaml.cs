@@ -319,8 +319,7 @@ namespace PacketStudio.NewGUI
 
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
-            // TODO:
-            //CurrentTabItemModel.NormalizeHex();
+            CurrentTabItemModel.NormalizeHex();
         }
 
         private void PacketTreeView_OnSelectedItemChanged(object sender,
