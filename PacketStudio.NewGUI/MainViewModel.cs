@@ -14,7 +14,7 @@ using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI
 {
-    public class ViewModel : NotificationObject
+    public class MainViewModel : NotificationObject
     {
         private const string TAB_HEADER_PREFIX = "Packet";
         private int nextTabNumber = 1;
@@ -114,13 +114,13 @@ namespace PacketStudio.NewGUI
             AddNewPacket(null);
 
         }
-        public ViewModel()
+        public MainViewModel()
         {
             tabItems = new ObservableCollection<TabItemViewModel>();
             ResetItemsCollection();
 
             // Register self with parent MainWindow
-            MainWindow.TabControlViewModel = this;
+            MainWindow.TabControlMainViewModel = this;
         }
 
         public void LoadFile(IPacketsProviderNG provider)

@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 
 namespace PacketStudio.Core
 {
+    [DebuggerDisplay("WS DIR: {" + nameof(WiresharkPath) + "}")]
     public class WiresharkDirectory
     {
         public string WiresharkPath { get; set; }

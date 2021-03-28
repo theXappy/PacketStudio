@@ -16,7 +16,7 @@
         mc:Ignorable="d"
         Title="PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False">
     <controls:RibbonWindow.DataContext>
-        <newGui:ViewModel/>
+        <newGui:MainViewModel/>
     </controls:RibbonWindow.DataContext>
 
     <DockPanel>

@@ -53,12 +53,17 @@
   <ItemGroup>
     <Compile Include="DictSerializerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharksFinderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj">
+      <Project>{E7558B32-25C1-4175-97E5-CA1BFFE951F8}</Project>
+      <Name>PacketStudio.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj">
       <Project>{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}</Project>
       <Name>PacketStudio.DataAccess</Name>

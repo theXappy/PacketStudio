@@ -201,6 +201,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BytesHighlightning.cs" />
+    <Compile Include="WiresharkDirListToStringConvert.cs" />
     <Compile Include="PacketTemplatesControls\OrderAttribute.cs" />
     <Compile Include="PacketTemplatesControls\SctpTemplateControl.xaml.cs">
       <DependentUpon>SctpTemplateControl.xaml</DependentUpon>
@@ -227,7 +228,11 @@
     <Compile Include="TabItemViewModel.cs" />
     <Compile Include="TcpPacketFactory.cs" />
     <Compile Include="UdpPacketFactory.cs" />
-    <Compile Include="ViewModel.cs" />
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="WiresharkFinderViewModel.cs" />
+    <Compile Include="WiresharkFinderWindow.xaml.cs">
+      <DependentUpon>WiresharkFinderWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfJokes\WidthToRightPaddingConverter.cs" />
     <Compile Include="WpfJokes\WpfScavengerHunt.cs" />
     <Page Include="MainWindow.xaml">
@@ -268,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PacketTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WiresharkFinderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

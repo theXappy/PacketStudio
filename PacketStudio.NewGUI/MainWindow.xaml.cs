@@ -46,7 +46,7 @@ namespace PacketStudio.NewGUI
         private readonly SessionState _sessionState = new SessionState();
 
 
-        public static ViewModel TabControlViewModel;
+        public static MainViewModel TabControlMainViewModel;
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
 
         private int _livePreviewDelay;
@@ -68,8 +68,16 @@ namespace PacketStudio.NewGUI
         {
             InitializeComponent();
 
-            WiresharkDir = new WiresharkDirectory(@"C:\Program Files\Wireshark\");
-
+            // TODO: Only do this if missing from settings
+            WiresharkFinderWindow wfw = new WiresharkFinderWindow();
+            bool? userChoseWiresharkVersion = wfw.ShowDialog();
+            if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
+            {
+                Environment.Exit(1);
+            }
+            WiresharkFinderViewModel wfvm = wfw.DataContext as WiresharkFinderViewModel;
+            WiresharkDir = wfvm.SelectedItem;
+            
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
 
@@ -78,7 +86,7 @@ namespace PacketStudio.NewGUI
 
         private void AddNewPacketTab(object sender, EventArgs e)
         {
-            TabControlViewModel?.AddNewPacket();
+            TabControlMainViewModel?.AddNewPacket();
             _sessionState.HasUnsavedChanges = true;
         }
 
@@ -127,14 +135,14 @@ namespace PacketStudio.NewGUI
                     }
                 }));
 
-                // Update Tab's ViewModel
+                // Update Tab's MainViewModel
                 CurrentTabItemModel.IsValid = true;
                 CurrentTabItemModel.ExportPacket = definer.ExportPacket;
 
                 // Call Live Update
                 if (previewEnabledCheckbox.IsChecked == true)
                 {
-                    Task.Delay(_livePreviewDelay).ContinueWith(task => ShowLivePreview());
+                    Task.Delay(_livePreviewDelay).ContinueWith(task => UpdateLivePreview());
                 }
             }
             else
@@ -183,8 +191,12 @@ namespace PacketStudio.NewGUI
             Dispatcher.Invoke(() => packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
         }
 
-        private void ShowLivePreview()
+        /// <summary>
+        /// Update Live Preview panels in the GUI. Invokes TShark and waits for it.
+        /// </summary>
+        private void UpdateLivePreview()
         {
+            // Indicate 'update in progress' instead of previous packet tree
             SetPacketTreeInProgress();
 
             TempPacketSaveData packetBytes = null;
@@ -198,6 +210,7 @@ namespace PacketStudio.NewGUI
                 packetTreeView.PopulatePacketTree(packetPdml);
             }
 
+            // Remove 'update in progress' indicators
             UnsetPacketTreeInProgress();
         }
 
@@ -339,7 +352,7 @@ namespace PacketStudio.NewGUI
 
         private void ExportToWireshark(object sender, RoutedEventArgs e)
         {
-            var items = TabControlViewModel.TabItems;
+            var items = TabControlMainViewModel.TabItems;
             var invalidItems = items.Where(tabViewModel => !tabViewModel.IsValid);
             if (invalidItems.Any())
             {
@@ -359,13 +372,14 @@ namespace PacketStudio.NewGUI
             WiresharkInterop wsInterop = new WiresharkInterop(wsPath);
             var wsSessionTask = wsInterop.ExportToWsAsync(exportedPackets);
 
-            // When Wireshark exits we want to trigger a preview update because use might have changed preferences
+            // The following task continues when the user exits Wireshark.
+            // In this case, we might want to trigger a preview update IF the user changed preferences using WS's GUI 
+            // (These will also take effect when we run TShark)
             wsSessionTask.CliTask.Task.ContinueWith(_ =>
             {
-                Debug.WriteLine($"@@@ Cont'ing interop task, Changed found: {wsSessionTask.PreferencesChanged}");
                 if (wsSessionTask.PreferencesChanged)
                 {
-                    ShowLivePreview();
+                    UpdateLivePreview();
                 }
             });
         }
@@ -417,7 +431,7 @@ namespace PacketStudio.NewGUI
             using (Dispatcher.DisableProcessing())
             {
                 _loading = true;
-                TabControlViewModel.LoadFile(provider);
+                TabControlMainViewModel.LoadFile(provider);
                 _loading = false;
             }
 
@@ -472,7 +486,7 @@ namespace PacketStudio.NewGUI
 
         private void SaveSession(string path)
         {
-            var sessionPackets = TabControlViewModel.TabItems.Select(model => model.SessionPacket);
+            var sessionPackets = TabControlMainViewModel.TabItems.Select(model => model.SessionPacket);
             var p2SSaver = new P2sSaver();
             p2SSaver.Save(path, sessionPackets);
 
@@ -519,7 +533,7 @@ namespace PacketStudio.NewGUI
             if (numTabs == 1)
             {
                 e.Cancel = true;
-                TabControlViewModel.ResetItemsCollection();
+                TabControlMainViewModel.ResetItemsCollection();
             }
             _sessionState.HasUnsavedChanges = true;
         }
@@ -528,7 +542,7 @@ namespace PacketStudio.NewGUI
         {
             // Closing all tabs but making a new empty one.
             e.Cancel = true;
-            TabControlViewModel.ResetItemsCollection();
+            TabControlMainViewModel.ResetItemsCollection();
             _sessionState.HasUnsavedChanges = true;
         }
 
@@ -630,7 +644,7 @@ namespace PacketStudio.NewGUI
 
             // Starting a new sessions!
             _sessionState.Reset();
-            TabControlViewModel.ResetItemsCollection();
+            TabControlMainViewModel.ResetItemsCollection();
         }
     }
 
