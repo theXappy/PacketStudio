@@ -15,6 +15,7 @@ using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.Saver;
+using PacketStudio.NewGUI.Properties;
 using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI
@@ -68,16 +69,31 @@ namespace PacketStudio.NewGUI
         {
             InitializeComponent();
 
-            // TODO: Only do this if missing from settings
-            WiresharkFinderWindow wfw = new WiresharkFinderWindow();
-            bool? userChoseWiresharkVersion = wfw.ShowDialog();
-            if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
+            bool foundWsInSettings = SharksFinder.TryGetByPath(Settings.Default.WiresharkDir, out WiresharkDirectory dir);
+            if (foundWsInSettings)
             {
-                Environment.Exit(1);
+                // Found wireshark in settings.
+                this.WiresharkDir = dir;
             }
-            WiresharkFinderViewModel wfvm = wfw.DataContext as WiresharkFinderViewModel;
-            WiresharkDir = wfvm.SelectedItem;
-            
+            else
+            {
+                // No wireshark in settings, prompt user to select a version
+                WiresharkFinderWindow wfw = new WiresharkFinderWindow();
+                bool? userChoseWiresharkVersion = wfw.ShowDialog();
+                if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
+                {
+                    Environment.Exit(1);
+                }
+
+                var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
+                if (finderViewModel == null)
+                {
+                    Environment.Exit(1);
+                }
+
+                WiresharkDir = finderViewModel.SelectedItem;
+            }
+
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
 
@@ -367,10 +383,7 @@ namespace PacketStudio.NewGUI
             List<TempPacketSaveData> exportedPackets = items.Select(tabViewModel => tabViewModel.ExportPacket).ToList();
             TempPacketsSaver saver = new TempPacketsSaver();
 
-            // TODO: Make this configurable
-            var wsPath = SharksFinder.GetDirectories().First().WiresharkPath;
-            WiresharkInterop wsInterop = new WiresharkInterop(wsPath);
-            var wsSessionTask = wsInterop.ExportToWsAsync(exportedPackets);
+            var wsSessionTask = _wsInterOp.ExportToWsAsync(exportedPackets);
 
             // The following task continues when the user exits Wireshark.
             // In this case, we might want to trigger a preview update IF the user changed preferences using WS's GUI 

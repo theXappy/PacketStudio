@@ -8,10 +8,10 @@ namespace PacketStudio.NewGUI
 {
     public class WiresharkFinderViewModel : NotificationObject
     {
-        private Lazy<List<WiresharkDirectory>> _sharksFinderDirs = new Lazy<List<WiresharkDirectory>>(SharksFinder.GetDirectories);
-        private List<WiresharkDirectory> CustomDirectories = new List<WiresharkDirectory>();
+        private readonly Lazy<List<WiresharkDirectory>> _sharksFinderDirs = new Lazy<List<WiresharkDirectory>>(SharksFinder.GetDirectories);
+        private readonly List<WiresharkDirectory> _customDirectories = new List<WiresharkDirectory>();
 
-        public List<WiresharkDirectory> WiresharkDirs => _sharksFinderDirs.Value.Concat(CustomDirectories).ToList();
+        public List<WiresharkDirectory> WiresharkDirs => _sharksFinderDirs.Value.Concat(_customDirectories).ToList();
 
         private WiresharkDirectory _selectedItem;
         public WiresharkDirectory SelectedItem
@@ -24,11 +24,10 @@ namespace PacketStudio.NewGUI
             }
         }
 
-
         public void AddCustomDirectory(WiresharkDirectory wd)
         {
             if (wd == null) return;
-            CustomDirectories.Add(wd);
+            _customDirectories.Add(wd);
             base.RaisePropertyChanged("WiresharkDirs");
         }
     }
