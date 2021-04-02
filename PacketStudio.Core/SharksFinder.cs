@@ -9,6 +9,7 @@ namespace PacketStudio.Core
 		private static string _defaultWsPath = @"C:\Program Files\Wireshark\";
 		private static string _defaultx86wsPath = @"C:\Program Files (x86)\Wireshark\";
 		private static string _defaultDevWsPath = @"C:\Development\wsbuild64\run\RelwithDebInfo\";
+		private static string _defaultx86DevWsPath = @"C:\Development\wsbuild\run\RelwithDebInfo\";
 
 		public static List<WiresharkDirectory> GetDirectories()
 		{
@@ -23,6 +24,10 @@ namespace PacketStudio.Core
 				output.Add(next);
 			}
 			if (TryGetByDirectoryPath(_defaultDevWsPath, out next))
+			{
+				output.Add(next);
+			}
+			if (TryGetByDirectoryPath(_defaultx86DevWsPath, out next))
 			{
 				output.Add(next);
 			}
