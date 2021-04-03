@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignHeight="350" d:DesignWidth="300" Loaded="UserControl_Loaded"
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
-             >
+        xmlns:controls="clr-namespace:PacketStudio.NewGUI.Controls">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -18,14 +18,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Margin="2,2,2,5"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="1">
-        <TextBox  x:Name="hexTextBox"
+        <controls:BindableTextBox  x:Name="hexTextBox"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
-                 TextChanged="HexTextBox_TextChanged"
-                 LostFocus="HexTextBox_LostFocus" 
-                 Text="AA BB CC ..."
-                 SelectionChanged="HexTextBox_OnSelectionChanged"
-                  VerticalContentAlignment="Top" FontFamily="Consolas" FontSize="16"/>
+                 TextChanged="HexTextBox_OnTextChanged"
+                 BindableSelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                 BindableSelectionLength="{Binding SelectionLength, Mode=TwoWay}"
+                 BindableCaretIndex="{Binding CaretPosition, Mode=TwoWay}"
+                 Text="{Binding Content, Mode=TwoWay, FallbackValue='AA BB CC ...'}"
+                  VerticalContentAlignment="Top" FontFamily="Consolas" FontSize="16"
+                  
+                 />
+                 <!--LostFocus="HexTextBox_LostFocus"--> 
+                 <!--SelectionChanged="HexTextBox_OnSelectionChanged"-->
         </Border>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
             <ListBox x:Name="templatesListBox" 

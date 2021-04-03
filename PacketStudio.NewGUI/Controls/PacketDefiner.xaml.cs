@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -191,11 +192,6 @@ namespace PacketStudio.NewGUI
             templatesListBox.SelectedIndex = 0;
         }
 
-        private void HexTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            OnPacketChanged(this, new EventArgs());
-        }
-
         private void HexTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
@@ -247,6 +243,20 @@ namespace PacketStudio.NewGUI
             int pos = hexTextBox.CaretIndex;
             SetValue(CaretPositionProperty, pos);
             OnCaretPositionChanged(this, EventArgs.Empty);
+        }
+
+        private void HexTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender != null && sender is TextBox box)
+            {
+                // Trick to update the 'Content' binding for every character
+                // (instead of only when the text box loses focus)
+                var binding = box.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateSource();
+            }
+
+            // Also trigger a whole 'packet changed'
+            OnPacketChanged(this, new EventArgs());
         }
     }
 }

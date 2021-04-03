@@ -201,6 +201,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BytesHighlightning.cs" />
+    <Compile Include="Controls\BindableTextBox.cs" />
     <Compile Include="ViewModels\InsertAsciiViewModel.cs" />
     <Compile Include="Windows\InsertAsciiWindow.xaml.cs">
       <DependentUpon>InsertAsciiWindow.xaml</DependentUpon>

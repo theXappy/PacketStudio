@@ -151,8 +151,8 @@ namespace PacketStudio.NewGUI
                          }
                          catch (InvalidOperationException)
                          {
-                            // Don't care
-                        }
+                             // Don't care
+                         }
 
                          hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                          hexEditor.ForegroundSecondColor = hexEditor.Foreground;
@@ -357,7 +357,14 @@ namespace PacketStudio.NewGUI
 
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
-            CurrentTabItemModel.NormalizeHex();
+            try
+            {
+                CurrentTabItemModel.NormalizeHex();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Failed to normalize.\n" + exception.Message, "Error");
+            }
         }
 
         private void PacketTreeView_OnSelectedItemChanged(object sender,
@@ -688,24 +695,14 @@ namespace PacketStudio.NewGUI
                 InsertAsciiViewModel iavm = iaw.DataContext as InsertAsciiViewModel;
                 byte[] encoded = Encoding.ASCII.GetBytes(iavm.Text);
                 string hexString = encoded.ToHex();
-            
+
                 // Insert the encoded ASCII bytes after the current caret position
                 int pos = CurrentTabItemModel.CaretPosition;
 
                 int indx = tabControl.SelectedIndex;
-                string newPacketData = CurrentTabItemModel.SessionPacket.PacketData.Insert(pos, hexString);
-                CurrentTabItemModel.SessionPacket.PacketData = newPacketData;
+                string newPacketData = CurrentTabItemModel.Content.Insert(pos, hexString);
+                CurrentTabItemModel.Content = newPacketData;
                 CurrentTabItemModel.CaretPosition = pos + hexString.Length;
-
-                // Ugly way to make the PacketDefiner reload the SessionData from the CurrentTabItemModel we just changed
-                using (Dispatcher.DisableProcessing())
-                {
-                    TabControlMainViewModel.AddNewPacket();
-                    TabControlMainViewModel.TabItems.Remove(TabControlMainViewModel.TabItems.Last());
-                }
-
-
-                this.tabControl.SelectedIndex = indx;
 
             }
         }
@@ -719,7 +716,7 @@ namespace PacketStudio.NewGUI
         {
             PacketDefiner pd = sender as PacketDefiner;
             TabItemViewModel tivm = pd.DataContext as TabItemViewModel;
-            if(tivm != null)
+            if (tivm != null)
                 tivm.CaretPosition = pd.CaretPosition;
 
         }

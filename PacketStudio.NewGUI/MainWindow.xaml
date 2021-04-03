@@ -457,12 +457,10 @@
                             </Setter>
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="{x:Type newGui:TabItemViewModel}">
                                         <local:PacketDefiner
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
-                                                    SessionPacket="{Binding SessionPacket}"
-                                                    CaretPosition="{Binding CaretPosition}"
                                                     Background="#323232"
                                                     Margin="0"
                                                     syncfusion:SfSkinManager.VisualStyle="MaterialDark"                                                    

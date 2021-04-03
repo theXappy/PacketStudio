@@ -1,15 +1,31 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 using Syncfusion.Windows.Shared;
 
 namespace PacketStudio.NewGUI
 {
-    public class TabItemViewModel : NotificationObject
+    public abstract class ViewModelBase : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class TabItemViewModel : ViewModelBase
     {
         private string content;
         private string header;
         private int caretPos;
+        private int selStart;
+        private int selLen;
         private PacketSaveDataNG _sessionPacket;
         private TempPacketSaveData _exportPacket;
 
@@ -22,7 +38,7 @@ namespace PacketStudio.NewGUI
             set
             {
                 _exportPacket = value;
-                this.RaisePropertyChanged(nameof(ExportPacket));
+                OnPropertyChanged(nameof(ExportPacket));
             }
         }
 
@@ -32,7 +48,7 @@ namespace PacketStudio.NewGUI
             set
             {
                 _sessionPacket = value;
-                this.RaisePropertyChanged(nameof(SessionPacket));
+                OnPropertyChanged(nameof(SessionPacket));
                 if (value == null) return;
                 // Check for specific header name
                 if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.HEADER_FIELD, out string newHeader))
@@ -55,7 +71,7 @@ namespace PacketStudio.NewGUI
             set
             {
                 header = value;
-                this.RaisePropertyChanged(nameof(Header));
+                OnPropertyChanged(nameof(Header));
             }
         }
         public int CaretPosition
@@ -64,7 +80,25 @@ namespace PacketStudio.NewGUI
             set
             {
                 caretPos = value;
-                this.RaisePropertyChanged(nameof(CaretPosition));
+                OnPropertyChanged(nameof(CaretPosition));
+            }
+        }
+        public int SelectionLength
+        {
+            get => selLen;
+            set
+            {
+                selLen = value;
+                OnPropertyChanged(nameof(SelectionLength));
+            }
+        }
+        public int SelectionStart
+        {
+            get => selStart;
+            set
+            {
+                selStart = value;
+                OnPropertyChanged(nameof(SelectionStart));
             }
         }
 
@@ -74,14 +108,22 @@ namespace PacketStudio.NewGUI
             set
             {
                 content = value;
-                this.RaisePropertyChanged(nameof(Content));
+                OnPropertyChanged(nameof(Content));
             }
         }
 
         public void NormalizeHex()
         {
             var expPacket = ExportPacket;
-            SessionPacket = new PacketSaveDataNG(HexStreamType.Raw, expPacket.Data.ToHex());
+            byte[] data = expPacket.Data;
+            if (data != null)
+            {
+                SessionPacket = new PacketSaveDataNG(HexStreamType.Raw, expPacket.Data.ToHex());
+            }
+            else
+            {
+                throw new Exception("Packet's Hex is invalid");
+            }
         }
     }
 }

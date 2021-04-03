@@ -96,7 +96,7 @@ namespace PacketStudio.NewGUI
             TabItemViewModel new_model1 = new TabItemViewModel()
             {
                 Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
-                Content = $"Content?",
+                Content = $"",
                 SessionPacket = psdng,
                 //ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
             };
