@@ -30,6 +30,7 @@ namespace PacketStudio.DataAccess.SaveData
     public static class PackSaveDataNGMetaFields
     {
         public static string HEADER_FIELD = "header";
+        public static string CARET_POS_FIELD = "caret_pos";
     }
 
     public static class PacketSaveDataNGProtoFields

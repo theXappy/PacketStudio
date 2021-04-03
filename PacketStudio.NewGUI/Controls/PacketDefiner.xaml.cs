@@ -22,10 +22,16 @@ namespace PacketStudio.NewGUI
     public partial class PacketDefiner : UserControl
     {
         public event EventHandler PacketChanged;
+        public event EventHandler CaretPositionChanged;
 
         public void OnPacketChanged(object sender, EventArgs args)
         {
             PacketChanged?.Invoke(sender, args);
+        }
+
+        public void OnCaretPositionChanged(object sender, EventArgs args)
+        {
+            CaretPositionChanged?.Invoke(sender, args);
         }
 
         private readonly HexDeserializer _deserializer = new HexDeserializer();
@@ -50,11 +56,16 @@ namespace PacketStudio.NewGUI
 
         #region Dependency Props Stuff
 
+        public static readonly DependencyProperty CaretPositionProperty = DependencyProperty.Register(nameof(CaretPosition), typeof(int), typeof(PacketDefiner), new FrameworkPropertyMetadata(CaretPositionPropertyChangedCallback));
         public static readonly DependencyProperty SessionPacketProperty = DependencyProperty.Register(nameof(SessionPacket), typeof(PacketSaveDataNG), typeof(PacketDefiner), new FrameworkPropertyMetadata(SessionPacketPropertyChangedCallback));
         public static readonly DependencyProperty ExportPacketProperty = DependencyProperty.Register(nameof(ExportPacket), typeof(TempPacketSaveData), typeof(PacketDefiner), new FrameworkPropertyMetadata(PacketPropertyChangedCallback));
         private static void SessionPacketPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as PacketDefiner).SessionPacketPropertyChangedCallback(e);
+        }
+        private static void CaretPositionPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // ?
         }
         private void SessionPacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
         {
@@ -80,6 +91,16 @@ namespace PacketStudio.NewGUI
 
         #endregion
 
+        public int CaretPosition
+        {
+            get => this.hexTextBox.CaretIndex;
+            set
+            {
+                SetValue(CaretPositionProperty, value);
+                this.hexTextBox.CaretIndex = value;
+            }
+        }
+
         public PacketSaveDataNG SessionPacket
         {
             get
@@ -101,7 +122,6 @@ namespace PacketStudio.NewGUI
             }
             set
             {
-                Console.WriteLine($"@@@ SessionPacket setter called with value : {value}");
                 SetValue(SessionPacketProperty, value);
                 this.PacketTemplateControl.LoadSaveDetails(SessionPacket.Details);
             }
@@ -219,6 +239,14 @@ namespace PacketStudio.NewGUI
         private void PacketTemplateControlChanged(object sender, EventArgs e)
         {
             this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => this.OnPacketChanged(this, e)));
+        }
+
+        private void HexTextBox_OnSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            // When the caret changes, a OnSelectionChanged happens
+            int pos = hexTextBox.CaretIndex;
+            SetValue(CaretPositionProperty, pos);
+            OnCaretPositionChanged(this, EventArgs.Empty);
         }
     }
 }

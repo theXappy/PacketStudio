@@ -9,6 +9,7 @@ namespace PacketStudio.NewGUI
     {
         private string content;
         private string header;
+        private int caretPos;
         private PacketSaveDataNG _sessionPacket;
         private TempPacketSaveData _exportPacket;
 
@@ -38,6 +39,13 @@ namespace PacketStudio.NewGUI
                 {
                     Header = newHeader;
                 }
+                if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.CARET_POS_FIELD, out string newCaretPosString))
+                {
+                    if (int.TryParse(newCaretPosString, out int newCaretPosInt))
+                    {
+                        CaretPosition = newCaretPosInt;
+                    }
+                }
             }
         }
 
@@ -48,6 +56,15 @@ namespace PacketStudio.NewGUI
             {
                 header = value;
                 this.RaisePropertyChanged(nameof(Header));
+            }
+        }
+        public int CaretPosition
+        {
+            get => caretPos;
+            set
+            {
+                caretPos = value;
+                this.RaisePropertyChanged(nameof(CaretPosition));
             }
         }
 

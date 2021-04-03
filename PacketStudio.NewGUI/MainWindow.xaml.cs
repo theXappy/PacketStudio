@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,8 +15,10 @@ using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
+using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.Saver;
 using PacketStudio.NewGUI.Properties;
+using PacketStudio.NewGUI.Windows;
 using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI
@@ -26,7 +29,7 @@ namespace PacketStudio.NewGUI
     public partial class MainWindow : RibbonWindow
     {
         // TODO: Load last/Load from available list in start up instead
-        WiresharkDirectory _wiresharkDirectory ;
+        WiresharkDirectory _wiresharkDirectory;
         private WiresharkInterop _wsInterOp;
         private TSharkInterop _tsharkInterOp;
         public WiresharkDirectory WiresharkDir
@@ -37,7 +40,8 @@ namespace PacketStudio.NewGUI
                 _wiresharkDirectory = value;
                 _wsInterOp = null;
                 _tsharkInterOp = null;
-                if (value != null) {
+                if (value != null)
+                {
                     _wsInterOp = new WiresharkInterop(value.WiresharkPath);
                     _tsharkInterOp = new TSharkInterop(value.TsharkPath);
                 }
@@ -92,7 +96,7 @@ namespace PacketStudio.NewGUI
                 }
 
                 WiresharkDir = finderViewModel.SelectedItem;
-                
+
                 // Also save in settings for next runs
                 Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
                 Settings.Default.Save();
@@ -136,25 +140,25 @@ namespace PacketStudio.NewGUI
                 // causes the cursor of the textbox act strange (updates only sometimes...).
                 // To overcome this I 'enqueue' the update of the hexEditor after the UI thread finishes handling 
                 // the current event. This is done by the 'BeginInvoke' call.
-                Dispatcher.BeginInvoke(DispatcherPriority.Background,(Action)(() =>
-                {
-                    using (var d = Dispatcher.DisableProcessing())
-                    {
-                        hexEditor.Visibility = Visibility.Hidden;
-                        try
-                        {
-                            hexEditor.Stream = new MemoryStream(bytes);
-                        }
-                        catch(InvalidOperationException)
-                        {
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
+                 {
+                     using (var d = Dispatcher.DisableProcessing())
+                     {
+                         hexEditor.Visibility = Visibility.Hidden;
+                         try
+                         {
+                             hexEditor.Stream = new MemoryStream(bytes);
+                         }
+                         catch (InvalidOperationException)
+                         {
                             // Don't care
                         }
 
-                        hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                        hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                        hexEditor.Visibility = Visibility.Visible;
-                    }
-                }));
+                         hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                         hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                         hexEditor.Visibility = Visibility.Visible;
+                     }
+                 }));
 
                 // Update Tab's MainViewModel
                 CurrentTabItemModel.IsValid = true;
@@ -174,16 +178,16 @@ namespace PacketStudio.NewGUI
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (() =>
-                {
-                    using (var d = Dispatcher.DisableProcessing())
-                    {
-                        hexEditor.Visibility = Visibility.Hidden;
-                        hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
-                        hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                        hexEditor.Visibility = Visibility.Visible;
-                    }
-                }));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
+               {
+                   using (var d = Dispatcher.DisableProcessing())
+                   {
+                       hexEditor.Visibility = Visibility.Hidden;
+                       hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
+                       hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                       hexEditor.Visibility = Visibility.Visible;
+                   }
+               }));
             }
         }
 
@@ -221,7 +225,7 @@ namespace PacketStudio.NewGUI
             SetPacketTreeInProgress();
 
             TempPacketSaveData packetBytes = null;
-            Dispatcher.BeginInvoke((Action) (() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
+            Dispatcher.BeginInvoke((Action)(() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
                 .Wait();
 
             if (packetBytes != null && packetBytes.Data.Length != 0)
@@ -310,7 +314,7 @@ namespace PacketStudio.NewGUI
 
         private void PreviewDelayTextBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool) e.NewValue == false) // - Keyboard focus is lost
+            if ((bool)e.NewValue == false) // - Keyboard focus is lost
             {
                 ApplyNewPreviewDelayValue();
             }
@@ -406,7 +410,7 @@ namespace PacketStudio.NewGUI
 
         private void OpenMenuItemClicked(object sender, MouseButtonEventArgs e)
         {
-            if(_sessionState.HasUnsavedChanges)
+            if (_sessionState.HasUnsavedChanges)
             {
                 // Prompt user about unsaved changes in current session
                 var userSelection = MessageBox.Show("Unsaved Changes Alert",
@@ -529,7 +533,7 @@ namespace PacketStudio.NewGUI
             }
             bool? res = ofd.ShowDialog();
             if (res != true) return;
-            
+
             if (!ofd.CheckFileExists) return;
 
             string dirPath = Path.GetDirectoryName(ofd.FileName);
@@ -547,7 +551,7 @@ namespace PacketStudio.NewGUI
         {
             // When closing last tab immediately open a new empty tab.
             int numTabs = tabControl.ItemsSource.OfType<object>().Count();
-            Debug.WriteLine("Number of tabs: "+numTabs);
+            Debug.WriteLine("Number of tabs: " + numTabs);
             if (numTabs == 1)
             {
                 e.Cancel = true;
@@ -567,9 +571,9 @@ namespace PacketStudio.NewGUI
         private void MenuButton_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine(e.Key);
-            if(!e.IsDown)
+            if (!e.IsDown)
                 return;
-            if(e.Key != Key.Down && e.Key != Key.Up && 
+            if (e.Key != Key.Down && e.Key != Key.Up &&
                e.Key != Key.Enter && e.Key == Key.Return)
                 return;
 
@@ -580,16 +584,16 @@ namespace PacketStudio.NewGUI
                 switch (invokingButton.Name)
                 {
                     case "newMenuButton":
-                        NewSessionMenuItemClicked(sender,null);
+                        NewSessionMenuItemClicked(sender, null);
                         break;
                     case "openMenuButton":
-                        OpenMenuItemClicked(sender,null);
+                        OpenMenuItemClicked(sender, null);
                         break;
                     case "saveMenuButton":
-                        SaveMenuItemClicked(sender,null);
+                        SaveMenuItemClicked(sender, null);
                         break;
                     case "saveAsMenuButton":
-                        SaveAsMenuItemClicked(sender,null);
+                        SaveAsMenuItemClicked(sender, null);
                         break;
                 }
 
@@ -601,7 +605,7 @@ namespace PacketStudio.NewGUI
             if (e.Key == Key.Down)
             {
                 next = _applicationMenu.Items[0] as MenuButton;
-                for (int i = 0; i < _applicationMenu.Items.Count -1; i++)
+                for (int i = 0; i < _applicationMenu.Items.Count - 1; i++)
                 {
                     var candidate = _applicationMenu.Items[i] as MenuButton;
                     if (candidate == invokingButton)
@@ -613,7 +617,7 @@ namespace PacketStudio.NewGUI
             }
             else // Key ip UP
             {
-                next = _applicationMenu.Items[_applicationMenu.Items.Count-1] as MenuButton;
+                next = _applicationMenu.Items[_applicationMenu.Items.Count - 1] as MenuButton;
                 for (int i = 1; i < _applicationMenu.Items.Count; i++)
                 {
                     var candidate = _applicationMenu.Items[i] as MenuButton;
@@ -623,7 +627,7 @@ namespace PacketStudio.NewGUI
                         break;
                     }
                 }
-                
+
             }
 
             _applicationMenu.SelectedItem = next;
@@ -663,6 +667,61 @@ namespace PacketStudio.NewGUI
             // Starting a new sessions!
             _sessionState.Reset();
             TabControlMainViewModel.ResetItemsCollection();
+        }
+
+        private void DoPaste(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DoCopy(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void InsertAscii(object sender, RoutedEventArgs e)
+        {
+            InsertAsciiWindow iaw = new InsertAsciiWindow();
+            bool? res = iaw.ShowDialog();
+            if (res == true)
+            {
+                InsertAsciiViewModel iavm = iaw.DataContext as InsertAsciiViewModel;
+                byte[] encoded = Encoding.ASCII.GetBytes(iavm.Text);
+                string hexString = encoded.ToHex();
+            
+                // Insert the encoded ASCII bytes after the current caret position
+                int pos = CurrentTabItemModel.CaretPosition;
+
+                int indx = tabControl.SelectedIndex;
+                string newPacketData = CurrentTabItemModel.SessionPacket.PacketData.Insert(pos, hexString);
+                CurrentTabItemModel.SessionPacket.PacketData = newPacketData;
+                CurrentTabItemModel.CaretPosition = pos + hexString.Length;
+
+                // Ugly way to make the PacketDefiner reload the SessionData from the CurrentTabItemModel we just changed
+                using (Dispatcher.DisableProcessing())
+                {
+                    TabControlMainViewModel.AddNewPacket();
+                    TabControlMainViewModel.TabItems.Remove(TabControlMainViewModel.TabItems.Last());
+                }
+
+
+                this.tabControl.SelectedIndex = indx;
+
+            }
+        }
+
+        private void DoCut(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PacketDefiner_OnCaretPositionChanged(object sender, EventArgs e)
+        {
+            PacketDefiner pd = sender as PacketDefiner;
+            TabItemViewModel tivm = pd.DataContext as TabItemViewModel;
+            if(tivm != null)
+                tivm.CaretPosition = pd.CaretPosition;
+
         }
     }
 

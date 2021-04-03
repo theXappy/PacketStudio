@@ -24,6 +24,7 @@
                  TextChanged="HexTextBox_TextChanged"
                  LostFocus="HexTextBox_LostFocus" 
                  Text="AA BB CC ..."
+                 SelectionChanged="HexTextBox_OnSelectionChanged"
                   VerticalContentAlignment="Top" FontFamily="Consolas" FontSize="16"/>
         </Border>
         <Border Margin="2,5,2,2"  Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1">
