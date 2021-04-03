@@ -202,9 +202,9 @@
     </ApplicationDefinition>
     <Compile Include="BytesHighlightning.cs" />
     <Compile Include="Controls\BindableTextBox.cs" />
-    <Compile Include="ViewModels\InsertAsciiViewModel.cs" />
-    <Compile Include="Windows\InsertAsciiWindow.xaml.cs">
-      <DependentUpon>InsertAsciiWindow.xaml</DependentUpon>
+    <Compile Include="ViewModels\EncodeTextViewModel.cs" />
+    <Compile Include="Windows\EncodeTextWindow.xaml.cs">
+      <DependentUpon>EncodeTextWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WpfJokes\WiresharkDirListToStringConvert.cs" />
     <Compile Include="PacketTemplatesControls\OrderAttribute.cs" />
@@ -240,7 +240,7 @@
     </Compile>
     <Compile Include="WpfJokes\WidthToRightPaddingConverter.cs" />
     <Compile Include="WpfJokes\WpfScavengerHunt.cs" />
-    <Page Include="Windows\InsertAsciiWindow.xaml">
+    <Page Include="Windows\EncodeTextWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -686,14 +686,15 @@ namespace PacketStudio.NewGUI
             throw new NotImplementedException();
         }
 
-        private void InsertAscii(object sender, RoutedEventArgs e)
+        private void EncodeText(object sender, RoutedEventArgs e)
         {
-            InsertAsciiWindow iaw = new InsertAsciiWindow();
+            EncodeTextWindow iaw = new EncodeTextWindow();
             bool? res = iaw.ShowDialog();
             if (res == true)
             {
-                InsertAsciiViewModel iavm = iaw.DataContext as InsertAsciiViewModel;
-                byte[] encoded = Encoding.ASCII.GetBytes(iavm.Text);
+                EncodeTextViewModel iavm = iaw.DataContext as EncodeTextViewModel;
+                Encoding enc = iavm.AvailableEncodings[iavm.SelectedEncIndex];
+                byte[] encoded = enc.GetBytes(iavm.Text);
                 string hexString = encoded.ToHex();
 
                 // Insert the encoded ASCII bytes after the current caret position

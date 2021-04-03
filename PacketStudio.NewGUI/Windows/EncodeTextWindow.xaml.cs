@@ -3,11 +3,11 @@
 namespace PacketStudio.NewGUI.Windows
 {
     /// <summary>
-    /// Interaction logic for InsertAsciiWindow.xaml
+    /// Interaction logic for EncodeTextWindow.xaml
     /// </summary>
-    public partial class InsertAsciiWindow : RibbonWindow
+    public partial class EncodeTextWindow : RibbonWindow
     {
-        public InsertAsciiWindow()
+        public EncodeTextWindow()
         {
             InitializeComponent();
         }
