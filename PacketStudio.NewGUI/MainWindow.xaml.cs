@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -92,6 +92,11 @@ namespace PacketStudio.NewGUI
                 }
 
                 WiresharkDir = finderViewModel.SelectedItem;
+                
+                // Also save in settings for next runs
+                Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
+                Settings.Default.Save();
+
             }
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
