@@ -70,8 +70,7 @@ namespace PacketStudio.NewGUI
         }
         private void SessionPacketPropertyChangedCallback(DependencyPropertyChangedEventArgs e)
         {
-            var newPacket = e.NewValue as PacketSaveDataNG;
-            if (newPacket != null)
+            if (e.NewValue is PacketSaveDataNG newPacket)
             {
                 // Getting the right listbox item of the "packet types list"
                 var listItem = _streamTypeToListItems[newPacket.Type];

@@ -77,8 +77,7 @@ namespace PacketDotNet
       {
         if (this.PayloadChunks.Count > 1)
           throw new InvalidOperationException("Cannot set single payload chunk to Sctp packet. Packet currently has multiple chunks.");
-        SctpChunk sctpChunk = value as SctpChunk;
-        if (sctpChunk == null)
+        if (!(value is SctpChunk sctpChunk))
           throw new ArgumentException("Can not set the PayloadPacket of a SctpPacket to an object which isn't a SctpChunk.");
         this.PayloadChunks = new List<SctpChunk>()
         {
@@ -100,11 +99,9 @@ namespace PacketDotNet
 
     public SctpPacket(ByteArraySegment bas)
     {
-      this.Header = new ByteArraySegment(bas);
-      this.Header.Length = SctpFields.HeaderLength;
-      List<SctpChunk> foundSctpChunks;
+        this.Header = new ByteArraySegment(bas) {Length = SctpFields.HeaderLength};
         PacketOrByteArraySegment parsed =
-            SctpPacket.ParseEncapsulatedBytes(this.Header, (Packet) this, out foundSctpChunks);
+            SctpPacket.ParseEncapsulatedBytes(this.Header, (Packet) this, out var foundSctpChunks);
         this.PayloadPacketOrData = new LazySlim<PacketOrByteArraySegment>(()=> parsed);
       this.PayloadChunks = foundSctpChunks;
     }

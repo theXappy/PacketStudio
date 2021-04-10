@@ -101,8 +101,6 @@ namespace PacketStudio.NewGUI
                 //ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
             };
             tabItems.Add(new_model1);
-
-            var x = new_model1.SessionPacket;
         }
 
 

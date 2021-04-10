@@ -51,7 +51,8 @@ namespace PacketStudio.NewGUI
         private readonly SessionState _sessionState = new SessionState();
 
 
-        public static MainViewModel TabControlMainViewModel;
+        // TODO: Use data context from 'this'
+        public static MainViewModel TabControlMainViewModel { get; set;  }
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
 
         private int _livePreviewDelay;
@@ -106,7 +107,7 @@ namespace PacketStudio.NewGUI
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
             ApplyNewPreviewDelayValue();
 
-            hexEditor.Stream = new MemoryStream(new byte[0]);
+            hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
         }
 
         private void AddNewPacketTab(object sender, EventArgs e)
@@ -542,8 +543,8 @@ namespace PacketStudio.NewGUI
             string dirPath = Path.GetDirectoryName(ofd.FileName);
             if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
             {
-                string selectedPath = ofd.FileName;
                 // Update settings
+                Settings.Default.WiresharkDir = wsDir.WiresharkPath;
 
                 // Raise list updated "event"
                 WiresharkDir = wsDir;
@@ -620,7 +621,7 @@ namespace PacketStudio.NewGUI
             }
             else // Key ip UP
             {
-                next = _applicationMenu.Items[_applicationMenu.Items.Count - 1] as MenuButton;
+                next = _applicationMenu.Items[^1] as MenuButton;
                 for (int i = 1; i < _applicationMenu.Items.Count; i++)
                 {
                     var candidate = _applicationMenu.Items[i] as MenuButton;
@@ -696,7 +697,6 @@ namespace PacketStudio.NewGUI
                 // Insert the encoded ASCII bytes after the current caret position
                 int pos = CurrentTabItemModel.CaretPosition;
 
-                int indx = tabControl.SelectedIndex;
                 string newPacketData = CurrentTabItemModel.Content.Insert(pos, hexString);
                 CurrentTabItemModel.Content = newPacketData;
                 CurrentTabItemModel.CaretPosition = pos + hexString.Length;
@@ -712,8 +712,7 @@ namespace PacketStudio.NewGUI
         private void PacketDefiner_OnCaretPositionChanged(object sender, EventArgs e)
         {
             PacketDefiner pd = sender as PacketDefiner;
-            TabItemViewModel tivm = pd.DataContext as TabItemViewModel;
-            if (tivm != null)
+            if (pd.DataContext is TabItemViewModel tivm)
                 tivm.CaretPosition = pd.CaretPosition;
 
         }
