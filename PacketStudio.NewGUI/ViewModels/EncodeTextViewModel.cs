@@ -17,7 +17,7 @@ namespace PacketStudio.NewGUI
 
         public EncodeTextViewModel()
         {
-            AvailableEncodings = new ObservableCollection<Encoding>(new[] { Encoding.ASCII, Encoding.Unicode, Encoding.BigEndianUnicode, Encoding.UTF8, Encoding.UTF7, Encoding.UTF32 });
+            AvailableEncodings = new ObservableCollection<Encoding>(new[] { Encoding.ASCII, Encoding.Unicode, Encoding.BigEndianUnicode, Encoding.UTF8, Encoding.UTF32 });
         }
     }
 }

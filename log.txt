@@ -1,0 +1,343 @@
+2021-04-10 18:52:53.343 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.104\
+2021-04-10 18:52:53.582 +03:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-10 18:53:01.975 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-04-10 18:55:15.668 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.104\
+2021-04-10 18:55:15.695 +03:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-10 18:55:17.793 +03:00 [INF] Initializing upgrade step Select an entrypoint
+2021-04-10 18:55:20.302 +03:00 [INF] Applying upgrade step Select an entrypoint
+2021-04-10 18:55:27.326 +03:00 [INF] Upgrade step Select an entrypoint applied successfully
+2021-04-10 18:55:31.683 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-10 18:55:39.206 +03:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-10 18:56:00.972 +03:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-10 18:56:05.570 +03:00 [INF] Initializing upgrade step Back up project
+2021-04-10 18:56:27.074 +03:00 [INF] Skipping upgrade step Back up project
+2021-04-10 18:56:27.076 +03:00 [INF] Upgrade step Back up project skipped
+2021-04-10 18:56:28.674 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-10 18:56:34.016 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-10 18:56:34.020 +03:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-10 18:56:35.174 +03:00 [INF] [try-convert] C:\git\PacketStudio\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-04-10 18:56:37.900 +03:00 [INF] [try-convert] Conversion complete!
+2021-04-10 18:56:38.641 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-10 18:56:42.847 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-10 18:56:42.876 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-10 18:56:45.022 +03:00 [INF] Marking package NUnit for removal because it appears to be a transitive dependency
+2021-04-10 18:56:45.036 +03:00 [INF] Marking package System.Runtime.CompilerServices.Unsafe for removal because it appears to be a transitive dependency
+2021-04-10 18:56:45.132 +03:00 [INF] Marking assembly reference System.Configuration for removal based on package mapping configuration System.Configuration
+2021-04-10 18:56:45.137 +03:00 [INF] Adding package System.Configuration.ConfigurationManager based on package mapping configuration System.Configuration
+2021-04-10 18:56:46.367 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-10 18:56:46.374 +03:00 [INF] References to be removed:
+System.Configuration
+2021-04-10 18:56:46.376 +03:00 [INF] Packages to be removed:
+NUnit, Version=2.6.4
+System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 18:56:46.376 +03:00 [INF] Packages to be addded:
+System.Configuration.ConfigurationManager, Version=5.0.0
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 18:57:12.998 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-10 18:57:13.004 +03:00 [INF] Removing outdated assembly reference: System.Configuration
+2021-04-10 18:57:13.007 +03:00 [INF] Removing outdated package reference: NUnit, Version=2.6.4
+2021-04-10 18:57:13.008 +03:00 [INF] Removing outdated package reference: System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 18:57:13.010 +03:00 [INF] Adding package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 18:57:13.011 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 18:57:19.120 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-10 18:57:20.989 +03:00 [INF] Initializing upgrade step Update TFM
+2021-04-10 18:57:20.993 +03:00 [INF] TFM needs updated to net5.0
+2021-04-10 18:57:25.079 +03:00 [INF] Applying upgrade step Update TFM
+2021-04-10 18:57:33.422 +03:00 [INF] Updated TFM to net5.0
+2021-04-10 18:57:33.422 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-10 18:57:40.614 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-10 18:57:42.175 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-04-10 18:57:42.178 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-04-10 18:57:44.345 +03:00 [INF] Marking package PcapngFile, Version=1.0.4 for removal because it doesn't support the target framework but a newer version (1.0.5) does
+2021-04-10 18:57:44.767 +03:00 [WRN] No version of PcapngUtils found that supports ["net5.0"]; leaving unchanged
+2021-04-10 18:57:44.784 +03:00 [INF] References to be removed:
+System.Web
+2021-04-10 18:57:44.785 +03:00 [INF] Packages to be removed:
+PcapngFile, Version=1.0.4
+2021-04-10 18:57:44.786 +03:00 [INF] Packages to be addded:
+PcapngFile, Version=1.0.5
+2021-04-10 18:57:44.786 +03:00 [INF] Framework references to be addded:
+Microsoft.AspNetCore.App
+2021-04-10 18:57:48.914 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-10 18:57:48.915 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-04-10 18:57:48.916 +03:00 [INF] Removing outdated package reference: PcapngFile, Version=1.0.4
+2021-04-10 18:57:48.917 +03:00 [INF] Adding package reference: PcapngFile, Version=1.0.5
+2021-04-10 18:57:48.917 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-04-10 18:57:54.537 +03:00 [WRN] No version of PcapngUtils found that supports ["net5.0"]; leaving unchanged
+2021-04-10 18:57:54.540 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-10 18:58:07.975 +03:00 [INF] Initializing upgrade step Add template files
+2021-04-10 18:58:08.020 +03:00 [INF] 0 expected template items needed
+2021-04-10 18:58:08.022 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-10 18:58:08.048 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-04-10 18:58:08.055 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-10 18:58:08.058 +03:00 [INF] Initializing upgrade step Update C# source
+2021-04-10 18:58:09.894 +03:00 [INF] Initializing upgrade step Move to next project
+2021-04-10 19:04:06.969 +03:00 [INF] Saving upgrade progress file at C:\git\PacketStudio\.upgrade-assistant
+2021-04-10 19:04:08.715 +03:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.104\
+2021-04-10 19:04:08.743 +03:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-10 19:04:10.930 +03:00 [INF] Loading upgrade progress file at C:\git\PacketStudio\.upgrade-assistant
+2021-04-10 19:04:10.969 +03:00 [INF] Initializing upgrade step Back up project
+2021-04-10 19:04:38.007 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-10 19:04:49.850 +03:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-10 19:05:00.385 +03:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-10 19:05:03.798 +03:00 [INF] Initializing upgrade step Back up project
+2021-04-10 19:05:08.503 +03:00 [INF] Skipping upgrade step Back up project
+2021-04-10 19:05:08.504 +03:00 [INF] Upgrade step Back up project skipped
+2021-04-10 19:05:10.025 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-10 19:05:12.681 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-10 19:05:12.684 +03:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-10 19:05:13.280 +03:00 [INF] [try-convert] C:\git\PacketStudio\PacketStudio.Core\PacketStudio.Core.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-04-10 19:05:16.263 +03:00 [INF] [try-convert] Conversion complete!
+2021-04-10 19:05:17.000 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-10 19:05:20.461 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-10 19:05:44.681 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-10 19:05:46.476 +03:00 [INF] Marking package Microsoft.Bcl.AsyncInterfaces for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.483 +03:00 [INF] Marking package System.Buffers for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.487 +03:00 [INF] Marking package System.Runtime.CompilerServices.Unsafe for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.489 +03:00 [INF] Marking package System.Runtime.InteropServices.RuntimeInformation for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.510 +03:00 [INF] Marking package System.Threading.Tasks.Extensions for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.513 +03:00 [INF] Marking package System.ValueTuple for removal because it appears to be a transitive dependency
+2021-04-10 19:05:46.550 +03:00 [INF] Marking assembly reference System.Configuration for removal based on package mapping configuration System.Configuration
+2021-04-10 19:05:46.553 +03:00 [INF] Adding package System.Configuration.ConfigurationManager based on package mapping configuration System.Configuration
+2021-04-10 19:05:46.791 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-10 19:05:46.800 +03:00 [INF] References to be removed:
+System.Configuration
+2021-04-10 19:05:46.802 +03:00 [INF] Packages to be removed:
+Microsoft.Bcl.AsyncInterfaces, Version=1.1.1
+System.Buffers, Version=4.5.1
+System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+System.Threading.Tasks.Extensions, Version=4.5.4
+System.ValueTuple, Version=4.5.0
+2021-04-10 19:05:46.805 +03:00 [INF] Packages to be addded:
+System.Configuration.ConfigurationManager, Version=5.0.0
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:05:48.780 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-10 19:05:48.790 +03:00 [INF] Removing outdated assembly reference: System.Configuration
+2021-04-10 19:05:48.794 +03:00 [INF] Removing outdated package reference: Microsoft.Bcl.AsyncInterfaces, Version=1.1.1
+2021-04-10 19:05:48.795 +03:00 [INF] Removing outdated package reference: System.Buffers, Version=4.5.1
+2021-04-10 19:05:48.795 +03:00 [INF] Removing outdated package reference: System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 19:05:48.796 +03:00 [INF] Removing outdated package reference: System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+2021-04-10 19:05:48.797 +03:00 [INF] Removing outdated package reference: System.Threading.Tasks.Extensions, Version=4.5.4
+2021-04-10 19:05:48.798 +03:00 [INF] Removing outdated package reference: System.ValueTuple, Version=4.5.0
+2021-04-10 19:05:48.801 +03:00 [INF] Adding package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 19:05:48.802 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:05:52.615 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-10 19:05:53.930 +03:00 [INF] Initializing upgrade step Update TFM
+2021-04-10 19:05:53.974 +03:00 [INF] TFM needs updated to net5.0
+2021-04-10 19:05:55.409 +03:00 [INF] Applying upgrade step Update TFM
+2021-04-10 19:05:59.779 +03:00 [INF] Updated TFM to net5.0
+2021-04-10 19:05:59.784 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-10 19:05:59.845 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-10 19:06:01.952 +03:00 [INF] Marking package log4net for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.955 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.959 +03:00 [INF] Marking package Newtonsoft.Json for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.962 +03:00 [INF] Marking package PacketDotNet for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.964 +03:00 [INF] Marking package SharpPcap for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.966 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-04-10 19:06:01.970 +03:00 [INF] Marking package System.Configuration.ConfigurationManager for removal because it appears to be a transitive dependency
+2021-04-10 19:06:02.002 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-04-10 19:06:02.003 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-04-10 19:06:02.065 +03:00 [INF] References to be removed:
+System.Web
+2021-04-10 19:06:02.074 +03:00 [INF] Packages to be removed:
+log4net, Version=2.0.12
+Microsoft.CSharp, Version=4.7.0
+Newtonsoft.Json, Version=11.0.2
+PacketDotNet, Version=1.0.5
+SharpPcap, Version=5.1.0
+System.Data.DataSetExtensions, Version=4.5.0
+System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 19:06:02.077 +03:00 [INF] Framework references to be addded:
+Microsoft.AspNetCore.App
+2021-04-10 19:06:02.152 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-10 19:06:02.154 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-04-10 19:06:02.155 +03:00 [INF] Removing outdated package reference: log4net, Version=2.0.12
+2021-04-10 19:06:02.156 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-04-10 19:06:02.161 +03:00 [INF] Removing outdated package reference: Newtonsoft.Json, Version=11.0.2
+2021-04-10 19:06:02.171 +03:00 [INF] Removing outdated package reference: PacketDotNet, Version=1.0.5
+2021-04-10 19:06:02.172 +03:00 [INF] Removing outdated package reference: SharpPcap, Version=5.1.0
+2021-04-10 19:06:02.176 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-04-10 19:06:02.187 +03:00 [INF] Removing outdated package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 19:06:02.191 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-04-10 19:06:05.487 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-10 19:06:05.593 +03:00 [INF] Initializing upgrade step Add template files
+2021-04-10 19:06:05.652 +03:00 [INF] 0 expected template items needed
+2021-04-10 19:06:05.653 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-10 19:06:05.686 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-04-10 19:06:05.697 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-10 19:06:05.702 +03:00 [INF] Initializing upgrade step Update C# source
+2021-04-10 19:06:07.949 +03:00 [INF] Initializing upgrade step Move to next project
+2021-04-10 19:06:10.569 +03:00 [INF] Applying upgrade step Move to next project
+2021-04-10 19:06:10.572 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-04-10 19:07:10.992 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-10 19:07:12.781 +03:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-10 19:07:15.280 +03:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-10 19:07:17.163 +03:00 [INF] Initializing upgrade step Back up project
+2021-04-10 19:07:36.438 +03:00 [INF] Skipping upgrade step Back up project
+2021-04-10 19:07:36.439 +03:00 [INF] Upgrade step Back up project skipped
+2021-04-10 19:07:38.232 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-10 19:07:39.280 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-10 19:07:39.282 +03:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-10 19:07:41.960 +03:00 [INF] [try-convert] Conversion complete!
+2021-04-10 19:07:42.819 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-10 19:07:44.667 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-10 19:07:44.726 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-10 19:07:46.432 +03:00 [INF] Marking package System.Runtime.CompilerServices.Unsafe for removal because it appears to be a transitive dependency
+2021-04-10 19:07:46.463 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-10 19:07:46.479 +03:00 [INF] Packages to be removed:
+System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 19:07:46.487 +03:00 [INF] Packages to be addded:
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:07:48.270 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-10 19:07:48.272 +03:00 [INF] Removing outdated package reference: System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 19:07:48.280 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:07:51.045 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-10 19:07:52.295 +03:00 [INF] Initializing upgrade step Update TFM
+2021-04-10 19:07:52.301 +03:00 [INF] TFM needs updated to netstandard2.0
+2021-04-10 19:07:52.983 +03:00 [INF] Applying upgrade step Update TFM
+2021-04-10 19:07:55.492 +03:00 [INF] Updated TFM to netstandard2.0
+2021-04-10 19:07:55.498 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-10 19:07:55.547 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-10 19:07:57.321 +03:00 [INF] No package updates needed
+2021-04-10 19:07:57.330 +03:00 [INF] Initializing upgrade step Add template files
+2021-04-10 19:07:57.333 +03:00 [INF] 0 expected template items needed
+2021-04-10 19:07:57.347 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-10 19:07:57.352 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-04-10 19:07:57.362 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-10 19:07:57.367 +03:00 [INF] Initializing upgrade step Update C# source
+2021-04-10 19:07:57.520 +03:00 [INF] Initializing upgrade step Move to next project
+2021-04-10 19:07:59.908 +03:00 [INF] Applying upgrade step Move to next project
+2021-04-10 19:07:59.913 +03:00 [INF] Upgrade step Move to next project applied successfully
+2021-04-10 19:08:01.887 +03:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-10 19:08:22.713 +03:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-10 19:08:27.237 +03:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-10 19:08:30.884 +03:00 [INF] Initializing upgrade step Back up project
+2021-04-10 19:08:41.628 +03:00 [INF] Applying upgrade step Back up project
+2021-04-10 19:08:48.128 +03:00 [INF] Backing up C:\git\PacketStudio\PacketStudio.NewGUI to C:\git\PacketStudio\PacketStudio.NewGUI.backup
+2021-04-10 19:08:55.842 +03:00 [INF] Project backed up to C:\git\PacketStudio\PacketStudio.NewGUI.backup
+2021-04-10 19:08:55.842 +03:00 [INF] Upgrade step Back up project applied successfully
+2021-04-10 19:10:41.958 +03:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-10 19:10:43.628 +03:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-10 19:10:43.628 +03:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-10 19:10:44.228 +03:00 [INF] [try-convert] C:\git\PacketStudio\PacketStudio.NewGUI\PacketStudio.NewGUI.csproj contains a reference to System.Web, which is not supported on .NET Core. You may have significant work ahead of you to fully port this project.
+2021-04-10 19:10:44.228 +03:00 [INF] [try-convert] C:\git\PacketStudio\PacketStudio.NewGUI\PacketStudio.NewGUI.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-04-10 19:10:46.979 +03:00 [INF] [try-convert] Conversion complete!
+2021-04-10 19:10:47.775 +03:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-10 19:10:51.079 +03:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-10 19:11:31.766 +03:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-10 19:11:34.325 +03:00 [INF] Marking package log4net for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.337 +03:00 [INF] Marking package Microsoft.Bcl.AsyncInterfaces for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.341 +03:00 [INF] Marking package Syncfusion.Compression.Base for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.343 +03:00 [INF] Marking package Syncfusion.DocIO.Wpf for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.349 +03:00 [INF] Marking package Syncfusion.GridCommon.Wpf for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.351 +03:00 [INF] Marking package Syncfusion.Licensing for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.352 +03:00 [INF] Marking package Syncfusion.OfficeChart.Base for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.354 +03:00 [INF] Marking package Syncfusion.SfRichTextBoxAdv.WPF for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.357 +03:00 [INF] Marking package Syncfusion.SfSkinManager.WPF for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.362 +03:00 [INF] Marking package Syncfusion.Shared.WPF for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.364 +03:00 [INF] Marking package Syncfusion.Shared.WPF.Classic for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.407 +03:00 [INF] Marking package Syncfusion.Tools.WPF for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.411 +03:00 [INF] Marking package System.Buffers for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.415 +03:00 [INF] Marking package System.Runtime.InteropServices.RuntimeInformation for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.416 +03:00 [INF] Marking package System.Threading.Tasks.Extensions for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.419 +03:00 [INF] Marking package System.ValueTuple for removal because it appears to be a transitive dependency
+2021-04-10 19:11:34.425 +03:00 [INF] Marking assembly reference System.Configuration for removal based on package mapping configuration System.Configuration
+2021-04-10 19:11:34.425 +03:00 [INF] Adding package System.Configuration.ConfigurationManager based on package mapping configuration System.Configuration
+2021-04-10 19:11:34.675 +03:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-10 19:11:34.677 +03:00 [INF] References to be removed:
+System.Configuration
+2021-04-10 19:11:34.677 +03:00 [INF] Packages to be removed:
+log4net, Version=2.0.12
+Microsoft.Bcl.AsyncInterfaces, Version=1.1.1
+Syncfusion.Compression.Base, Version=18.4.0.31
+Syncfusion.DocIO.Wpf, Version=18.4.0.31
+Syncfusion.GridCommon.Wpf, Version=18.4.0.31
+Syncfusion.Licensing, Version=18.4.0.31
+Syncfusion.OfficeChart.Base, Version=18.4.0.31
+Syncfusion.SfRichTextBoxAdv.WPF, Version=18.4.0.31
+Syncfusion.SfSkinManager.WPF, Version=18.4.0.31
+Syncfusion.Shared.WPF, Version=18.4.0.31
+Syncfusion.Shared.WPF.Classic, Version=18.4.0.31
+Syncfusion.Tools.WPF, Version=18.4.0.31
+System.Buffers, Version=4.5.1
+System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+System.Threading.Tasks.Extensions, Version=4.5.4
+System.ValueTuple, Version=4.5.0
+2021-04-10 19:11:34.678 +03:00 [INF] Packages to be addded:
+System.Configuration.ConfigurationManager, Version=5.0.0
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:11:37.538 +03:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-10 19:11:37.538 +03:00 [INF] Removing outdated assembly reference: System.Configuration
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: log4net, Version=2.0.12
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Microsoft.Bcl.AsyncInterfaces, Version=1.1.1
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.Compression.Base, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.DocIO.Wpf, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.GridCommon.Wpf, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.Licensing, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.OfficeChart.Base, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.SfRichTextBoxAdv.WPF, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.SfSkinManager.WPF, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.Shared.WPF, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.Shared.WPF.Classic, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: Syncfusion.Tools.WPF, Version=18.4.0.31
+2021-04-10 19:11:37.539 +03:00 [INF] Removing outdated package reference: System.Buffers, Version=4.5.1
+2021-04-10 19:11:37.540 +03:00 [INF] Removing outdated package reference: System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+2021-04-10 19:11:37.540 +03:00 [INF] Removing outdated package reference: System.Threading.Tasks.Extensions, Version=4.5.4
+2021-04-10 19:11:37.540 +03:00 [INF] Removing outdated package reference: System.ValueTuple, Version=4.5.0
+2021-04-10 19:11:37.540 +03:00 [INF] Adding package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 19:11:37.540 +03:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-10 19:11:40.686 +03:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-10 19:11:47.105 +03:00 [INF] Initializing upgrade step Update TFM
+2021-04-10 19:11:47.178 +03:00 [INF] TFM needs updated to net5.0-windows
+2021-04-10 19:11:47.842 +03:00 [INF] Applying upgrade step Update TFM
+2021-04-10 19:11:59.605 +03:00 [INF] Updated TFM to net5.0-windows
+2021-04-10 19:11:59.605 +03:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-10 19:12:09.001 +03:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-10 19:12:11.139 +03:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.147 +03:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.148 +03:00 [INF] Marking package System.Management for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.149 +03:00 [INF] Marking package System.Configuration.ConfigurationManager for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.152 +03:00 [INF] Marking package CliWrap for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.218 +03:00 [INF] Marking package System.Runtime.CompilerServices.Unsafe for removal because it appears to be a transitive dependency
+2021-04-10 19:12:11.222 +03:00 [INF] Marking assembly reference System.Web for removal based on package mapping configuration ASP.NET
+2021-04-10 19:12:11.222 +03:00 [INF] Adding framework reference Microsoft.AspNetCore.App based on package mapping configuration ASP.NET
+2021-04-10 19:12:12.126 +03:00 [WRN] No version of System.Windows.Interactivity.WPF found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-10 19:12:14.335 +03:00 [WRN] No version of WPFHexaEditor found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-10 19:12:15.346 +03:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-04-10 19:12:15.354 +03:00 [INF] References to be removed:
+System.Web
+2021-04-10 19:12:15.354 +03:00 [INF] Packages to be removed:
+Microsoft.CSharp, Version=4.7.0
+System.Data.DataSetExtensions, Version=4.5.0
+System.Management, Version=5.0.0
+System.Configuration.ConfigurationManager, Version=5.0.0
+CliWrap, Version=3.2.3
+System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 19:12:15.354 +03:00 [INF] Packages to be addded:
+Microsoft.Windows.Compatibility, Version=5.0.2
+2021-04-10 19:12:15.354 +03:00 [INF] Framework references to be addded:
+Microsoft.AspNetCore.App
+2021-04-10 19:12:15.380 +03:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated assembly reference: System.Web
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: System.Management, Version=5.0.0
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: CliWrap, Version=3.2.3
+2021-04-10 19:12:15.380 +03:00 [INF] Removing outdated package reference: System.Runtime.CompilerServices.Unsafe, Version=4.7.0
+2021-04-10 19:12:15.380 +03:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-04-10 19:12:15.381 +03:00 [INF] Adding framework reference: Microsoft.AspNetCore.App
+2021-04-10 19:12:26.355 +03:00 [WRN] No version of System.Windows.Interactivity.WPF found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-10 19:12:26.369 +03:00 [WRN] No version of WPFHexaEditor found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-10 19:12:26.416 +03:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-10 19:12:26.455 +03:00 [INF] Initializing upgrade step Add template files
+2021-04-10 19:12:26.455 +03:00 [INF] 0 expected template items needed
+2021-04-10 19:12:26.456 +03:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-10 19:12:26.462 +03:00 [INF] Found 0 app settings for upgrade: 
+2021-04-10 19:12:26.462 +03:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-10 19:12:26.468 +03:00 [INF] Initializing upgrade step Update C# source
+2021-04-10 19:12:29.801 +03:00 [INF] Initializing upgrade step Move to next project

@@ -141,24 +141,22 @@ namespace PacketStudio.NewGUI
                 // To overcome this I 'enqueue' the update of the hexEditor after the UI thread finishes handling 
                 // the current event. This is done by the 'BeginInvoke' call.
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                 {
-                     using (var d = Dispatcher.DisableProcessing())
-                     {
-                         hexEditor.Visibility = Visibility.Hidden;
-                         try
-                         {
-                             hexEditor.Stream = new MemoryStream(bytes);
-                         }
-                         catch (InvalidOperationException)
-                         {
-                             // Don't care
-                         }
+                {
+                    using var d = Dispatcher.DisableProcessing();
+                    hexEditor.Visibility = Visibility.Hidden;
+                    try
+                    {
+                        hexEditor.Stream = new MemoryStream(bytes);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Don't care
+                    }
 
-                         hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                         hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                         hexEditor.Visibility = Visibility.Visible;
-                     }
-                 }));
+                    hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                    hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                    hexEditor.Visibility = Visibility.Visible;
+                }));
 
                 // Update Tab's MainViewModel
                 CurrentTabItemModel.IsValid = true;
@@ -179,15 +177,13 @@ namespace PacketStudio.NewGUI
                 // the caret in the PacketDefiner textbox might not update
                 // (if the textbox triggered this event)
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-               {
-                   using (var d = Dispatcher.DisableProcessing())
-                   {
-                       hexEditor.Visibility = Visibility.Hidden;
-                       hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
-                       hexEditor.ForegroundSecondColor = hexEditor.Foreground;
-                       hexEditor.Visibility = Visibility.Visible;
-                   }
-               }));
+                {
+                    using var d = Dispatcher.DisableProcessing();
+                    hexEditor.Visibility = Visibility.Hidden;
+                    hexEditor.Foreground = new SolidColorBrush(Color.FromRgb(135, 135, 135));
+                    hexEditor.ForegroundSecondColor = hexEditor.Foreground;
+                    hexEditor.Visibility = Visibility.Visible;
+                }));
             }
         }
 

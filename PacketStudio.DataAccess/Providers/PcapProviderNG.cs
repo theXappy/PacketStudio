@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Haukcode.PcapngUtils.Common;
+using Haukcode.PcapngUtils.Pcap;
 using PacketStudio.DataAccess.SaveData;
-using PcapngUtils.Common;
-using PcapngUtils.Pcap;
 
 namespace PacketStudio.DataAccess.Providers
 {
@@ -11,7 +11,7 @@ namespace PacketStudio.DataAccess.Providers
     {
 
         private string _fileName;
-        private PcapngUtils.Pcap.PcapReader pReader;
+        private Haukcode.PcapngUtils.Pcap.PcapReader pReader;
 
         public PcapProviderNG(string fileName)
         {

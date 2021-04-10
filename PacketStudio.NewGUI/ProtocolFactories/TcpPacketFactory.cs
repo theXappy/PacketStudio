@@ -11,7 +11,7 @@ namespace PacketStudio.NewGUI
         public TempPacketSaveData GetPacket(byte[] payload, int streamId)
         {
             PhysicalAddress emptyAddress = PhysicalAddress.Parse("000000000000");
-            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetPacketType.IPv4);
+            PacketDotNet.EthernetPacket etherPacket = new EthernetPacket(emptyAddress, emptyAddress, EthernetType.IPv4);
 
             bool flip = streamId < 0;
             streamId = Math.Abs(streamId);
@@ -25,7 +25,7 @@ namespace PacketStudio.NewGUI
                 sourceIp = destIp;
                 destIp = tempAddress;
             }
-            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { NextHeader = IPProtocolType.UDP };
+            IPv4Packet ipPacket = new IPv4Packet(sourceIp, destIp) { Protocol = ProtocolType.Udp };
             TcpPacket tcpPacket = new TcpPacket(1,1) { PayloadData = payload };
             ipPacket.PayloadPacket = tcpPacket;
             etherPacket.PayloadPacket = ipPacket;

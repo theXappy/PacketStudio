@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PcapngUtils.Common;
-using PcapngUtils.PcapNG;
-using PcapngUtils.PcapNG.BlockTypes;
-using PcapngUtils.PcapNG.CommonTypes;
-using PcapngUtils.PcapNG.OptionTypes;
+using Haukcode.PcapngUtils.Common;
+using Haukcode.PcapngUtils.PcapNG;
+using Haukcode.PcapngUtils.PcapNG.BlockTypes;
+using Haukcode.PcapngUtils.PcapNG.CommonTypes;
+using Haukcode.PcapngUtils.PcapNG.OptionTypes;
 
 namespace PacketStudio.DataAccess
 {
@@ -42,12 +42,12 @@ namespace PacketStudio.DataAccess
                 new HeaderWithInterfacesDescriptions(SectionHeaderBlock.GetEmptyHeader(false), ifaceDescBlock);
 
 
-            PcapngUtils.PcapNG.PcapNGWriter ngWriter = new PcapNGWriter(pcapngPath, new List<HeaderWithInterfacesDescriptions>() { hwid });
+            Haukcode.PcapngUtils.PcapNG.PcapNGWriter ngWriter = new PcapNGWriter(pcapngPath, new List<HeaderWithInterfacesDescriptions>() { hwid });
             foreach (TempPacketSaveData packet in packets)
             {
                 int interfaceId = linkLayerToFakeInterfaceId[(ushort)packet.LinkLayer];
                 byte[] packetData = packet.Data;
-                EnchantedPacketBlock epb = new EnchantedPacketBlock(interfaceId, tsh, packetData.Length, packetData, new EnchantedPacketOption());
+                EnhancedPacketBlock epb = new EnhancedPacketBlock(interfaceId, tsh, packetData.Length, packetData, new EnhancedPacketOption());
                 ngWriter.WritePacket(epb);
             }
             ngWriter.Dispose();
