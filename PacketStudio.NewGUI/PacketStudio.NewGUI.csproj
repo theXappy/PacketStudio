@@ -43,31 +43,31 @@
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Edit.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.SfRichTextRibbon.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Blend.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Lime.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.MaterialDark.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.MaterialDarkBlue.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.MaterialLight.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.MaterialLightBlue.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Metro.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2010Black.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2013DarkGray.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2013LightGray.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2013White.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2016Colorful.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2016DarkGray.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2016White.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2019Colorful.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2019DarkGray.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office2019HighContrast.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Office365.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.Saffron.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.VisualStudio2013.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Themes.VisualStudio2015.WPF" Version="18.4.0.31" />
-    <PackageReference Include="Syncfusion.Tools.WPF.Classic" Version="18.4.0.31" />
-    <PackageReference Include="WPFHexaEditor" Version="2.1.3" />
+    <PackageReference Include="Syncfusion.Edit.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.SfRichTextRibbon.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Blend.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Lime.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.MaterialDark.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.MaterialDarkBlue.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.MaterialLight.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.MaterialLightBlue.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Metro.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2010Black.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2013DarkGray.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2013LightGray.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2013White.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2016Colorful.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2016DarkGray.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2016White.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2019Colorful.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2019DarkGray.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office2019HighContrast.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Office365.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.Saffron.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.VisualStudio2013.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Themes.VisualStudio2015.WPF" Version="19.1.0.55" />
+    <PackageReference Include="Syncfusion.Tools.WPF.Classic" Version="19.1.0.55" />
+    <PackageReference Include="WPFHexaEditor" Version="2.1.6" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
