@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using System.Windows.Forms;
 using PacketStudio.Core;
+using PacketStudio.NewGUI.ViewModels;
 using Syncfusion.Windows.Tools.Controls;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.Windows
 {
     /// <summary>
     /// Interaction logic for WiresharkFinderWindow.xaml

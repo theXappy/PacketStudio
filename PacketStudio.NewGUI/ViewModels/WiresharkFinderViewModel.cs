@@ -4,7 +4,7 @@ using System.Linq;
 using PacketStudio.Core;
 using Syncfusion.Windows.Shared;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ViewModels
 {
     public class WiresharkFinderViewModel : NotificationObject
     {

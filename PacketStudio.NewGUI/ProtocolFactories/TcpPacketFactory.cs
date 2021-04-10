@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 using PacketDotNet;
 using PacketStudio.DataAccess;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ProtocolFactories
 {
     public class TcpPacketFactory
     {

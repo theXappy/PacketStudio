@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
@@ -12,7 +8,7 @@ using PacketStudio.DataAccess.SaveData;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ViewModels
 {
     public class MainViewModel : NotificationObject
     {

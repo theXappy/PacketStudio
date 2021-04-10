@@ -1,4 +1,4 @@
-﻿using PacketStudio.NewGUI.Annotations;
+﻿using PacketStudio.NewGUI.Properties;
 
 namespace PacketStudio.NewGUI
 {

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.Controls
 {
     /// <summary>
     /// Interaction logic for PacketTreeView.xaml

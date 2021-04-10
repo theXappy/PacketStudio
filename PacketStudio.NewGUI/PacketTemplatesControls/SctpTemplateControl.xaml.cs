@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
+using PacketStudio.NewGUI.ProtocolFactories;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {

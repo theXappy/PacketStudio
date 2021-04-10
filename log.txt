@@ -341,3 +341,4 @@ Microsoft.AspNetCore.App
 2021-04-10 19:12:26.462 +03:00 [INF] 0 web page namespace imports need upgraded: 
 2021-04-10 19:12:26.468 +03:00 [INF] Initializing upgrade step Update C# source
 2021-04-10 19:12:29.801 +03:00 [INF] Initializing upgrade step Move to next project
+2021-04-10 20:41:27.359 +03:00 [INF] Saving upgrade progress file at C:\git\PacketStudio\.upgrade-assistant

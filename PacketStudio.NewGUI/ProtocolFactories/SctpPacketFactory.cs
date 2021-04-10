@@ -7,7 +7,7 @@ using PacketDotNet.Sctp.Chunks;
 using PacketDotNet.Utils;
 using PacketStudio.DataAccess;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ProtocolFactories
 {
     public class SctpPacketFactory
     {

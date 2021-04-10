@@ -5,7 +5,7 @@ using System.Windows.Media;
 using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.Controls
 {
     /// <summary>
     /// Interaction logic for TabControlWrapper.xaml

@@ -17,7 +17,9 @@ using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.Saver;
+using PacketStudio.NewGUI.Controls;
 using PacketStudio.NewGUI.Properties;
+using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
 using Syncfusion.Windows.Tools.Controls;
 

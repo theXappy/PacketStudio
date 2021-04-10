@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Text;
-using PacketStudio.Core;
 using Syncfusion.Windows.Shared;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ViewModels
 {
     public class EncodeTextViewModel : NotificationObject
     {

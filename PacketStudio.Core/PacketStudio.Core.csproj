@@ -12,9 +12,6 @@
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.2.3" />
     <PackageReference Include="System.Management" Version="5.0.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.220602">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

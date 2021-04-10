@@ -12,11 +12,13 @@
         syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=Blend}"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
+        xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
+        xmlns:controls1="clr-namespace:PacketStudio.NewGUI.Controls"
         x:Class="PacketStudio.NewGUI.MainWindow"
         mc:Ignorable="d"
         Title="PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False">
     <controls:RibbonWindow.DataContext>
-        <newGui:MainViewModel/>
+        <viewModels:MainViewModel/>
     </controls:RibbonWindow.DataContext>
 
     <DockPanel>
@@ -453,7 +455,7 @@
         </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
-                <newGui:TabControlWrapper x:Name="tabControl"
+                <controls1:TabControlWrapper x:Name="tabControl"
                                           ItemsSource="{Binding TabItems}"
                                           NewButtonAlignment="First"
                                           IsNewButtonEnabled="True"
@@ -479,8 +481,8 @@
                             </Setter>
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
-                                    <DataTemplate DataType="{x:Type newGui:TabItemViewModel}">
-                                        <local:PacketDefiner
+                                    <DataTemplate DataType="{x:Type viewModels:TabItemViewModel}">
+                                        <controls1:PacketDefiner
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
                                                     Background="#323232"
@@ -500,7 +502,7 @@
                         </DataTemplate>
                     </syncfusion:TabControlExt.EditHeaderTemplate>
 
-                </newGui:TabControlWrapper>
+                </controls1:TabControlWrapper>
             </syncfusion:DockingManager.ClientControl>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
@@ -509,7 +511,7 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                <newGui:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
+                <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 

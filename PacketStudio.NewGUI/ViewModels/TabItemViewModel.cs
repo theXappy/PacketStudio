@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
-using Syncfusion.Windows.Shared;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

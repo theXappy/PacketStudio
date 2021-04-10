@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows.Documents;
 using PacketStudio.Core;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.WpfJokes
 {
     public class WiresharkDirListToStringConvert : IValueConverter
     {

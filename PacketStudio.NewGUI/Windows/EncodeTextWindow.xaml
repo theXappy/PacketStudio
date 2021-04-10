@@ -7,13 +7,14 @@
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
         xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
+        xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
         mc:Ignorable="d"
         Title="Insert ASCII" Height="280" Width="310"
         FocusManager.FocusedElement="{Binding ElementName=inputTextBox}"
         >
 
     <syncfusion:RibbonWindow.DataContext>
-        <newGui:EncodeTextViewModel/>
+        <viewModels:EncodeTextViewModel/>
     </syncfusion:RibbonWindow.DataContext>
     <syncfusion:RibbonWindow.Resources>
         <wpfJokes:EncodingToStringConverter x:Key="EncodingToStringConvert"/>

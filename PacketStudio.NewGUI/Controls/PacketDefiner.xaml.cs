@@ -4,10 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Threading;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -15,7 +13,7 @@ using PacketStudio.DataAccess.SaveData;
 using PacketStudio.NewGUI.PacketTemplatesControls;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace PacketStudio.NewGUI
+namespace PacketStudio.NewGUI.Controls
 {
     /// <summary>
     /// Interaction logic for PacketDefiner.xaml

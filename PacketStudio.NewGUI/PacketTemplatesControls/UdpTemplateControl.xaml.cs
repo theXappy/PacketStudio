@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
+using PacketStudio.NewGUI.ProtocolFactories;
 
 namespace PacketStudio.NewGUI.PacketTemplatesControls
 {
