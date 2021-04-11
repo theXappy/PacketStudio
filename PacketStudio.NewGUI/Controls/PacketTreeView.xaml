@@ -163,10 +163,5 @@
     </UserControl.Resources>
 
 
-    <TreeView x:Name="previewTree" FontFamily="Consolas" FontSize="12" Margin="0" Foreground="#FF000001" >
-        <TreeViewItem x:Name="placeholderTreeViewItem" Header="Placeholder" ToolTipService.IsEnabled="False" IsExpanded="True" >
-            <TreeViewItem Header="Placeholder2" ToolTipService.IsEnabled="False" >
-            </TreeViewItem>
-        </TreeViewItem>
-    </TreeView>
+    <TreeView x:Name="previewTree" FontFamily="Consolas" FontSize="12" Margin="0" Foreground="#FF000001" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 </UserControl>

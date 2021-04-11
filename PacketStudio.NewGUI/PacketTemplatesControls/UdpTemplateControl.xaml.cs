@@ -28,6 +28,14 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         public bool IsValidWithPayload(byte[] raw)
         {
+            // Assert we have a valid stream ID
+            if (String.IsNullOrWhiteSpace(this.streamTextbox.Text)) { 
+                return false;
+            }
+            if (!int.TryParse(this.streamTextbox.Text, out _)) {
+                return false;
+            }
+
             // Only restriction: payload can't be too long
             return raw.Length <= ushort.MaxValue;
         }
