@@ -419,10 +419,12 @@ namespace PacketStudio.NewGUI
             if (_sessionState.HasUnsavedChanges)
             {
                 // Prompt user about unsaved changes in current session
-                var userSelection = MessageBox.Show("Unsaved Changes Alert",
+                var userSelection = MessageBox.Show(
                     "You have unsaved changes in the current session.\r\n" +
                     "\r\n" +
-                    "Save changes?", MessageBoxButton.YesNoCancel);
+                    "Save changes?",
+                    "Unsaved Changes Alert",
+                    MessageBoxButton.YesNoCancel);
 
                 if (userSelection == MessageBoxResult.Cancel)
                 {
