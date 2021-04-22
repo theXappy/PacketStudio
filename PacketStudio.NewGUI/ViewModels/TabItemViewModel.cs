@@ -18,6 +18,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
     public class TabItemViewModel : ViewModelBase
     {
+        private HexStreamType packetType;
         private string content;
         private string header;
         private int caretPos;
@@ -108,6 +109,22 @@ namespace PacketStudio.NewGUI.ViewModels
                 OnPropertyChanged(nameof(Content));
             }
         }
+        public HexStreamType PacketType
+        {
+            get => packetType;
+            set
+            {
+                packetType = value;
+                OnPropertyChanged(nameof(PacketType));
+            }
+        }
+
+        public void Load(PacketSaveDataNG psd)
+        {
+            SessionPacket = psd;
+            Content = psd.PacketData;
+            PacketType = psd.Type;
+        }
 
         public void NormalizeHex()
         {
@@ -116,6 +133,8 @@ namespace PacketStudio.NewGUI.ViewModels
             if (data != null)
             {
                 SessionPacket = new PacketSaveDataNG(HexStreamType.Raw, expPacket.Data.ToHex());
+                Content = data.ToHex();
+                PacketType = HexStreamType.Raw;
             }
             else
             {

@@ -93,9 +93,8 @@ namespace PacketStudio.NewGUI.ViewModels
             {
                 Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
                 Content = $"",
-                SessionPacket = psdng,
-                //ExportPacket = new TempPacketSaveData(new byte[5],LinkLayerType.Ethernet)
             };
+            new_model1.Load(psdng);
             tabItems.Add(new_model1);
         }
 
