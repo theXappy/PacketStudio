@@ -1,15 +1,15 @@
 ﻿using System.IO;
+using System.Windows;
 using System.Windows.Forms;
 using PacketStudio.Core;
 using PacketStudio.NewGUI.ViewModels;
-using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI.Windows
 {
     /// <summary>
     /// Interaction logic for WiresharkFinderWindow.xaml
     /// </summary>
-    public partial class WiresharkFinderWindow : RibbonWindow
+    public partial class WiresharkFinderWindow : Window
     {
         public WiresharkFinderWindow()
         {

@@ -1,4 +1,4 @@
-﻿<syncfusion:RibbonWindow x:Class="PacketStudio.NewGUI.Windows.WiresharkFinderWindow"
+﻿<Window x:Class="PacketStudio.NewGUI.Windows.WiresharkFinderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,8 +7,8 @@
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:controls="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
-        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=Blend}"
         xmlns:newGui="clr-namespace:PacketStudio.NewGUI"
+        syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=Blend}"
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
         xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
         mc:Ignorable="d"
@@ -16,13 +16,13 @@
         Background="#4c4c4c"
         
         >
-    <syncfusion:RibbonWindow.DataContext>
+    <Window.DataContext>
         <viewModels:WiresharkFinderViewModel/>
-    </syncfusion:RibbonWindow.DataContext>
-    <syncfusion:RibbonWindow.Resources>
+    </Window.DataContext>
+    <Window.Resources>
         <wpfJokes:WiresharkDirToStringConvert x:Key="WsDirConvert"/>
         <wpfJokes:WiresharkDirListToStringConvert x:Key="WsDirListConvert"/>
-    </syncfusion:RibbonWindow.Resources>
+    </Window.Resources>
     <Grid>
         <DockPanel>
             <StackPanel DockPanel.Dock="Top">
@@ -45,4 +45,4 @@
             </Button>
         </DockPanel>
     </Grid>
-</syncfusion:RibbonWindow>
+</Window>
