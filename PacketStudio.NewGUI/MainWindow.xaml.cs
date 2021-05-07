@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
@@ -43,8 +45,7 @@ namespace PacketStudio.NewGUI
                 _wiresharkDirectory = value;
                 _wsInterOp = null;
                 _tsharkInterOp = null;
-                if (value != null)
-                {
+                if (value != null) {
                     _wsInterOp = new WiresharkInterop(value.WiresharkPath);
                     _tsharkInterOp = new TSharkInterop(value.TsharkPath);
                 }
@@ -55,7 +56,7 @@ namespace PacketStudio.NewGUI
 
 
         // TODO: Use data context from 'this'
-        public static MainViewModel TabControlMainViewModel { get; set;  }
+        public static MainViewModel TabControlMainViewModel { get; set; }
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
         private PacketDefiner CurrentPacketDefiner => WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
 
@@ -66,8 +67,7 @@ namespace PacketStudio.NewGUI
             set
             {
                 _livePreviewDelay = value;
-                if (previewDelayButton != null)
-                {
+                if (previewDelayButton != null) {
                     previewDelayButton.Label = "Preview Delay: " + LivePreviewDelay;
                 }
             }
@@ -79,24 +79,20 @@ namespace PacketStudio.NewGUI
             InitializeComponent();
 
             bool foundWsInSettings = SharksFinder.TryGetByPath(Settings.Default.WiresharkDir, out WiresharkDirectory dir);
-            if (foundWsInSettings)
-            {
+            if (foundWsInSettings) {
                 // Found wireshark in settings.
                 this.WiresharkDir = dir;
             }
-            else
-            {
+            else {
                 // No wireshark in settings, prompt user to select a version
                 WiresharkFinderWindow wfw = new WiresharkFinderWindow();
                 bool? userChoseWiresharkVersion = wfw.ShowDialog();
-                if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
-                {
+                if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value) {
                     Environment.Exit(1);
                 }
 
                 var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
-                if (finderViewModel == null)
-                {
+                if (finderViewModel == null) {
                     Environment.Exit(1);
                 }
 
@@ -126,8 +122,7 @@ namespace PacketStudio.NewGUI
 
             CurrentTabItemModel.SessionPacket = definer.SessionPacket;
 
-            if (definer.IsValid)
-            {
+            if (definer.IsValid) {
                 // Update HEX view
                 byte[] bytes = definer.ExportPacket.Data;
 
@@ -149,12 +144,10 @@ namespace PacketStudio.NewGUI
                 {
                     using var d = Dispatcher.DisableProcessing();
                     hexEditor.Visibility = Visibility.Hidden;
-                    try
-                    {
+                    try {
                         hexEditor.Stream = new MemoryStream(bytes);
                     }
-                    catch (InvalidOperationException)
-                    {
+                    catch (InvalidOperationException) {
                         // Don't care
                     }
 
@@ -168,13 +161,11 @@ namespace PacketStudio.NewGUI
                 CurrentTabItemModel.ExportPacket = definer.ExportPacket;
 
                 // Call Live Update
-                if (previewEnabledCheckbox.IsChecked == true)
-                {
+                if (previewEnabledCheckbox.IsChecked == true) {
                     Task.Delay(_livePreviewDelay).ContinueWith(task => UpdateLivePreview());
                 }
             }
-            else
-            {
+            else {
                 CurrentTabItemModel.IsValid = false;
                 CurrentTabItemModel.ExportPacket = null;
 
@@ -229,8 +220,7 @@ namespace PacketStudio.NewGUI
             Dispatcher.BeginInvoke((Action)(() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
                 .Wait();
 
-            if (packetBytes != null && packetBytes.Data.Length != 0)
-            {
+            if (packetBytes != null && packetBytes.Data.Length != 0) {
                 var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes);
                 XElement packetPdml = tsharkTask.Result;
                 packetTreeView.PopulatePacketTree(packetPdml);
@@ -247,8 +237,7 @@ namespace PacketStudio.NewGUI
         {
             bool packetValid = AssertCurrentPacketValid();
 
-            if (packetValid)
-            {
+            if (packetValid) {
                 byte[] packet = CurrentTabItemModel.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = string.Join(", ", bytesAsStrings);
@@ -264,8 +253,7 @@ namespace PacketStudio.NewGUI
         {
             bool packetValid = AssertCurrentPacketValid();
 
-            if (packetValid)
-            {
+            if (packetValid) {
                 byte[] packet = CurrentTabItemModel.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
@@ -282,14 +270,12 @@ namespace PacketStudio.NewGUI
         private bool AssertCurrentPacketValid()
         {
             TabItemViewModel currItem = CurrentTabItemModel;
-            if (currItem == null)
-            {
+            if (currItem == null) {
                 MessageBox.Show("Couldn't find current packet definer control.");
                 return false;
             }
 
-            if (!currItem.IsValid)
-            {
+            if (!currItem.IsValid) {
                 string error = currItem.ValidationError;
                 MessageBox.Show("Error in the packet definer: \r\n" + error);
                 return false;
@@ -323,13 +309,11 @@ namespace PacketStudio.NewGUI
 
         private void PreviewDelayTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
+            if (e.Key == Key.Enter) {
                 ApplyNewPreviewDelayValue();
                 e.Handled = true;
             }
-            else if (e.Key == Key.Escape)
-            {
+            else if (e.Key == Key.Escape) {
                 // Restoring last value
                 previewDelayTextBox.Text = LivePreviewDelay.ToString();
                 // Hiding textbox, showing button
@@ -341,12 +325,10 @@ namespace PacketStudio.NewGUI
         private void ApplyNewPreviewDelayValue()
         {
             string valueString = previewDelayTextBox.Text;
-            if (!int.TryParse(valueString, out var parsedValue))
-            {
+            if (!int.TryParse(valueString, out var parsedValue)) {
                 MessageBox.Show("Invalid preview delay value. Couldn't parse to an integer.");
             }
-            else
-            {
+            else {
                 // Note: Setting the value below also updates the label of the 'preview delay button'
                 LivePreviewDelay = parsedValue;
             }
@@ -358,12 +340,10 @@ namespace PacketStudio.NewGUI
 
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
-            try
-            {
+            try {
                 CurrentTabItemModel.NormalizeHex();
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 MessageBox.Show("Failed to normalize.\n" + exception.Message, "Error");
             }
         }
@@ -371,13 +351,11 @@ namespace PacketStudio.NewGUI
         private void PacketTreeView_OnSelectedItemChanged(object sender,
             PacketTreeView.PacketTreeSelectionChangedArgs e)
         {
-            if (e.BytesHiglightning == BytesHighlightning.Empty)
-            {
+            if (e.BytesHiglightning == BytesHighlightning.Empty) {
                 hexEditor.SelectionStop = -1;
                 hexEditor.SelectionStart = -1;
             }
-            else
-            {
+            else {
                 hexEditor.SelectionStart = e.BytesHiglightning.Offset;
                 hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
             }
@@ -387,8 +365,7 @@ namespace PacketStudio.NewGUI
         {
             var items = TabControlMainViewModel.TabItems;
             var invalidItems = items.Where(tabViewModel => !tabViewModel.IsValid);
-            if (invalidItems.Any())
-            {
+            if (invalidItems.Any()) {
                 string invalidItemsNames =
                     string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.Header}\""));
                 string error = "Can not export to Wireshark because some tabs contain invalid packet definitions.\n\n" +
@@ -407,8 +384,7 @@ namespace PacketStudio.NewGUI
             // (These will also take effect when we run TShark)
             wsSessionTask.CliTask.Task.ContinueWith(_ =>
             {
-                if (wsSessionTask.PreferencesChanged)
-                {
+                if (wsSessionTask.PreferencesChanged) {
                     UpdateLivePreview();
                 }
             });
@@ -420,8 +396,7 @@ namespace PacketStudio.NewGUI
         {
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} - OpenMenuItemClicked");
 
-            if (_sessionState.HasUnsavedChanges)
-            {
+            if (_sessionState.HasUnsavedChanges) {
                 // Prompt user about unsaved changes in current session
                 var userSelection = MessageBox.Show(
                     "You have unsaved changes in the current session.\r\n" +
@@ -430,19 +405,16 @@ namespace PacketStudio.NewGUI
                     "Unsaved Changes Alert",
                     MessageBoxButton.YesNoCancel);
 
-                if (userSelection == MessageBoxResult.Cancel)
-                {
+                if (userSelection == MessageBoxResult.Cancel) {
                     // User wants to stay in current session
                     return;
                 }
 
-                if (userSelection == MessageBoxResult.Yes)
-                {
+                if (userSelection == MessageBoxResult.Yes) {
                     // Save or Save As according to currently associated file
                     UserDecision finalSaveDecision = DoSave();
 
-                    if (finalSaveDecision == UserDecision.Cancel)
-                    {
+                    if (finalSaveDecision == UserDecision.Cancel) {
                         // User cancelled while saving - interpret as "stay in current session"
                         return;
                     }
@@ -460,21 +432,43 @@ namespace PacketStudio.NewGUI
             if (res != true) return;
 
             string filePath = ofd.FileName;
+            LoadFile(filePath);
+        }
+
+        private void LoadFile(string filePath)
+        {
             PacketsProvidersFactory ppf = new PacketsProvidersFactory();
-            var provider = ppf.Create(ofd.FileName);
-            using (Dispatcher.DisableProcessing())
-            {
+            var provider = ppf.Create(filePath);
+            using (Dispatcher.DisableProcessing()) {
                 _loading = true;
                 TabControlMainViewModel.LoadFile(provider);
                 _loading = false;
             }
 
             _sessionState.Reset();
-            if (filePath.EndsWith(".p2s"))
-            {
+            if (filePath.EndsWith(".p2s")) {
                 // Only 'associating' session if opened a p2s file. pcap/pcapng aren't treated like that.
-                _sessionState.AssociatedFilePath = ofd.FileName;
+                _sessionState.AssociatedFilePath = filePath;
             }
+
+            if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item=>item.Label == filePath)) {
+                // File already in recents list, nothing more to do...
+                return;
+            }
+
+            // Adding file to 'recent files' list in the app menu
+            var newMenuButton = new SimpleMenuButton()
+            {
+                Label = filePath,
+            };
+            newMenuButton.Click += RecentFileMenuItemClicked; 
+            _applicationMenu.MenuItems.Add(newMenuButton);
+        }
+
+        private void RecentFileMenuItemClicked(object sender, RoutedEventArgs e)
+        {
+            SimpleMenuButton smb = sender as SimpleMenuButton;
+            LoadFile(smb.Label);
         }
 
         // *************************************************
@@ -486,10 +480,8 @@ namespace PacketStudio.NewGUI
 
         private UserDecision DoSave()
         {
-            if (_sessionState.HasAssociatedFile)
-            {
-                if (_sessionState.HasUnsavedChanges)
-                {
+            if (_sessionState.HasAssociatedFile) {
+                if (_sessionState.HasUnsavedChanges) {
                     SaveSession(_sessionState.AssociatedFilePath);
                 }
                 // Else - Current state already saved to file, do nothing
@@ -536,12 +528,10 @@ namespace PacketStudio.NewGUI
             {
                 Filter = "Wireshark.exe|Wireshark.exe"
             };
-            try
-            {
+            try {
                 ofd.InitialDirectory = Path.GetDirectoryName(WiresharkDir.WiresharkPath);
             }
-            catch
-            {
+            catch {
                 // IDK...
             }
             bool? res = ofd.ShowDialog();
@@ -550,8 +540,7 @@ namespace PacketStudio.NewGUI
             if (!ofd.CheckFileExists) return;
 
             string dirPath = Path.GetDirectoryName(ofd.FileName);
-            if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
-            {
+            if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir)) {
                 // Update settings
                 Settings.Default.WiresharkDir = wsDir.WiresharkPath;
 
@@ -565,8 +554,7 @@ namespace PacketStudio.NewGUI
             // When closing last tab immediately open a new empty tab.
             int numTabs = tabControl.ItemsSource.OfType<object>().Count();
             Debug.WriteLine("Number of tabs: " + numTabs);
-            if (numTabs == 1)
-            {
+            if (numTabs == 1) {
                 e.Cancel = true;
                 TabControlMainViewModel.ResetItemsCollection();
             }
@@ -592,10 +580,8 @@ namespace PacketStudio.NewGUI
 
             MenuButton invokingButton = sender as MenuButton;
             Debug.WriteLine(e.Key);
-            if (e.Key == Key.Return || e.Key == Key.Enter)
-            {
-                switch (invokingButton.Name)
-                {
+            if (e.Key == Key.Return || e.Key == Key.Enter) {
+                switch (invokingButton.Name) {
                     case "newMenuButton":
                         NewSessionMenuItemClicked(sender, null);
                         break;
@@ -615,14 +601,11 @@ namespace PacketStudio.NewGUI
             }
 
             MenuButton next = null;
-            if (e.Key == Key.Down)
-            {
+            if (e.Key == Key.Down) {
                 next = _applicationMenu.Items[0] as MenuButton;
-                for (int i = 0; i < _applicationMenu.Items.Count - 1; i++)
-                {
+                for (int i = 0; i < _applicationMenu.Items.Count - 1; i++) {
                     var candidate = _applicationMenu.Items[i] as MenuButton;
-                    if (candidate == invokingButton)
-                    {
+                    if (candidate == invokingButton) {
                         next = _applicationMenu.Items[i + 1] as MenuButton;
                         break;
                     }
@@ -631,11 +614,9 @@ namespace PacketStudio.NewGUI
             else // Key ip UP
             {
                 next = _applicationMenu.Items[^1] as MenuButton;
-                for (int i = 1; i < _applicationMenu.Items.Count; i++)
-                {
+                for (int i = 1; i < _applicationMenu.Items.Count; i++) {
                     var candidate = _applicationMenu.Items[i] as MenuButton;
-                    if (candidate == invokingButton)
-                    {
+                    if (candidate == invokingButton) {
                         next = _applicationMenu.Items[i - 1] as MenuButton;
                         break;
                     }
@@ -650,27 +631,23 @@ namespace PacketStudio.NewGUI
 
         private void NewSessionMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            if (_sessionState.HasUnsavedChanges)
-            {
+            if (_sessionState.HasUnsavedChanges) {
                 // Prompt user about unsaved changes in current session
                 var userSelection = MessageBox.Show("Unsaved Changes Alert",
                     "You have unsaved changes in the current session.\r\n" +
                     "\r\n" +
                     "Save changes?", MessageBoxButton.YesNoCancel);
 
-                if (userSelection == MessageBoxResult.Cancel)
-                {
+                if (userSelection == MessageBoxResult.Cancel) {
                     // User wants to stay in current session
                     return;
                 }
 
-                if (userSelection == MessageBoxResult.Yes)
-                {
+                if (userSelection == MessageBoxResult.Yes) {
                     // Save or Save As according to currently associated file
                     UserDecision finalSaveDecision = DoSave();
 
-                    if (finalSaveDecision == UserDecision.Cancel)
-                    {
+                    if (finalSaveDecision == UserDecision.Cancel) {
                         // User cancelled while saving - interpret as "stay in current session"
                         return;
                     }
@@ -692,8 +669,7 @@ namespace PacketStudio.NewGUI
         {
             EncodeTextWindow iaw = new EncodeTextWindow();
             bool? res = iaw.ShowDialog();
-            if (res == true)
-            {
+            if (res == true) {
                 EncodeTextViewModel iavm = iaw.DataContext as EncodeTextViewModel;
                 Encoding enc = iavm.AvailableEncodings[iavm.SelectedEncIndex];
                 byte[] encoded = enc.GetBytes(iavm.Text);
@@ -717,6 +693,88 @@ namespace PacketStudio.NewGUI
 
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+        // Drag Drop P/Invoke Ugliness
+        const int WM_DROPFILES = 0x233;
+
+        [DllImport("shell32.dll")]
+        static extern void DragAcceptFiles(IntPtr hwnd, bool fAccept);
+
+        [DllImport("shell32.dll")]
+        static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out] StringBuilder filename, uint cch);
+
+        [DllImport("shell32.dll")]
+        static extern void DragFinish(IntPtr hDrop);
+
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            var helper = new WindowInteropHelper(this);
+            var hwnd = helper.Handle;
+
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+
+            DragAcceptFiles(hwnd, true);
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WM_DROPFILES) {
+                handled = true;
+                return HandleDropFiles(wParam);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        private IntPtr HandleDropFiles(IntPtr hDrop)
+        {
+            const int MAX_PATH = 260;
+
+            var count = DragQueryFile(hDrop, 0xFFFFFFFF, null, 0);
+
+            List<string> droppedFiles = new List<string>();
+            for (uint i = 0; i < count; i++) {
+                int size = (int)DragQueryFile(hDrop, i, null, 0);
+
+                var filename = new StringBuilder(size + 1);
+                DragQueryFile(hDrop, i, filename, MAX_PATH);
+
+                droppedFiles.Add(filename.ToString());
+            }
+            Task.Run(() => HandleDropFiles(droppedFiles));
+
+            DragFinish(hDrop);
+
+            return IntPtr.Zero;
+        }
+
+        private void HandleDropFiles(List<string> droppedFiles)
+        {
+            if (droppedFiles.Count < 1) // Nothing dropped?
+                return;
+            if (droppedFiles.Count > 1) {
+                MessageBox.Show($"Dropping is supported for single files only.\n(You dropped {droppedFiles})");
+                return;
+            }
+
+            var file = droppedFiles.Single();
+            Dispatcher.Invoke(() => LoadFile(file));
+        }
     }
 
     internal enum UserDecision
