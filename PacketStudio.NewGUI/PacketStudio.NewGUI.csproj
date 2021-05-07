@@ -6,7 +6,11 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <ApplicationIcon>anvil.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="anvil.ico" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PacketDotNet.Sctp\PacketDotNet.Sctp.csproj" />
     <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj" />
@@ -37,6 +41,9 @@
     <Content Include="Resources\shark-dir-32.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="anvil.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />

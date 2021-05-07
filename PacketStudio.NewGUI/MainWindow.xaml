@@ -16,7 +16,7 @@
         xmlns:controls1="clr-namespace:PacketStudio.NewGUI.Controls"
         x:Class="PacketStudio.NewGUI.MainWindow"
         mc:Ignorable="d"
-        Title="PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False">
+        Title="PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False" Icon="/anvil.ico">
     <controls:RibbonWindow.DataContext>
         <viewModels:MainViewModel/>
     </controls:RibbonWindow.DataContext>
