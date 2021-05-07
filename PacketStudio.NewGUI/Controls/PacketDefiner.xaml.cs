@@ -110,7 +110,7 @@ namespace PacketStudio.NewGUI.Controls
 
                 var details = templateControl.GenerateSaveDetails();
 
-                string typeName = ((ListBoxItem)templatesListBox.SelectedItem).Content.ToString();
+                string typeName = ((ListBoxItem)templatesListBox.SelectedItem)?.Content.ToString() ?? ((ListBoxItem)templatesListBox.Items[0]).Content.ToString();
                 HexStreamType type = _namesToHexType[typeName];
 
                 string text = hexTextBox.Text;
