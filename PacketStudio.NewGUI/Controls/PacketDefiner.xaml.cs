@@ -255,5 +255,10 @@ namespace PacketStudio.NewGUI.Controls
             // Also trigger a whole 'packet changed'
             OnPacketChanged(this, new EventArgs());
         }
+
+
+        public void Cut() => hexTextBox.Cut();
+        public void Paste() => hexTextBox.Paste();
+        public void Copy() => hexTextBox.Copy();
     }
 }

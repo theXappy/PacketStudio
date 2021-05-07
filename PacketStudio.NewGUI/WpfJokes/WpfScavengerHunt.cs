@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
@@ -12,11 +13,11 @@ namespace PacketStudio.NewGUI.WpfJokes
         /// </summary>
         /// <param name="parent">A direct parent of the queried item.</param>
         /// <typeparam name="T">The type of the queried item.</typeparam>
-        /// <param name="childName">x:Name or Name of child. </param>
+        /// <param name="childName">x:Name or Name of child. Null implies just return the first child of the requested type.</param>
         /// <returns>The first parent item that matches the submitted type parameter. 
         /// If not matching item can be found, 
         /// a null parent is being returned.</returns>
-        public static T FindChild<T>(DependencyObject parent, string childName)
+        public static T FindChild<T>(DependencyObject parent, string childName = null)
             where T : DependencyObject
         {
             // Confirm parent and childName are valid. 
@@ -25,8 +26,7 @@ namespace PacketStudio.NewGUI.WpfJokes
             T foundChild = null;
 
             int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
+            for (int i = 0; i < childrenCount; i++) {
                 var child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
                 T childType = child as T;

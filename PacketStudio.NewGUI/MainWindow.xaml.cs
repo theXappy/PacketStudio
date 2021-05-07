@@ -21,6 +21,7 @@ using PacketStudio.NewGUI.Controls;
 using PacketStudio.NewGUI.Properties;
 using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
+using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
 
 namespace PacketStudio.NewGUI
@@ -56,6 +57,7 @@ namespace PacketStudio.NewGUI
         // TODO: Use data context from 'this'
         public static MainViewModel TabControlMainViewModel { get; set;  }
         private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
+        private PacketDefiner CurrentPacketDefiner => WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
 
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -677,15 +679,11 @@ namespace PacketStudio.NewGUI
             TabControlMainViewModel.ResetItemsCollection();
         }
 
-        private void DoPaste(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        private void DoPaste(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Paste();
 
-        private void DoCopy(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        private void DoCopy(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Copy();
+
+        private void DoCut(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Cut();
 
         private void EncodeText(object sender, RoutedEventArgs e)
         {
@@ -706,11 +704,6 @@ namespace PacketStudio.NewGUI
                 CurrentTabItemModel.CaretPosition = pos + hexString.Length;
 
             }
-        }
-
-        private void DoCut(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void PacketDefiner_OnCaretPositionChanged(object sender, EventArgs e)
