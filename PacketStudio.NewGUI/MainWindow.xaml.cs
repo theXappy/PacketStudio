@@ -416,8 +416,10 @@ namespace PacketStudio.NewGUI
 
         private bool _loading;
 
-        private void OpenMenuItemClicked(object sender, MouseButtonEventArgs e)
+        private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} - OpenMenuItemClicked");
+
             if (_sessionState.HasUnsavedChanges)
             {
                 // Prompt user about unsaved changes in current session
@@ -513,8 +515,9 @@ namespace PacketStudio.NewGUI
             return UserDecision.Save;
         }
 
-        private void SaveMenuItemClicked(object sender, MouseButtonEventArgs e) => DoSave();
-        private void SaveAsMenuItemClicked(object sender, MouseButtonEventArgs e) => DoSaveAs();
+        private void SaveMenuItemClicked(object sender, RoutedEventArgs e) => DoSave();
+        private void SaveAsMenuItemClicked(object sender, RoutedEventArgs e) => DoSaveAs();
+        private void ExitMenuItemClicked(object sender, RoutedEventArgs e) => Close();
 
         private void SaveSession(string path)
         {
@@ -645,7 +648,7 @@ namespace PacketStudio.NewGUI
             e.Handled = true;
         }
 
-        private void NewSessionMenuItemClicked(object sender, MouseButtonEventArgs e)
+        private void NewSessionMenuItemClicked(object sender, RoutedEventArgs e)
         {
             if (_sessionState.HasUnsavedChanges)
             {
@@ -713,6 +716,7 @@ namespace PacketStudio.NewGUI
                 tivm.CaretPosition = pd.CaretPosition;
 
         }
+
     }
 
     internal enum UserDecision

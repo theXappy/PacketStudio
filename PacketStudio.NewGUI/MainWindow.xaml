@@ -32,48 +32,64 @@
                         syncfusion:Ribbon.KeyTip="F"
                         IsPopupOpen="False"
                         >
-                    <syncfusion:MenuButton
+                    <syncfusion:RibbonButton
                             x:Name="newMenuButton"
                             Width="200"
                             Label="New Session"
-                            Icon="Resources/new.png"
-                            MouseLeftButtonUp="NewSessionMenuItemClicked"
+                            SizeForm="Small"
+                            Click="NewSessionMenuItemClicked"
                             PreviewKeyDown="MenuButton_PreviewKeyDown"
-                            />
-                    <syncfusion:MenuButton
+                            SmallIcon="Resources/new.png"/>
+                    <!--Icon="Resources/new.png"-->
+                    <syncfusion:RibbonButton
                             x:Name="openMenuButton"
                             Width="200"
                             Label="Open"
-                            Icon="Resources/open.png"
-                            MouseLeftButtonUp="OpenMenuItemClicked"
-                            PreviewKeyDown="MenuButton_PreviewKeyDown"
-                            />
-                    <syncfusion:MenuButton
+                            SizeForm="Small"
+                            SmallIcon="Resources/open.png"
+                            Click="OpenMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"/>
+                    <syncfusion:RibbonButton
                             x:Name="saveMenuButton"
                             Width="200"
                             Label="Save"
-                            Icon="Resources/save.png"
-                            MouseLeftButtonUp="SaveMenuItemClicked"
+                            SizeForm="Small"
+                            SmallIcon="Resources/save.png"
+                            Click="SaveMenuItemClicked"
                             PreviewKeyDown="MenuButton_PreviewKeyDown"
                             />
-                    <syncfusion:MenuButton
+                    <syncfusion:RibbonButton
                             x:Name="saveAsMenuButton"
                             Width="200"
                             Label="Save As..."
-                            Icon="Resources/save_as.png"
-                            MouseLeftButtonUp="SaveAsMenuItemClicked"
+                            SizeForm="Small"
+                            SmallIcon="Resources/save_as.png"
+                            Click="SaveAsMenuItemClicked"
                             PreviewKeyDown="MenuButton_PreviewKeyDown"
                             />
+                    <Separator/>
+                    <syncfusion:RibbonButton
+                            x:Name="exitMenuButton"
+                            Width="200"
+                            Label="Exit"
+                            SizeForm="Small"
+                            IconType="VectorImage" 
+                            Click="ExitMenuItemClicked"
+                            PreviewKeyDown="MenuButton_PreviewKeyDown"
+                            >
+                        <syncfusion:RibbonButton.VectorImage>
+                            <Path/>
+                        </syncfusion:RibbonButton.VectorImage>
+                    </syncfusion:RibbonButton>
                 </syncfusion:ApplicationMenu>
             </syncfusion:Ribbon.ApplicationMenu>
             <syncfusion:RibbonTab Background="Transparent" Caption="Home" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23" syncfusion:Ribbon.KeyTip="H">
-                <syncfusion:RibbonBar Focusable="False" Header="Clipboard" IsLauncherButtonVisible="False" Margin="2,0" >
-                    <syncfusion:RibbonButton Label="Paste" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                <syncfusion:RibbonBar Focusable="False" Header="Clipboard" IsLauncherButtonVisible="False" Margin="2,0" Width="85">
+                    <syncfusion:RibbonButton Label="Paste" IsLargeImageVisible="True" Padding="1,4,4,0" ScrollViewer.CanContentScroll="True"
                                              Click="DoPaste"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
                                              syncfusion:Ribbon.KeyTip="P"
-                                             Margin="0,0,0,0"
                                              >
                         <syncfusion:RibbonButton.VectorImage>
                             <!-- Pate icon in XAML shapes -->
