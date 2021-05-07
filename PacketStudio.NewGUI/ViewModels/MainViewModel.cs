@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using PacketStudio.DataAccess;
@@ -120,9 +121,20 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             tabItems.Clear();
             nextTabNumber = 1;
-            foreach (PacketSaveDataNG packet in provider)
-            {
-              AddNewPacket(packet);  
+            try {
+                foreach (PacketSaveDataNG packet in provider) {
+                    AddNewPacket(packet);
+                }
+            }
+			catch {
+				// Swallow
+            }
+            finally {
+                // Packet provider might return 0 packets if the PCAP is empty/broken
+                // In that case we are adding a single empty tab (packet)
+                if (!tabItems.Any()) {
+                    AddNewPacket();
+                }
             }
         }
     }
