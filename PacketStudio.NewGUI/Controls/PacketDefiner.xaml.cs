@@ -189,11 +189,6 @@ namespace PacketStudio.NewGUI.Controls
             templatesListBox.SelectedIndex = 0;
         }
 
-        private void HexTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-        }
-
         private readonly Dictionary<HexStreamType, ListBoxItem> _streamTypeToListItems = new Dictionary<HexStreamType, ListBoxItem>();
         private readonly Dictionary<ListBoxItem, Func<UserControl>> _templatesBoxItemsToControlsCreators = new Dictionary<ListBoxItem, Func<UserControl>>();
         private readonly Dictionary<string, HexStreamType> _namesToHexType = new Dictionary<string, HexStreamType>();
@@ -260,5 +255,10 @@ namespace PacketStudio.NewGUI.Controls
         public void Cut() => hexTextBox.Cut();
         public void Paste() => hexTextBox.Paste();
         public void Copy() => hexTextBox.Copy();
+
+        private void hexTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

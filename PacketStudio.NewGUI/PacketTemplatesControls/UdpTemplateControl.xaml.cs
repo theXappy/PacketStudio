@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
+using PacketDotNet;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.NewGUI.ProtocolFactories;
@@ -16,6 +17,8 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [HexStreamType(HexStreamType.UdpPayload)]
     public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
     {
+        public int GetHeadersLength() => EthernetFields.HeaderLength + IPv4Fields.HeaderLength + UdpFields.HeaderLength;
+
         private static readonly UdpPacketFactory _factory = new UdpPacketFactory();
 
         public UdpTemplateControl()
@@ -66,5 +69,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
+
     }
 }

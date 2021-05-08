@@ -43,6 +43,10 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             }
         }
 
+        public int GetHeadersLength() => 0;
+        public event EventHandler Changed;
+
+
         public RawTemplateControl()
         {
             InitializeComponent();
@@ -59,7 +63,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             linkLayersBox.SelectedIndex = (int)LinkLayerType.Ethernet;
         }
 
-        public event EventHandler Changed;
 
         public bool IsValidWithPayload(byte[] raw) => true;
 
@@ -93,5 +96,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         private void LinkLayersBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) =>
             this.Changed?.Invoke(this, e);
+
     }
 }

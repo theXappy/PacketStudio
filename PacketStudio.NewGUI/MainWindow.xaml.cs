@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +23,7 @@ using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.Saver;
 using PacketStudio.NewGUI.Controls;
+using PacketStudio.NewGUI.PacketTemplatesControls;
 using PacketStudio.NewGUI.Properties;
 using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
@@ -359,17 +363,63 @@ namespace PacketStudio.NewGUI
             }
         }
 
+
+        BytesHighlightning _lastBytesHighlightning = null;
         private void PacketTreeView_OnSelectedItemChanged(object sender,
             PacketTreeView.PacketTreeSelectionChangedArgs e)
         {
+            if (e.BytesHiglightning == _lastBytesHighlightning) {
+                return;
+            }
+            _lastBytesHighlightning = e.BytesHiglightning;
+
             if (e.BytesHiglightning == BytesHighlightning.Empty) {
                 hexEditor.SelectionStop = -1;
                 hexEditor.SelectionStart = -1;
+                bool isDefinerNormalized = Regex.IsMatch(CurrentTabItemModel.Content, "^[0-9A-Fa-f]+$");
+                if (isDefinerNormalized) {
+                    // User selected an item from the generated headers, nothing to show in the packet definer control
+                    // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
+                    CurrentTabItemModel.SelectionLength = 0;
+                }
             }
             else {
                 hexEditor.SelectionStart = e.BytesHiglightning.Offset;
                 hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
+
+                bool isDefinerNormalized = Regex.IsMatch(CurrentTabItemModel.Content, "^[0-9A-Fa-f]+$");
+                if (isDefinerNormalized) {
+                    int headersLength = GetHeadersLengthFromType(CurrentTabItemModel.PacketType);
+                    int newOffset = (e.BytesHiglightning.Offset - headersLength) * 2;
+                    if (newOffset < 0) {
+                        // User selected an item from the generated headers, nothing to show in the packet definer control
+                        // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
+                        CurrentTabItemModel.SelectionLength = 0;
+                        return;
+                    }
+                    // User selected an item within the user's input in the definer - highlighting it for them.
+                    CurrentTabItemModel.SelectionStart = newOffset;
+                    CurrentTabItemModel.SelectionLength = e.BytesHiglightning.Length * 2;
+                }
             }
+        }
+
+        // TODO: Export this somewherr else
+        private int GetHeadersLengthFromType(HexStreamType packetType)
+        {
+            var assm = this.GetType().Assembly;
+            var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
+
+            foreach (var packetTemplateType in packetTemplateTypes) {
+                HexStreamTypeAttribute typeAttr = packetTemplateType.GetCustomAttributes(typeof(HexStreamTypeAttribute), false).FirstOrDefault() as HexStreamTypeAttribute;
+                HexStreamType sType = typeAttr.StreamType;
+
+                if (sType == packetType) {
+                    IPacketTemplateControl iptc = (IPacketTemplateControl)Activator.CreateInstance(packetTemplateType);
+                    return iptc.GetHeadersLength();
+                }
+            }
+            throw new ArgumentException($"Couldn't find template (and headers length) for type: {packetType}");
         }
 
         private void ExportToWireshark(object sender, RoutedEventArgs e)
@@ -462,7 +512,7 @@ namespace PacketStudio.NewGUI
                 _sessionState.AssociatedFilePath = filePath;
             }
 
-            if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item=>item.Label == filePath)) {
+            if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item => item.Label == filePath)) {
                 // File already in recents list, nothing more to do...
                 return;
             }
@@ -472,7 +522,7 @@ namespace PacketStudio.NewGUI
             {
                 Label = filePath,
             };
-            newMenuButton.Click += RecentFileMenuItemClicked; 
+            newMenuButton.Click += RecentFileMenuItemClicked;
             _applicationMenu.MenuItems.Add(newMenuButton);
         }
 
@@ -703,7 +753,7 @@ namespace PacketStudio.NewGUI
                 tivm.CaretPosition = pd.CaretPosition;
         }
 
-#region Drag Drop P/Invoke Ugliness
+        #region Drag Drop P/Invoke Ugliness
         const int WM_DROPFILES = 0x233;
 
         [DllImport("shell32.dll")]

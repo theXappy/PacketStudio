@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
+using PacketDotNet;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.NewGUI.ProtocolFactories;
@@ -16,6 +17,8 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [HexStreamType(HexStreamType.TcpPayload)]
     public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
     {
+        public int GetHeadersLength() => EthernetFields.HeaderLength + IPv4Fields.HeaderLength + TcpFields.HeaderLength;
+
         private static readonly TcpPacketFactory _factory = new TcpPacketFactory();
 
         public TcpTemplateControl()

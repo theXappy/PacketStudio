@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Controls;
+using PacketDotNet;
 using PacketDotNet.Sctp.Chunks;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
@@ -18,6 +19,8 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     [HexStreamType(HexStreamType.SctpPayload)]
     public partial class SctpTemplateControl : UserControl, IPacketTemplateControl
     {
+        public int GetHeadersLength() => EthernetFields.HeaderLength + IPv4Fields.HeaderLength + SctpFields.HeaderLength + SctpDataChunkFields.HeaderLength;
+
         private static readonly SctpPacketFactory _factory = new SctpPacketFactory();
         private static Dictionary<string, SctpPayloadProtocol> _singletonMap;
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -138,7 +140,7 @@ namespace PacketStudio.NewGUI.Controls
         }
 
 
-
+        AutoResetEvent _treeRefocusResetEvent = new AutoResetEvent(true);
         private void TreeItem_Selected(object sender, RoutedEventArgs routedEventArgs)
         {
 
@@ -151,10 +153,17 @@ namespace PacketStudio.NewGUI.Controls
 
             SelectedItemChanged?.Invoke(this, new PacketTreeSelectionChangedArgs(bHighlightning));
 
-            this.Dispatcher.BeginInvoke((Action)(() =>
-            {
-                tvi.Focus();
-            }), new object[0]);
+            // Some race condition related to the fact that the GUI has only a single thread and 'Dispatcher.BeginInvoke' enqueues
+            // a function to run later might cause 2 TreeItem selections to create an infinite loop of re-focusing each other
+            // The use of AutoResetEvent tries to solve that, hopefully.
+            if (_treeRefocusResetEvent.WaitOne(10)) {
+                this.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    tvi.Focus();
+                    _treeRefocusResetEvent.Set();
+                }), new object[0]);
+            }
+            
         }
 
         private void TreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)

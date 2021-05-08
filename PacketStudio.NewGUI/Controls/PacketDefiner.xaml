@@ -35,6 +35,7 @@
                  FontSize="16" 
                  Background="{Binding Background, ElementName=userControl}"
                  Foreground="{Binding Foreground, ElementName=userControl}"
+                 LostFocus="hexTextBox_LostFocus"
                  />
             <!--LostFocus="HexTextBox_LostFocus"-->
             <!--SelectionChanged="HexTextBox_OnSelectionChanged"-->
