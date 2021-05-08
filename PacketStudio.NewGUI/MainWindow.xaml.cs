@@ -346,6 +346,17 @@ namespace PacketStudio.NewGUI
             catch (Exception exception) {
                 MessageBox.Show("Failed to normalize.\n" + exception.Message, "Error");
             }
+
+        }
+
+        private void FlattenStack(object sender, RoutedEventArgs e)
+        {
+            try {
+                CurrentTabItemModel.FlattenStack();
+            }
+            catch (Exception exception) {
+                MessageBox.Show("Failed to flatten stack.\n" + exception.Message, "Error");
+            }
         }
 
         private void PacketTreeView_OnSelectedItemChanged(object sender,
@@ -690,22 +701,9 @@ namespace PacketStudio.NewGUI
             PacketDefiner pd = sender as PacketDefiner;
             if (pd.DataContext is TabItemViewModel tivm)
                 tivm.CaretPosition = pd.CaretPosition;
-
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-        // Drag Drop P/Invoke Ugliness
+#region Drag Drop P/Invoke Ugliness
         const int WM_DROPFILES = 0x233;
 
         [DllImport("shell32.dll")]
@@ -775,6 +773,8 @@ namespace PacketStudio.NewGUI
             var file = droppedFiles.Single();
             Dispatcher.Invoke(() => LoadFile(file));
         }
+        #endregion
+
     }
 
     internal enum UserDecision

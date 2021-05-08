@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 
@@ -126,7 +127,7 @@ namespace PacketStudio.NewGUI.ViewModels
             PacketType = psd.Type;
         }
 
-        public void NormalizeHex()
+        public void FlattenStack()
         {
             var expPacket = ExportPacket;
             byte[] data = expPacket.Data;
@@ -140,6 +141,13 @@ namespace PacketStudio.NewGUI.ViewModels
             {
                 throw new Exception("Packet's Hex is invalid");
             }
+        }
+
+        internal void NormalizeHex()
+        {
+            var _deserializer = new HexDeserializer();
+            byte[] normalizedBytes = _deserializer.Deserialize(Content); // Might throw
+            Content = normalizedBytes.ToHex();
         }
     }
 }
