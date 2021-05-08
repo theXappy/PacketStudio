@@ -685,6 +685,7 @@
                                           OnCloseButtonClick="TabControl_OnOnCloseButtonClick"
                                           CloseMode="Delete"
                                           OnCloseAllTabs="TabControl_OnOnCloseAllTabs"
+                                          Padding="0"
                 >
 
                     <!--Binding the header text for the Tab item-->
@@ -705,7 +706,6 @@
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
                                                     Background="#323232"
-                                                    Margin="0"
                                                     syncfusion:SfSkinManager.VisualStyle="MaterialDark"                                                    
                                                     />
                                     </DataTemplate>
