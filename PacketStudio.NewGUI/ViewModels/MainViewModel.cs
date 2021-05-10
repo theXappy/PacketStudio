@@ -6,6 +6,7 @@ using System.Windows.Media;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
+using PacketStudio.DataAccess.SmartCapture;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
 
@@ -16,59 +17,11 @@ namespace PacketStudio.NewGUI.ViewModels
         private const string TAB_HEADER_PREFIX = "Packet";
         private int nextTabNumber = 1;
 
-        private NewButtonAlignment newButtonAlignment = NewButtonAlignment.Last;
-        private Brush newButtonBackground = Brushes.DimGray;
-        private Thickness newButtonMargin = new Thickness(50,1,50,1); 
-        private bool isNewButtonClosedonNoChild = true;
-        private bool isNewButtonEnabled = true;
         private ObservableCollection<TabItemViewModel> tabItems;
-
-        public Thickness NewButtonMargin
-        {
-            get { return newButtonMargin; }
-            set
-            {
-                newButtonMargin = value;
-                this.RaisePropertyChanged(nameof(NewButtonMargin));
-            }
-        }
-        public Brush NewButtonBackground
-        {
-            get { return newButtonBackground; }
-            set
-            {
-                newButtonBackground = value;
-                this.RaisePropertyChanged(nameof(NewButtonBackground));
-            }
-        }
-
-        public NewButtonAlignment NewButtonAlignment
-        {
-            get { return newButtonAlignment; }
-            set
-            {
-                newButtonAlignment = value;
-                this.RaisePropertyChanged(nameof(NewButtonAlignment));
-            }
-        }
-        public bool IsNewButtonEnabled
-        {
-            get { return isNewButtonEnabled; }
-            set
-            {
-                isNewButtonEnabled = value;
-                this.RaisePropertyChanged(nameof(IsNewButtonEnabled));
-            }
-        }
-        public bool IsNewButtonClosedonNoChild
-        {
-            get { return isNewButtonClosedonNoChild; }
-            set
-            {
-                isNewButtonClosedonNoChild = value;
-                this.RaisePropertyChanged(nameof(IsNewButtonClosedonNoChild));
-            }
-        }
+        private TabItemViewModel currentTabItem = new TabItemViewModel() { Content = "HaHa" };
+        private ISmartCaptureFile _smartCapture;
+        private string[] _packetsDescs = new string[0];
+        private int _selectedPacketIndex = 0;
 
         public ObservableCollection<TabItemViewModel> TabItems
         {
@@ -80,13 +33,52 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        
+        public TabItemViewModel CurrentTabItem
+        {
+            get { return currentTabItem; }
+            set
+            {
+                currentTabItem = value;
+                this.RaisePropertyChanged(nameof(CurrentTabItem));
+            }
+        }
+
+        public string[] PacketsDescriptions
+        {
+            get { return _packetsDescs; }
+            set
+            {
+                _packetsDescs = value;
+                this.RaisePropertyChanged(nameof(PacketsDescriptions));
+            }
+        }
+
+        public int SelectedPacketIndex
+        {
+            get { return _selectedPacketIndex; }
+            set
+            {
+                _selectedPacketIndex = value;
+                this.RaisePropertyChanged(nameof(SelectedPacketIndex));
+
+                // TODO: if _selected too big what happens? throws?
+                // TODO: Use link layer
+                var (link, data) = _smartCapture.GetPacket(_selectedPacketIndex);
+
+                // TODO: Remvoe this 'tab number' header thingy
+                int tabNumber = nextTabNumber++;
+                CurrentTabItem = new TabItemViewModel()
+                {
+                    Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
+                    Content = data.ToHex(),
+                };                
+            }
+        }
 
         public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
-            if (psdng == null)
-            {
-                psdng = new PacketSaveDataNG(HexStreamType.Raw,String.Empty);
+            if (psdng == null) {
+                psdng = new PacketSaveDataNG(HexStreamType.Raw, String.Empty);
             }
 
             int tabNumber = nextTabNumber++;
@@ -117,25 +109,35 @@ namespace PacketStudio.NewGUI.ViewModels
             MainWindow.TabControlMainViewModel = this;
         }
 
-        public void LoadFile(IPacketsProviderNG provider)
+        //public void LoadFile(IPacketsProviderNG provider)
+        //{
+        //    this.CurrentTabItem = new TabItemViewModel { Content = "Kaaaaa" };
+        //    tabItems.Clear();
+        //    nextTabNumber = 1;
+        //    try {
+        //        for (int i = 0; i < 10_000; i++) {
+        //            AddNewPacket();
+        //        }
+
+        //        //foreach (PacketSaveDataNG packet in provider) {
+        //        //    AddNewPacket(packet);
+        //        //}
+
+        //    }
+        //    finally {
+        //        // Packet provider might return 0 packets if the PCAP is empty/broken
+        //        // In that case we are adding a single empty tab (packet)
+        //        if (!tabItems.Any()) {
+        //            AddNewPacket();
+        //        }
+        //    }
+        //}
+
+        public void LoadFile(ISmartCaptureFile smartCapture)
         {
-            tabItems.Clear();
-            nextTabNumber = 1;
-            try {
-                foreach (PacketSaveDataNG packet in provider) {
-                    AddNewPacket(packet);
-                }
-            }
-			catch {
-				// Swallow
-            }
-            finally {
-                // Packet provider might return 0 packets if the PCAP is empty/broken
-                // In that case we are adding a single empty tab (packet)
-                if (!tabItems.Any()) {
-                    AddNewPacket();
-                }
-            }
+            _smartCapture = smartCapture;
+            PacketsDescriptions = _smartCapture.GetPacketsDescriptions();
+            SelectedPacketIndex = 0;
         }
     }
 }

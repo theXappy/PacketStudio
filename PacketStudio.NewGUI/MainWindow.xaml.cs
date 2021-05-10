@@ -29,6 +29,7 @@ using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
 using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
+using PacketStudio.DataAccess.SmartCapture;
 
 namespace PacketStudio.NewGUI
 {
@@ -61,8 +62,8 @@ namespace PacketStudio.NewGUI
 
         // TODO: Use data context from 'this'
         public static MainViewModel TabControlMainViewModel { get; set; }
-        private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
-        private PacketDefiner CurrentPacketDefiner => WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
+        private TabItemViewModel CurrentTabItemModel = new TabItemViewModel() { Content = "LoL2" };// tabControl.SelectedItem as TabItemViewModel;
+        private PacketDefiner CurrentPacketDefiner => null; // WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
 
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -500,23 +501,44 @@ namespace PacketStudio.NewGUI
         {
             PacketsProvidersFactory ppf = new PacketsProvidersFactory();
             var provider = ppf.Create(filePath);
+
+            bool fileLoaded = false;
             using (Dispatcher.DisableProcessing()) {
                 _loading = true;
-                TabControlMainViewModel.LoadFile(provider);
+                try {
+                    if(!filePath.EndsWith("pcapng")) {
+                        throw new Exception("Not yet...");
+                    }
+                    SmartPcapngCaptureFile spcf = new SmartPcapngCaptureFile(filePath);
+                    TabControlMainViewModel.LoadFile(spcf);
+                    fileLoaded = true;
+                }
+                catch(Exception ex) {
+                    MessageBox.Show($"Failed to open file {filePath}\n" +
+                        $"Error: {ex.Message}");
+                }
                 _loading = false;
             }
 
             _sessionState.Reset();
+
+            if(!fileLoaded) {
+                return;
+            }
+
             if (filePath.EndsWith(".p2s")) {
                 // Only 'associating' session if opened a p2s file. pcap/pcapng aren't treated like that.
                 _sessionState.AssociatedFilePath = filePath;
             }
 
+            //
+            // Add to 'Recent files list' (or not, if present)
+            //
+
             if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item => item.Label == filePath)) {
                 // File already in recents list, nothing more to do...
                 return;
             }
-
             // Adding file to 'recent files' list in the app menu
             var newMenuButton = new SimpleMenuButton()
             {
@@ -613,7 +635,7 @@ namespace PacketStudio.NewGUI
         private void TabControl_OnOnCloseButtonClick(object sender, CloseTabEventArgs e)
         {
             // When closing last tab immediately open a new empty tab.
-            int numTabs = tabControl.ItemsSource.OfType<object>().Count();
+            int numTabs = 0;// tabControl.ItemsSource.OfType<object>().Count();
             Debug.WriteLine("Number of tabs: " + numTabs);
             if (numTabs == 1) {
                 e.Cancel = true;
