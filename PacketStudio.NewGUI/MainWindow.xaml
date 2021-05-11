@@ -734,6 +734,17 @@
             </syncfusion:DockingManager.ClientControl>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
+                       syncfusion:DockingManager.Header="Packets List" 
+                       syncfusion:DockingManager.State="Dock" 
+                       syncfusion:DockingManager.CanAutoHide="False" 
+                       syncfusion:DockingManager.SideInDockedMode="Top" 
+                       >
+                <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
+                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}">
+                </ListBox>
+            </DockPanel>
+            <DockPanel syncfusion:DockingManager.CanClose="False" 
+                       syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
                        syncfusion:DockingManager.Header="Live Preview" 
                        syncfusion:DockingManager.State="Dock" 
                        syncfusion:DockingManager.CanAutoHide="False" 

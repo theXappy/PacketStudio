@@ -61,6 +61,9 @@ namespace PacketStudio.NewGUI.ViewModels
                 _selectedPacketIndex = value;
                 this.RaisePropertyChanged(nameof(SelectedPacketIndex));
 
+                if(_selectedPacketIndex == -1)
+                    return;
+
                 // TODO: if _selected too big what happens? throws?
                 // TODO: Use link layer
                 var (link, data) = _smartCapture.GetPacket(_selectedPacketIndex);
