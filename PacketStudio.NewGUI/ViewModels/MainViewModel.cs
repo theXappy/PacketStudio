@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
@@ -136,11 +138,18 @@ namespace PacketStudio.NewGUI.ViewModels
         //    }
         //}
 
+        // TODO: Expose this outside? Get it as an argument?
+        private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
+
         public void LoadFile(ISmartCaptureFile smartCapture)
         {
             _smartCapture = smartCapture;
-            PacketsDescriptions = _smartCapture.GetPacketsDescriptions();
-            SelectedPacketIndex = 0;
+            var tsharkTask = _tshark.GetTextOutputAsync(_smartCapture.GetPcapngFilePath(), CancellationToken.None);
+            tsharkTask.ContinueWith((descTask) =>
+            {
+                PacketsDescriptions = descTask.Result;
+                SelectedPacketIndex = 0;
+            });
         }
     }
 }

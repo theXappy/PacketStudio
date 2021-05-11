@@ -34,6 +34,11 @@ namespace PacketStudio.DataAccess.SmartCapture
 
         public (LinkLayerType linkLayer, byte[] data) GetPacket(int index)
         {
+            if (_offsetsList == null || _offsetsList.Count <= index)
+            {
+                _offsetsList = _weakPcapng.GetPacketsOffsets();
+            }
+
             Haukcode.PcapngUtils.PcapNG.BlockTypes.EnhancedPacketBlock pkt = _weakPcapng.GetPacketAt(_offsetsList[index]);
             // TODO: Not always ethernet
             return (LinkLayerType.Ethernet, pkt.Data);

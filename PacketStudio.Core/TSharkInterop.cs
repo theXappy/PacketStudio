@@ -89,7 +89,7 @@ namespace PacketStudio.Core
             CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             StringBuilder sb = new StringBuilder();
-            
+
             // line below is a local func
             void dataReceivedEventHandler(object sender, DataReceivedEventArgs eventArgs) => sb.Append(eventArgs.Data);
 
@@ -180,9 +180,18 @@ namespace PacketStudio.Core
 
         public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            return Task.Run((() =>
+            // 2 Tasks:
+            //      1. Same packets to file and get temporary pcap(ng) file path
+            //      2. Feed GetTextOutputAsync overload which recieves a file path with all the received arguments
+            return Task.Run((() => _packetsSaver.WritePackets(packets)), token)
+                .ContinueWith(pcapPathTask => GetTextOutputAsync(pcapPathTask.Result, token, toBeEnabledHeurs, toBeDisabledHeurs).Result, token);
+        }
+
+       public Task<string[]> GetTextOutputAsync(string pcapPath, CancellationToken token,
+            List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        {
+            return Task.Run(() =>
             {
-                string pcapPath = _packetsSaver.WritePackets(packets);
                 token.ThrowIfCancellationRequested();
 
                 string args = GetTextOutputArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
@@ -205,13 +214,12 @@ namespace PacketStudio.Core
                         // No output, show exit code and error
                         throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
                     }
-
                 }
 
                 string rawStdOut = res.StandardOutput;
 
                 return rawStdOut.Split('\n');
-            }), token);
+            }, token);
         }
 
         private string GetPdmlArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
@@ -286,7 +294,7 @@ namespace PacketStudio.Core
             // Force Wireshark's default columns in output format 
             selected +=
                 " -o \"gui.column.format:" +
-                "\"No\",\"%m\"," 
+                "\"No\",\"%m\","
                 +
                 "\"Time\",\"%t\"," +
                 "\"Source\",\"%s\"," +
