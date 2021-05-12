@@ -499,6 +499,7 @@ namespace PacketStudio.NewGUI
 
         private void LoadFile(string filePath)
         {
+            // TODO: Get rid of this factor or make it return ISmartCaptures ...
             PacketsProvidersFactory ppf = new PacketsProvidersFactory();
             var provider = ppf.Create(filePath);
 

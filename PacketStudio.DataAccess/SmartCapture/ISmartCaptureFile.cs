@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Haukcode.PcapngUtils.PcapNG.BlockTypes;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PacketStudio.DataAccess.SmartCapture
 {
@@ -39,9 +41,10 @@ namespace PacketStudio.DataAccess.SmartCapture
                 _offsetsList = _weakPcapng.GetPacketsOffsets();
             }
 
-            Haukcode.PcapngUtils.PcapNG.BlockTypes.EnhancedPacketBlock pkt = _weakPcapng.GetPacketAt(_offsetsList[index]);
+            EnhancedPacketBlock pkt = _weakPcapng.GetPacketAt(_offsetsList[index]);
             // TODO: Not always ethernet
-            return (LinkLayerType.Ethernet, pkt.Data);
+            InterfaceDescriptionBlock iface = _weakPcapng.GetInterfaces().Single(iface => iface.AssociatedInterfaceID == pkt.AssociatedInterfaceID);
+            return ((LinkLayerType)iface.LinkType, pkt.Data);
         }
 
         public int GetPacketsCount()

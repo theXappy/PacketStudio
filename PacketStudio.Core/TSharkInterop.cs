@@ -196,6 +196,8 @@ namespace PacketStudio.Core
 
                 string args = GetTextOutputArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
                 Debug.WriteLine("GetText Args: " + args);
+
+
                 var cli = Cli.Wrap(_tsharkPath)
                     .WithArguments(args)
                     .ExecuteBufferedAsync(Encoding.UTF8);
@@ -216,9 +218,9 @@ namespace PacketStudio.Core
                     }
                 }
 
-                string rawStdOut = res.StandardOutput;
+                string noArrow = res.StandardOutput.Replace("\t\u2192", String.Empty);
 
-                return rawStdOut.Split('\n');
+                return noArrow.Split('\n', StringSplitOptions.TrimEntries);
             }, token);
         }
 

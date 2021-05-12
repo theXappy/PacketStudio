@@ -11,6 +11,7 @@ namespace PacketStudio.DataAccess.SmartCapture
     public class WeakPcapng
     {
         private List<long> _cachedOffsets = null;
+        private List<InterfaceDescriptionBlock> _cachedIfacesBlock;
         public string Path { get; set; }
 
 
@@ -44,8 +45,49 @@ namespace PacketStudio.DataAccess.SmartCapture
             return _cachedOffsets;
         }
 
+        public List<InterfaceDescriptionBlock> GetInterfaces()
+        {
+            if (_cachedIfacesBlock == null) {
+                // TODO:
+                bool reverseByteOrder = false;
+                
+                _cachedIfacesBlock = new List<InterfaceDescriptionBlock>();
+
+
+                // Checking until first packet block or end of file
+                int packetCounter = 0;
+                using (FileStream fileStream = File.OpenRead(Path))
+                using (BinaryReader binReader = new BinaryReader(fileStream)) {
+                    while (fileStream.Position != fileStream.Length) {
+                        // Read next 8 bytes of block:
+                        BaseBlock.Types type = (BaseBlock.Types)binReader.ReadUInt32();
+                        uint len = binReader.ReadUInt32();
+                        if (type == BaseBlock.Types.EnhancedPacket) {
+                            // Found a packet block, stopping search
+                            break;
+                        }
+
+                        if (type == BaseBlock.Types.InterfaceDescription) {
+                            fileStream.Seek(-8, SeekOrigin.Current);
+                            var block = AbstractBlockFactory.ReadNextBlock(binReader, reverseByteOrder, (ex) => Debug.WriteLine("Kek!" + ex));
+                            if (block == null || block.BlockType != BaseBlock.Types.InterfaceDescription) {
+                                throw new Exception("Block at given position was not parsed to a INTERFACE DESCRIPTION BLOCK");
+                            }
+                            _cachedIfacesBlock.Add(block as InterfaceDescriptionBlock);
+                        }
+                        else {
+                            // Advance to next block start
+                            fileStream.Seek(len - 8, SeekOrigin.Current);
+                        }
+                    }
+                }
+            }
+            return _cachedIfacesBlock;
+        }
+
         public EnhancedPacketBlock GetPacketAt(long packetBlockOffset)
         {
+            // TODO:
             bool reverseByteOrder = false;
 
             using (FileStream fileStream = File.Open(Path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
