@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -75,8 +76,14 @@ namespace PacketStudio.NewGUI.ViewModels
                 CurrentTabItem = new TabItemViewModel()
                 {
                     Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
-                    Content = data.ToHex(),
                 };                
+                CurrentTabItem.Load(new PacketSaveDataNG(HexStreamType.Raw, data.ToHex())
+                {
+                    Details = new Dictionary<string, string>()
+                    {
+                        {PacketSaveDataNGProtoFields.ENCAPS_TYPE, ((int)link).ToString()},
+                    }
+                });
             }
         }
 

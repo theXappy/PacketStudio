@@ -1,6 +1,7 @@
 ﻿using Haukcode.PcapngUtils.PcapNG.BlockTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -42,8 +43,17 @@ namespace PacketStudio.DataAccess.SmartCapture
             }
 
             EnhancedPacketBlock pkt = _weakPcapng.GetPacketAt(_offsetsList[index]);
-            // TODO: Not always ethernet
-            InterfaceDescriptionBlock iface = _weakPcapng.GetInterfaces().Single(iface => iface.AssociatedInterfaceID == pkt.AssociatedInterfaceID);
+            var ifaces = _weakPcapng.GetInterfaces();
+            InterfaceDescriptionBlock iface = null;
+            try
+            {
+                iface = ifaces.ElementAt(pkt.AssociatedInterfaceID.Value);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Issues when "+ex);
+            }
+
             return ((LinkLayerType)iface.LinkType, pkt.Data);
         }
 

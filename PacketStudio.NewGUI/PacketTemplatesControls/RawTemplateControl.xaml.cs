@@ -87,9 +87,21 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         {
             if (data.TryGetValue(PacketSaveDataNGProtoFields.ENCAPS_TYPE, out string etherType))
             {
-                string correctItem =linkLayersBox.Items.Cast<string>()
-                    .SingleOrDefault(item => item.Contains(etherType));
-                if(string.IsNullOrEmpty(correctItem))
+                string correctItem = null;
+                // etherType could either be an int or a full string so let's try to resolve based on the type
+                if (int.TryParse(etherType, out int etherTypeDecimal)) // It's an Int
+                {
+                    string prefix = $"{etherTypeDecimal} ";
+                    correctItem =linkLayersBox.Items.Cast<string>()
+                                    .FirstOrDefault(item => item.StartsWith(prefix));
+                }
+                else // It's a string
+                {
+                    correctItem = linkLayersBox.Items.Cast<string>()
+                        .FirstOrDefault(item => item.Contains(etherType));
+                }
+
+                if(!string.IsNullOrEmpty(correctItem))
                     linkLayersBox.SelectedItem = correctItem;
             }
         }

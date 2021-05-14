@@ -729,7 +729,7 @@
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
                                                     Background="#323232"
                                                     syncfusion:SfSkinManager.VisualStyle="MaterialDark"
-                                            DataContext="{Binding CurrentTabItem}"
+                                            DataContext="{Binding CurrentTabItem}" SessionPacket="{Binding SessionPacket}"
                                                     />
             </syncfusion:DockingManager.ClientControl>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
