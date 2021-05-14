@@ -29,6 +29,7 @@ using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
 using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
+using PacketStudio.DataAccess.SmartCapture;
 
 namespace PacketStudio.NewGUI
 {
@@ -58,11 +59,8 @@ namespace PacketStudio.NewGUI
 
         private readonly SessionState _sessionState = new SessionState();
 
-
-        // TODO: Use data context from 'this'
-        public static MainViewModel TabControlMainViewModel { get; set; }
-        private TabItemViewModel CurrentTabItemModel => tabControl.SelectedItem as TabItemViewModel;
-        private PacketDefiner CurrentPacketDefiner => WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
+        public static MainViewModel SessionViewModel { get; set; }
+        private PacketDefiner CurrentPacketDefiner => null; // WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
 
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -114,9 +112,10 @@ namespace PacketStudio.NewGUI
             hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
         }
 
+        // TODO: Use this again
         private void AddNewPacketTab(object sender, EventArgs e)
         {
-            TabControlMainViewModel?.AddNewPacket();
+            SessionViewModel?.AddNewPacket();
             _sessionState.HasUnsavedChanges = true;
         }
 
@@ -124,12 +123,9 @@ namespace PacketStudio.NewGUI
         {
             PacketDefiner definer = invoker;
 
-            CurrentTabItemModel.SessionPacket = definer.SessionPacket;
-
             if (definer.IsValid) {
                 // Update HEX view
                 byte[] bytes = definer.ExportPacket.Data;
-
 
                 // Some WPF hacking is going on here:
                 // I want to update hexEditor's source (called "Stream") to the packet's bytes
@@ -161,8 +157,8 @@ namespace PacketStudio.NewGUI
                 }));
 
                 // Update Tab's MainViewModel
-                CurrentTabItemModel.IsValid = true;
-                CurrentTabItemModel.ExportPacket = definer.ExportPacket;
+                SessionViewModel.CurrentSessionPacket.IsValid = true;
+                SessionViewModel.CurrentSessionPacket.ExportPacket = definer.ExportPacket;
 
                 // Call Live Update
                 if (previewEnabledCheckbox.IsChecked == true) {
@@ -170,8 +166,8 @@ namespace PacketStudio.NewGUI
                 }
             }
             else {
-                CurrentTabItemModel.IsValid = false;
-                CurrentTabItemModel.ExportPacket = null;
+                SessionViewModel.CurrentSessionPacket.IsValid = false;
+                SessionViewModel.CurrentSessionPacket.ExportPacket = null;
 
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
@@ -221,7 +217,7 @@ namespace PacketStudio.NewGUI
             SetPacketTreeInProgress();
 
             TempPacketSaveData packetBytes = null;
-            Dispatcher.BeginInvoke((Action)(() => { packetBytes = CurrentTabItemModel.ExportPacket; })).Task
+            Dispatcher.BeginInvoke((Action)(() => { packetBytes = SessionViewModel.CurrentSessionPacket.ExportPacket; })).Task
                 .Wait();
 
             if (packetBytes != null && packetBytes.Data.Length != 0) {
@@ -242,7 +238,7 @@ namespace PacketStudio.NewGUI
             bool packetValid = AssertCurrentPacketValid();
 
             if (packetValid) {
-                byte[] packet = CurrentTabItemModel.ExportPacket.Data;
+                byte[] packet = SessionViewModel.CurrentSessionPacket.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = string.Join(", ", bytesAsStrings);
                 Clipboard.SetText(combinedString);
@@ -258,7 +254,7 @@ namespace PacketStudio.NewGUI
             bool packetValid = AssertCurrentPacketValid();
 
             if (packetValid) {
-                byte[] packet = CurrentTabItemModel.ExportPacket.Data;
+                byte[] packet = SessionViewModel.CurrentSessionPacket.ExportPacket.Data;
                 IEnumerable<string> bytesAsStrings = packet.Select(b => "0x" + b.ToString("X2"));
                 string combinedString = "new byte[]{" + string.Join(", ", bytesAsStrings) + "};";
                 Clipboard.SetText(combinedString);
@@ -273,7 +269,7 @@ namespace PacketStudio.NewGUI
         /// <returns>True if the packet is valid, false otherwise</returns>
         private bool AssertCurrentPacketValid()
         {
-            TabItemViewModel currItem = CurrentTabItemModel;
+            SessionPacketViewModel currItem = SessionViewModel.CurrentSessionPacket;
             if (currItem == null) {
                 MessageBox.Show("Couldn't find current packet definer control.");
                 return false;
@@ -345,7 +341,7 @@ namespace PacketStudio.NewGUI
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
             try {
-                CurrentTabItemModel.NormalizeHex();
+                SessionViewModel.CurrentSessionPacket.NormalizeHex();
             }
             catch (Exception exception) {
                 MessageBox.Show("Failed to normalize.\n" + exception.Message, "Error");
@@ -356,7 +352,7 @@ namespace PacketStudio.NewGUI
         private void FlattenStack(object sender, RoutedEventArgs e)
         {
             try {
-                CurrentTabItemModel.FlattenStack();
+                SessionViewModel.CurrentSessionPacket.FlattenStack();
             }
             catch (Exception exception) {
                 MessageBox.Show("Failed to flatten stack.\n" + exception.Message, "Error");
@@ -376,30 +372,30 @@ namespace PacketStudio.NewGUI
             if (e.BytesHiglightning == BytesHighlightning.Empty) {
                 hexEditor.SelectionStop = -1;
                 hexEditor.SelectionStart = -1;
-                bool isDefinerNormalized = Regex.IsMatch(CurrentTabItemModel.Content, "^[0-9A-Fa-f]+$");
+                bool isDefinerNormalized = Regex.IsMatch(SessionViewModel.CurrentSessionPacket.Content, "^[0-9A-Fa-f]+$");
                 if (isDefinerNormalized) {
                     // User selected an item from the generated headers, nothing to show in the packet definer control
                     // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                    CurrentTabItemModel.SelectionLength = 0;
+                    SessionViewModel.CurrentSessionPacket.SelectionLength = 0;
                 }
             }
             else {
                 hexEditor.SelectionStart = e.BytesHiglightning.Offset;
                 hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
 
-                bool isDefinerNormalized = Regex.IsMatch(CurrentTabItemModel.Content, "^[0-9A-Fa-f]+$");
+                bool isDefinerNormalized = Regex.IsMatch(SessionViewModel.CurrentSessionPacket.Content, "^[0-9A-Fa-f]+$");
                 if (isDefinerNormalized) {
-                    int headersLength = GetHeadersLengthFromType(CurrentTabItemModel.PacketType);
+                    int headersLength = GetHeadersLengthFromType(SessionViewModel.CurrentSessionPacket.PacketType);
                     int newOffset = (e.BytesHiglightning.Offset - headersLength) * 2;
                     if (newOffset < 0) {
                         // User selected an item from the generated headers, nothing to show in the packet definer control
                         // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                        CurrentTabItemModel.SelectionLength = 0;
+                        SessionViewModel.CurrentSessionPacket.SelectionLength = 0;
                         return;
                     }
                     // User selected an item within the user's input in the definer - highlighting it for them.
-                    CurrentTabItemModel.SelectionStart = newOffset;
-                    CurrentTabItemModel.SelectionLength = e.BytesHiglightning.Length * 2;
+                    SessionViewModel.CurrentSessionPacket.SelectionStart = newOffset;
+                    SessionViewModel.CurrentSessionPacket.SelectionLength = e.BytesHiglightning.Length * 2;
                 }
             }
         }
@@ -424,7 +420,7 @@ namespace PacketStudio.NewGUI
 
         private void ExportToWireshark(object sender, RoutedEventArgs e)
         {
-            var items = TabControlMainViewModel.TabItems;
+            var items = SessionViewModel.ModifiedPackets;
             var invalidItems = items.Where(tabViewModel => !tabViewModel.IsValid);
             if (invalidItems.Any()) {
                 string invalidItemsNames =
@@ -435,10 +431,18 @@ namespace PacketStudio.NewGUI
                 return;
             }
 
-            List<TempPacketSaveData> exportedPackets = items.Select(tabViewModel => tabViewModel.ExportPacket).ToList();
+            // That .Where is important since the currenlty viewed packet is part of the ModifiedPackets collection
+            // but if it's unchanged we should treat it as modified (this can save us duplicating the import file if no
+            // other packets are modified)
+            List<TempPacketSaveData> exportedPackets = items
+                .Where(item=>item.IsModified)
+                .Select(tabViewModel => tabViewModel.ExportPacket).ToList();
             TempPacketsSaver saver = new TempPacketsSaver();
+            var pcapngPath = saver.WritePackets((SessionViewModel.BackingSmartCapture as SmartPcapngCaptureFile)?.BackingFile,
+                                exportedPackets);
+            
 
-            var wsSessionTask = _wsInterOp.ExportToWsAsync(exportedPackets);
+            var wsSessionTask = _wsInterOp.RunWireshark(pcapngPath);
 
             // The following task continues when the user exits Wireshark.
             // In this case, we might want to trigger a preview update IF the user changed preferences using WS's GUI 
@@ -498,25 +502,47 @@ namespace PacketStudio.NewGUI
 
         private void LoadFile(string filePath)
         {
+            // TODO: Get rid of this factor or make it return ISmartCaptures ...
             PacketsProvidersFactory ppf = new PacketsProvidersFactory();
             var provider = ppf.Create(filePath);
+
+            bool fileLoaded = false;
             using (Dispatcher.DisableProcessing()) {
                 _loading = true;
-                TabControlMainViewModel.LoadFile(provider);
+                try {
+                    if(!filePath.EndsWith("pcapng")) {
+                        throw new Exception("Not yet...");
+                    }
+                    SmartPcapngCaptureFile spcf = new SmartPcapngCaptureFile(filePath);
+                    SessionViewModel.LoadFile(spcf);
+                    fileLoaded = true;
+                }
+                catch(Exception ex) {
+                    MessageBox.Show($"Failed to open file {filePath}\n" +
+                        $"Error: {ex.Message}");
+                }
                 _loading = false;
             }
 
             _sessionState.Reset();
+
+            if(!fileLoaded) {
+                return;
+            }
+
             if (filePath.EndsWith(".p2s")) {
                 // Only 'associating' session if opened a p2s file. pcap/pcapng aren't treated like that.
                 _sessionState.AssociatedFilePath = filePath;
             }
 
+            //
+            // Add to 'Recent files list' (or not, if present)
+            //
+
             if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item => item.Label == filePath)) {
                 // File already in recents list, nothing more to do...
                 return;
             }
-
             // Adding file to 'recent files' list in the app menu
             var newMenuButton = new SimpleMenuButton()
             {
@@ -574,7 +600,7 @@ namespace PacketStudio.NewGUI
 
         private void SaveSession(string path)
         {
-            var sessionPackets = TabControlMainViewModel.TabItems.Select(model => model.SessionPacket);
+            var sessionPackets = SessionViewModel.ModifiedPackets.Select(model => model.SessionPacket);
             var p2SSaver = new P2sSaver();
             p2SSaver.Save(path, sessionPackets);
 
@@ -613,11 +639,11 @@ namespace PacketStudio.NewGUI
         private void TabControl_OnOnCloseButtonClick(object sender, CloseTabEventArgs e)
         {
             // When closing last tab immediately open a new empty tab.
-            int numTabs = tabControl.ItemsSource.OfType<object>().Count();
+            int numTabs = 0;// tabControl.ItemsSource.OfType<object>().Count();
             Debug.WriteLine("Number of tabs: " + numTabs);
             if (numTabs == 1) {
                 e.Cancel = true;
-                TabControlMainViewModel.ResetItemsCollection();
+                SessionViewModel.ResetItemsCollection();
             }
             _sessionState.HasUnsavedChanges = true;
         }
@@ -626,7 +652,7 @@ namespace PacketStudio.NewGUI
         {
             // Closing all tabs but making a new empty one.
             e.Cancel = true;
-            TabControlMainViewModel.ResetItemsCollection();
+            SessionViewModel.ResetItemsCollection();
             _sessionState.HasUnsavedChanges = true;
         }
 
@@ -717,7 +743,7 @@ namespace PacketStudio.NewGUI
 
             // Starting a new sessions!
             _sessionState.Reset();
-            TabControlMainViewModel.ResetItemsCollection();
+            SessionViewModel.ResetItemsCollection();
         }
 
         private void DoPaste(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Paste();
@@ -737,11 +763,11 @@ namespace PacketStudio.NewGUI
                 string hexString = encoded.ToHex();
 
                 // Insert the encoded ASCII bytes after the current caret position
-                int pos = CurrentTabItemModel.CaretPosition;
+                int pos = SessionViewModel.CurrentSessionPacket.CaretPosition;
 
-                string newPacketData = CurrentTabItemModel.Content.Insert(pos, hexString);
-                CurrentTabItemModel.Content = newPacketData;
-                CurrentTabItemModel.CaretPosition = pos + hexString.Length;
+                string newPacketData = SessionViewModel.CurrentSessionPacket.Content.Insert(pos, hexString);
+                SessionViewModel.CurrentSessionPacket.Content = newPacketData;
+                SessionViewModel.CurrentSessionPacket.CaretPosition = pos + hexString.Length;
 
             }
         }
@@ -749,7 +775,7 @@ namespace PacketStudio.NewGUI
         private void PacketDefiner_OnCaretPositionChanged(object sender, EventArgs e)
         {
             PacketDefiner pd = sender as PacketDefiner;
-            if (pd.DataContext is TabItemViewModel tivm)
+            if (pd.DataContext is SessionPacketViewModel tivm)
                 tivm.CaretPosition = pd.CaretPosition;
         }
 

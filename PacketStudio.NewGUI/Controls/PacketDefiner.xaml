@@ -8,7 +8,10 @@
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         xmlns:syncfusionskin ="clr-namespace:Syncfusion.SfSkinManager;assembly=Syncfusion.SfSkinManager.WPF"
         xmlns:controls="clr-namespace:PacketStudio.NewGUI.Controls"
-        xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes">
+        xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
+        xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
+             d:DataContext="{d:DesignInstance viewModels:SessionPacketViewModel}"
+             >
     <UserControl.Resources>
         <wpfJokes:ListIndexToHexStreamType x:Key="ListIndexToHexStreamType" />
     </UserControl.Resources>

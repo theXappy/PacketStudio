@@ -723,55 +723,26 @@
         </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
-                <controls1:TabControlWrapper x:Name="tabControl"
-                                          ItemsSource="{Binding TabItems}"
-                                          NewButtonAlignment="First"
-                                          IsNewButtonEnabled="True"
-                                          NewButtonBackground="Transparent"
-                                          NewButtonClick="AddNewPacketTab"
-                                          syncfusion:SfSkinManager.VisualStyle="MaterialDark"
-                                          CloseButtonType="Individual"
-                                          OnCloseButtonClick="TabControl_OnOnCloseButtonClick"
-                                          CloseMode="Delete"
-                                          OnCloseAllTabs="TabControl_OnOnCloseAllTabs"
-                                          Padding="0"
-                >
-
-                    <!--Binding the header text for the Tab item-->
-                    <syncfusion:TabControlExt.ItemContainerStyle >
-                        <!--<Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource BlendTabItemExtStyle}">-->
-                        <Style TargetType="syncfusion:TabItemExt" BasedOn="{StaticResource MetroTabItemExtStyle}">
-                            <Setter Property="HeaderTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Header}" />
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ContentTemplate">
-                                <Setter.Value>
-                                    <DataTemplate DataType="{x:Type viewModels:TabItemViewModel}">
                                         <controls1:PacketDefiner
+                                            x:Name="theOneAndOnlyPd"
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
                                                     Background="#323232"
-                                                    syncfusion:SfSkinManager.VisualStyle="MaterialDark"                                                    
+                                                    syncfusion:SfSkinManager.VisualStyle="MaterialDark"
+                                            DataContext="{Binding CurrentSessionPacket}" SessionPacket="{Binding SessionPacket}"
                                                     />
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </syncfusion:TabControlExt.ItemContainerStyle>
-
-                    <!--Custom UI for edit header template-->
-                    <syncfusion:TabControlExt.EditHeaderTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding Header, Mode=TwoWay}" />
-                        </DataTemplate>
-                    </syncfusion:TabControlExt.EditHeaderTemplate>
-
-                </controls1:TabControlWrapper>
             </syncfusion:DockingManager.ClientControl>
+            <DockPanel syncfusion:DockingManager.CanClose="False" 
+                       syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
+                       syncfusion:DockingManager.Header="Packets List" 
+                       syncfusion:DockingManager.State="Dock" 
+                       syncfusion:DockingManager.CanAutoHide="False" 
+                       syncfusion:DockingManager.SideInDockedMode="Top" 
+                       >
+                <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
+                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}">
+                </ListBox>
+            </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
                        syncfusion:DockingManager.Header="Live Preview" 

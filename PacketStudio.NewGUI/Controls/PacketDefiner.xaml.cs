@@ -11,6 +11,7 @@ using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.NewGUI.PacketTemplatesControls;
+using PacketStudio.NewGUI.ViewModels;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace PacketStudio.NewGUI.Controls
@@ -136,6 +137,13 @@ namespace PacketStudio.NewGUI.Controls
                 if (!_deserializer.TryDeserialize(this.hexTextBox.Text, out byte[] bytes)) return null;
 
                 var (success, res, _) = templateControl.GeneratePacket(bytes);
+
+                if (success)
+                {
+                    var packetViewModel = DataContext as SessionPacketViewModel;
+                    res.PacketNumber = packetViewModel.Header;
+                }
+
                 return success ? res : null;
             }
             set

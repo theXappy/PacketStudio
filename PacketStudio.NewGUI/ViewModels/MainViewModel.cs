@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
+using PacketStudio.DataAccess.SmartCapture;
+using Syncfusion.Windows.Controls.Gantt;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
 
@@ -16,93 +22,117 @@ namespace PacketStudio.NewGUI.ViewModels
         private const string TAB_HEADER_PREFIX = "Packet";
         private int nextTabNumber = 1;
 
-        private NewButtonAlignment newButtonAlignment = NewButtonAlignment.Last;
-        private Brush newButtonBackground = Brushes.DimGray;
-        private Thickness newButtonMargin = new Thickness(50,1,50,1); 
-        private bool isNewButtonClosedonNoChild = true;
-        private bool isNewButtonEnabled = true;
-        private ObservableCollection<TabItemViewModel> tabItems;
+        private ObservableCollection<SessionPacketViewModel> _modifiedPackets;
+        private SessionPacketViewModel _currentSessionPacket;
+        public ISmartCaptureFile BackingSmartCapture { get; set; }
+        private string[] _packetsDescs = new string[0];
+        private int _selectedPacketIndex = 0;
 
-        public Thickness NewButtonMargin
+        public ObservableCollection<SessionPacketViewModel> ModifiedPackets
         {
-            get { return newButtonMargin; }
+            get { return _modifiedPackets; }
             set
             {
-                newButtonMargin = value;
-                this.RaisePropertyChanged(nameof(NewButtonMargin));
-            }
-        }
-        public Brush NewButtonBackground
-        {
-            get { return newButtonBackground; }
-            set
-            {
-                newButtonBackground = value;
-                this.RaisePropertyChanged(nameof(NewButtonBackground));
+                _modifiedPackets = value;
+                this.RaisePropertyChanged(nameof(ModifiedPackets));
             }
         }
 
-        public NewButtonAlignment NewButtonAlignment
+        public SessionPacketViewModel CurrentSessionPacket
         {
-            get { return newButtonAlignment; }
+            get { return _currentSessionPacket; }
             set
             {
-                newButtonAlignment = value;
-                this.RaisePropertyChanged(nameof(NewButtonAlignment));
-            }
-        }
-        public bool IsNewButtonEnabled
-        {
-            get { return isNewButtonEnabled; }
-            set
-            {
-                isNewButtonEnabled = value;
-                this.RaisePropertyChanged(nameof(IsNewButtonEnabled));
-            }
-        }
-        public bool IsNewButtonClosedonNoChild
-        {
-            get { return isNewButtonClosedonNoChild; }
-            set
-            {
-                isNewButtonClosedonNoChild = value;
-                this.RaisePropertyChanged(nameof(IsNewButtonClosedonNoChild));
+                // Handle last packet
+                if (_currentSessionPacket != null)
+                {
+                    if (_currentSessionPacket.IsModified)
+                    {
+                        Debug.WriteLine(" ### Packet was modified!!!");
+                        // ??
+                    }
+                    else
+                    {
+                        Debug.WriteLine(" ### Packet was NOT modified");
+                        ModifiedPackets.Remove(_currentSessionPacket);
+                    }
+                }
+
+                // Handle new packet
+                _currentSessionPacket = value;
+                ModifiedPackets.Add(_currentSessionPacket);
+                this.RaisePropertyChanged(nameof(CurrentSessionPacket));
             }
         }
 
-        public ObservableCollection<TabItemViewModel> TabItems
+        public string[] PacketsDescriptions
         {
-            get { return tabItems; }
+            get { return _packetsDescs; }
             set
             {
-                tabItems = value;
-                this.RaisePropertyChanged(nameof(TabItems));
+                _packetsDescs = value;
+                this.RaisePropertyChanged(nameof(PacketsDescriptions));
             }
         }
 
-        
+        public int SelectedPacketIndex
+        {
+            get { return _selectedPacketIndex; }
+            set
+            {
+                _selectedPacketIndex = value;
+                this.RaisePropertyChanged(nameof(SelectedPacketIndex));
+
+                if(_selectedPacketIndex == -1)
+                    return;
+
+                // TODO: if _selected too big what happens? throws?
+                // TODO: Use link layer
+                var (link, data) = BackingSmartCapture.GetPacket(_selectedPacketIndex);
+
+                // TODO: Remvoe this 'tab number' header thingy
+                var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
+                if (sessionPacketObj != null) {
+                    Debug.WriteLine($" @@@ A session packet object was already created and stored for packet #{_selectedPacketIndex}");
+                    CurrentSessionPacket = sessionPacketObj;
+                }
+                else {
+                    Debug.WriteLine($" @@@ NO session packet object foudn packet #{_selectedPacketIndex}, Creating new one!");
+                    CurrentSessionPacket = new SessionPacketViewModel()
+                    {
+                        Header = _selectedPacketIndex,
+                    };
+                    CurrentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, data.ToHex())
+                    {
+                        Details = new Dictionary<string, string>()
+                    {
+                        {PacketSaveDataNGProtoFields.ENCAPS_TYPE, ((int)link).ToString()},
+                    }
+                    });
+                }
+            }
+        }
 
         public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
-            if (psdng == null)
-            {
-                psdng = new PacketSaveDataNG(HexStreamType.Raw,String.Empty);
+            if (psdng == null) {
+                psdng = new PacketSaveDataNG(HexStreamType.Raw, String.Empty);
             }
 
             int tabNumber = nextTabNumber++;
-            TabItemViewModel new_model1 = new TabItemViewModel()
+            SessionPacketViewModel new_model1 = new SessionPacketViewModel()
             {
-                Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
+                Header = tabNumber,
                 Content = $"",
             };
-            new_model1.Load(psdng);
-            tabItems.Add(new_model1);
+            new_model1.LoadInitialState(psdng);
+            _modifiedPackets.Add(new_model1);
         }
 
 
         public void ResetItemsCollection()
         {
-            tabItems.Clear();
+            _modifiedPackets.Clear();
             // Add first packet
             nextTabNumber = 1;
             AddNewPacket(null);
@@ -110,32 +140,25 @@ namespace PacketStudio.NewGUI.ViewModels
         }
         public MainViewModel()
         {
-            tabItems = new ObservableCollection<TabItemViewModel>();
-            ResetItemsCollection();
+            _modifiedPackets = new ObservableCollection<SessionPacketViewModel>();
+            CurrentSessionPacket = new SessionPacketViewModel();
 
             // Register self with parent MainWindow
-            MainWindow.TabControlMainViewModel = this;
+            MainWindow.SessionViewModel = this;
         }
 
-        public void LoadFile(IPacketsProviderNG provider)
+        private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
+
+        public void LoadFile(ISmartCaptureFile smartCapture)
         {
-            tabItems.Clear();
-            nextTabNumber = 1;
-            try {
-                foreach (PacketSaveDataNG packet in provider) {
-                    AddNewPacket(packet);
-                }
-            }
-			catch {
-				// Swallow
-            }
-            finally {
-                // Packet provider might return 0 packets if the PCAP is empty/broken
-                // In that case we are adding a single empty tab (packet)
-                if (!tabItems.Any()) {
-                    AddNewPacket();
-                }
-            }
+            BackingSmartCapture = smartCapture;
+            var tsharkTask = _tshark.GetTextOutputAsync(BackingSmartCapture.GetPcapngFilePath(), CancellationToken.None);
+            tsharkTask.ContinueWith((descTask) =>
+            {
+                _modifiedPackets.Clear();
+                PacketsDescriptions = descTask.Result;
+                SelectedPacketIndex = 0;
+            });
         }
     }
 }
