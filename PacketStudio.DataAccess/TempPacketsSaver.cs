@@ -30,6 +30,13 @@ namespace PacketStudio.DataAccess
             {
                 return DoExportBasedOfFile(basePcapngFile, packets);
             }
+
+            if (packets == null || !packets.Any())
+            {
+                throw new ArgumentNullException(
+                    $"WritePackets failed because both {nameof(basePcapngFile)} and {packets} where NULL/empty");
+            }
+
             TimestampHelper tsh = new TimestampHelper(0, 0);
 
             string pcapngPath = Path.ChangeExtension(Path.GetTempFileName(), "pcapng");

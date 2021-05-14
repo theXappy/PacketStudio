@@ -129,7 +129,9 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public bool IsModified => !_initalState?.Equals(this.SessionPacket) ?? false;
+        // Note that IsModified is 'true' if _initalState is 'null' because that means we don't have
+        // a packet we dereive from and any state of the current packet is "New" (and hence "Modified" compared to 'null')
+        public bool IsModified => !_initalState?.Equals(this.SessionPacket) ?? true;
 
 
         public void LoadInitialState(PacketSaveDataNG psd)
