@@ -48,20 +48,25 @@ namespace PacketStudio.Core
 		}
 
 		public WiresharkInteropTask ExportToWsAsync(IEnumerable<TempPacketSaveData> packets)
-		{
-			string savedPcapPath = _packetsSaver.WritePackets(packets);
-		
-			// Output. Empty for now, will be updated below
-			WiresharkInteropTask outputTask = new WiresharkInteropTask();
-            
-			// Setting up preferences monitor
+        {
+            string savedPcapPath = _packetsSaver.WritePackets(null, packets);
+
+            return RunWireshark(savedPcapPath);
+        }
+
+        public WiresharkInteropTask RunWireshark(string captureFilePath)
+        {
+            // Output. Empty for now, will be updated below
+            WiresharkInteropTask outputTask = new WiresharkInteropTask();
+
+            // Setting up preferences monitor
             var wsPrefDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "wireshark");
-            FileSystemWatcher fsw  = new FileSystemWatcher(wsPrefDir);
+            FileSystemWatcher fsw = new FileSystemWatcher(wsPrefDir);
             fsw.IncludeSubdirectories = true;
 
             void FswChanged(object o, FileSystemEventArgs args)
             {
-				// In change in the preferences directory is treated the same
+                // In change in the preferences directory is treated the same
                 var filteredFile = new List<string> {"recent", "recent_common"};
                 if (!filteredFile.Contains(args.Name))
                 {
@@ -71,11 +76,11 @@ namespace PacketStudio.Core
 
             fsw.Changed += FswChanged;
             fsw.EnableRaisingEvents = true;
-            
+
             // Running wireshark
             var wsCli = Cli.Wrap(_wiresharkPath)
-                           .WithArguments(savedPcapPath);
-			CommandTask<CommandResult> cliTask =  wsCli.ExecuteAsync();
+                .WithArguments(captureFilePath);
+            CommandTask<CommandResult> cliTask = wsCli.ExecuteAsync();
             cliTask.Task.ContinueWith(_ =>
             {
                 fsw.EnableRaisingEvents = false;
@@ -86,7 +91,8 @@ namespace PacketStudio.Core
 
             return outputTask;
         }
-		public void ExportToWs(IEnumerable<TempPacketSaveData> packets)
+
+        public void ExportToWs(IEnumerable<TempPacketSaveData> packets)
 		{
 			try
 			{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -10,6 +11,7 @@ using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.SmartCapture;
+using Syncfusion.Windows.Controls.Gantt;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
 
@@ -20,29 +22,46 @@ namespace PacketStudio.NewGUI.ViewModels
         private const string TAB_HEADER_PREFIX = "Packet";
         private int nextTabNumber = 1;
 
-        private ObservableCollection<TabItemViewModel> tabItems;
-        private TabItemViewModel currentTabItem = new TabItemViewModel() { Content = "HaHa" };
-        private ISmartCaptureFile _smartCapture;
+        private ObservableCollection<SessionPacketViewModel> _modifiedPackets;
+        private SessionPacketViewModel _currentSessionPacket;
+        public ISmartCaptureFile BackingSmartCapture { get; set; }
         private string[] _packetsDescs = new string[0];
         private int _selectedPacketIndex = 0;
 
-        public ObservableCollection<TabItemViewModel> TabItems
+        public ObservableCollection<SessionPacketViewModel> ModifiedPackets
         {
-            get { return tabItems; }
+            get { return _modifiedPackets; }
             set
             {
-                tabItems = value;
-                this.RaisePropertyChanged(nameof(TabItems));
+                _modifiedPackets = value;
+                this.RaisePropertyChanged(nameof(ModifiedPackets));
             }
         }
 
-        public TabItemViewModel CurrentTabItem
+        public SessionPacketViewModel CurrentSessionPacket
         {
-            get { return currentTabItem; }
+            get { return _currentSessionPacket; }
             set
             {
-                currentTabItem = value;
-                this.RaisePropertyChanged(nameof(CurrentTabItem));
+                // Handle last packet
+                if (_currentSessionPacket != null)
+                {
+                    if (_currentSessionPacket.IsModified)
+                    {
+                        Debug.WriteLine(" ### Packet was modified!!!");
+                        // ??
+                    }
+                    else
+                    {
+                        Debug.WriteLine(" ### Packet was NOT modified");
+                        ModifiedPackets.Remove(_currentSessionPacket);
+                    }
+                }
+
+                // Handle new packet
+                _currentSessionPacket = value;
+                ModifiedPackets.Add(_currentSessionPacket);
+                this.RaisePropertyChanged(nameof(CurrentSessionPacket));
             }
         }
 
@@ -69,21 +88,28 @@ namespace PacketStudio.NewGUI.ViewModels
 
                 // TODO: if _selected too big what happens? throws?
                 // TODO: Use link layer
-                var (link, data) = _smartCapture.GetPacket(_selectedPacketIndex);
+                var (link, data) = BackingSmartCapture.GetPacket(_selectedPacketIndex);
 
                 // TODO: Remvoe this 'tab number' header thingy
-                int tabNumber = nextTabNumber++;
-                CurrentTabItem = new TabItemViewModel()
-                {
-                    Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
-                };                
-                CurrentTabItem.Load(new PacketSaveDataNG(HexStreamType.Raw, data.ToHex())
-                {
-                    Details = new Dictionary<string, string>()
+                var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
+                if (sessionPacketObj != null) {
+                    Debug.WriteLine($" @@@ A session packet object was already created and stored for packet #{_selectedPacketIndex}");
+                    CurrentSessionPacket = sessionPacketObj;
+                }
+                else {
+                    Debug.WriteLine($" @@@ NO session packet object foudn packet #{_selectedPacketIndex}, Creating new one!");
+                    CurrentSessionPacket = new SessionPacketViewModel()
+                    {
+                        Header = _selectedPacketIndex,
+                    };
+                    CurrentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, data.ToHex())
+                    {
+                        Details = new Dictionary<string, string>()
                     {
                         {PacketSaveDataNGProtoFields.ENCAPS_TYPE, ((int)link).ToString()},
                     }
-                });
+                    });
+                }
             }
         }
 
@@ -94,19 +120,19 @@ namespace PacketStudio.NewGUI.ViewModels
             }
 
             int tabNumber = nextTabNumber++;
-            TabItemViewModel new_model1 = new TabItemViewModel()
+            SessionPacketViewModel new_model1 = new SessionPacketViewModel()
             {
-                Header = $"{TAB_HEADER_PREFIX} {tabNumber}",
+                Header = tabNumber,
                 Content = $"",
             };
-            new_model1.Load(psdng);
-            tabItems.Add(new_model1);
+            new_model1.LoadInitialState(psdng);
+            _modifiedPackets.Add(new_model1);
         }
 
 
         public void ResetItemsCollection()
         {
-            tabItems.Clear();
+            _modifiedPackets.Clear();
             // Add first packet
             nextTabNumber = 1;
             AddNewPacket(null);
@@ -114,46 +140,22 @@ namespace PacketStudio.NewGUI.ViewModels
         }
         public MainViewModel()
         {
-            tabItems = new ObservableCollection<TabItemViewModel>();
-            ResetItemsCollection();
+            _modifiedPackets = new ObservableCollection<SessionPacketViewModel>();
+            CurrentSessionPacket = new SessionPacketViewModel();
 
             // Register self with parent MainWindow
-            MainWindow.TabControlMainViewModel = this;
+            MainWindow.SessionViewModel = this;
         }
 
-        //public void LoadFile(IPacketsProviderNG provider)
-        //{
-        //    this.CurrentTabItem = new TabItemViewModel { Content = "Kaaaaa" };
-        //    tabItems.Clear();
-        //    nextTabNumber = 1;
-        //    try {
-        //        for (int i = 0; i < 10_000; i++) {
-        //            AddNewPacket();
-        //        }
-
-        //        //foreach (PacketSaveDataNG packet in provider) {
-        //        //    AddNewPacket(packet);
-        //        //}
-
-        //    }
-        //    finally {
-        //        // Packet provider might return 0 packets if the PCAP is empty/broken
-        //        // In that case we are adding a single empty tab (packet)
-        //        if (!tabItems.Any()) {
-        //            AddNewPacket();
-        //        }
-        //    }
-        //}
-
-        // TODO: Expose this outside? Get it as an argument?
         private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
 
         public void LoadFile(ISmartCaptureFile smartCapture)
         {
-            _smartCapture = smartCapture;
-            var tsharkTask = _tshark.GetTextOutputAsync(_smartCapture.GetPcapngFilePath(), CancellationToken.None);
+            BackingSmartCapture = smartCapture;
+            var tsharkTask = _tshark.GetTextOutputAsync(BackingSmartCapture.GetPcapngFilePath(), CancellationToken.None);
             tsharkTask.ContinueWith((descTask) =>
             {
+                _modifiedPackets.Clear();
                 PacketsDescriptions = descTask.Result;
                 SelectedPacketIndex = 0;
             });

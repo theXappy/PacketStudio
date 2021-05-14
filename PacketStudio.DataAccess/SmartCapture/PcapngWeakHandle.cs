@@ -8,14 +8,14 @@ using System.Runtime.CompilerServices;
 
 namespace PacketStudio.DataAccess.SmartCapture
 {
-    public class WeakPcapng
+    public class PcapngWeakHandle
     {
         private List<long> _cachedOffsets = null;
         private List<InterfaceDescriptionBlock> _cachedIfacesBlock;
         public string Path { get; set; }
 
 
-        public WeakPcapng(string path)
+        public PcapngWeakHandle(string path)
         {
             Path = path;
         }

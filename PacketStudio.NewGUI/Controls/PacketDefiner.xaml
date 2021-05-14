@@ -10,7 +10,7 @@
         xmlns:controls="clr-namespace:PacketStudio.NewGUI.Controls"
         xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
-             d:DataContext="{d:DesignInstance viewModels:TabItemViewModel}"
+             d:DataContext="{d:DesignInstance viewModels:SessionPacketViewModel}"
              >
     <UserControl.Resources>
         <wpfJokes:ListIndexToHexStreamType x:Key="ListIndexToHexStreamType" />

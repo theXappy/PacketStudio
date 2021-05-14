@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -17,11 +18,11 @@ namespace PacketStudio.NewGUI.ViewModels
         }
     }
 
-    public class TabItemViewModel : ViewModelBase
+    public class SessionPacketViewModel : ViewModelBase
     {
         private HexStreamType packetType;
         private string content;
-        private string header;
+        private int header;
         private int caretPos;
         private int selStart;
         private int selLen;
@@ -29,6 +30,7 @@ namespace PacketStudio.NewGUI.ViewModels
         private TempPacketSaveData _exportPacket;
 
         public bool IsValid { get; set; }
+
         public string ValidationError { get; set; }
 
         public TempPacketSaveData ExportPacket
@@ -41,6 +43,8 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
+        private PacketSaveDataNG _initalState = null;
+
         public PacketSaveDataNG SessionPacket
         {
             get => _sessionPacket;
@@ -52,7 +56,7 @@ namespace PacketStudio.NewGUI.ViewModels
                 // Check for specific header name
                 if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.HEADER_FIELD, out string newHeader))
                 {
-                    Header = newHeader;
+                    Header = int.Parse(newHeader);
                 }
                 if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.CARET_POS_FIELD, out string newCaretPosString))
                 {
@@ -64,7 +68,7 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public string Header
+        public int Header
         {
             get => header;
             set
@@ -107,6 +111,11 @@ namespace PacketStudio.NewGUI.ViewModels
             set
             {
                 content = value;
+                if (SessionPacket != null)
+                {
+                    SessionPacket.PacketData = content;
+                }
+
                 OnPropertyChanged(nameof(Content));
             }
         }
@@ -120,8 +129,13 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public void Load(PacketSaveDataNG psd)
+        public bool IsModified => !_initalState?.Equals(this.SessionPacket) ?? false;
+
+
+        public void LoadInitialState(PacketSaveDataNG psd)
         {
+            _initalState = psd.Clone() as PacketSaveDataNG;
+
             SessionPacket = psd;
             Content = psd.PacketData;
             PacketType = psd.Type;
@@ -149,5 +163,7 @@ namespace PacketStudio.NewGUI.ViewModels
             byte[] normalizedBytes = _deserializer.Deserialize(Content); // Might throw
             Content = normalizedBytes.ToHex();
         }
+
+
     }
 }

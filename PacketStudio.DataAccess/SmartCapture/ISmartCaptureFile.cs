@@ -20,13 +20,14 @@ namespace PacketStudio.DataAccess.SmartCapture
 
     public class SmartPcapngCaptureFile : ISmartCaptureFile
     {
-        WeakPcapng _weakPcapng;
-
+        PcapngWeakHandle _pcapngWeakHandle;
         List<long> _offsetsList = null;
+
+        public PcapngWeakHandle BackingFile => _pcapngWeakHandle;
 
         public SmartPcapngCaptureFile(string path)
         {
-            _weakPcapng = new WeakPcapng(path);
+            _pcapngWeakHandle = new PcapngWeakHandle(path);
         }
 
         public void Dispose()
@@ -39,11 +40,11 @@ namespace PacketStudio.DataAccess.SmartCapture
         {
             if (_offsetsList == null || _offsetsList.Count <= index)
             {
-                _offsetsList = _weakPcapng.GetPacketsOffsets();
+                _offsetsList = _pcapngWeakHandle.GetPacketsOffsets();
             }
 
-            EnhancedPacketBlock pkt = _weakPcapng.GetPacketAt(_offsetsList[index]);
-            var ifaces = _weakPcapng.GetInterfaces();
+            EnhancedPacketBlock pkt = _pcapngWeakHandle.GetPacketAt(_offsetsList[index]);
+            var ifaces = _pcapngWeakHandle.GetInterfaces();
             InterfaceDescriptionBlock iface = null;
             try
             {
@@ -62,7 +63,7 @@ namespace PacketStudio.DataAccess.SmartCapture
             // TODO: Maybe keep versions of 'list' ("retrival time") and the whole smart object
             // so we know when it's stale and needs to be re-retrieved?
             if (_offsetsList == null) {
-                _offsetsList = _weakPcapng.GetPacketsOffsets();
+                _offsetsList = _pcapngWeakHandle.GetPacketsOffsets();
             }
 
             return _offsetsList.Count;
@@ -73,7 +74,7 @@ namespace PacketStudio.DataAccess.SmartCapture
             // TODO: Maybe keep versions of 'list' ("retrival time") and the whole smart object
             // so we know when it's stale and needs to be re-retrieved?
             if (_offsetsList == null) {
-                _offsetsList = _weakPcapng.GetPacketsOffsets();
+                _offsetsList = _pcapngWeakHandle.GetPacketsOffsets();
             }
 
             // TODO: Use TShark for this
@@ -86,7 +87,8 @@ namespace PacketStudio.DataAccess.SmartCapture
 
         public string GetPcapngFilePath()
         {
-            return _weakPcapng.Path;
+            return _pcapngWeakHandle.Path;
         }
+
     }
 }
