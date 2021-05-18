@@ -161,9 +161,16 @@ namespace PacketStudio.NewGUI.ViewModels
             _backingPcapng = MemoryPcapng.ParsePcapng(path);
 
             WiresharkPipeSender sender = new WiresharkPipeSender();
-            sender.SendPcapngAsync("lol", _backingPcapng);
-            WiresharkInterop wiresharkInterop = new WiresharkInterop(SharksFinder.GetDirectories()[0].WiresharkPath);
-            wiresharkInterop.ExportWithPipe("lol");
+
+            string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
+            var senderTask = sender.SendPcapngAsync(pipeName, _backingPcapng);
+            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\"+ pipeName, CancellationToken.None);
+
+            tsharkTask.ContinueWith(task =>
+            {
+                Debug.WriteLine(" @@@ LoadFile Finished, updating packet descriptions.");
+                this.PacketsDescriptions = task.Result;
+            });
         }
 
         public void MovePacket(int newIndex)

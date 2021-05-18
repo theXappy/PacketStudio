@@ -282,7 +282,9 @@ namespace PacketStudio.Core
 
             if (inputPath.Contains(@"\\.\pipe\"))
             {
-                Regex.Replace(selected, "^-r ", "-k -i ");
+                selected = Regex.Replace(selected, "^-r ", "-i ");
+                // TODO: "Live capturing does not support two pass analysis..."
+                selected = Regex.Replace(selected, "-2$", string.Empty);
             }
 
 

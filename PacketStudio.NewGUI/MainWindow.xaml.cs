@@ -782,8 +782,6 @@ namespace PacketStudio.NewGUI
 
         private void MoveBackward(object sender, RoutedEventArgs e)
         {
-            int newIndex = 3;
-            SessionViewModel.MovePacket(newIndex);
             throw new NotImplementedException();
         }
         private void MoveForward(object sender, RoutedEventArgs e)
