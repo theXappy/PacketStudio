@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using FastPcapng;
+using FastPcapng.Internal;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
@@ -24,7 +26,9 @@ namespace PacketStudio.NewGUI.ViewModels
 
         private ObservableCollection<SessionPacketViewModel> _modifiedPackets;
         private SessionPacketViewModel _currentSessionPacket;
-        public ISmartCaptureFile BackingSmartCapture { get; set; }
+
+
+        private MemoryPcapng _backingPcapng;
         private string[] _packetsDescs = new string[0];
         private int _selectedPacketIndex = 0;
 
@@ -88,7 +92,10 @@ namespace PacketStudio.NewGUI.ViewModels
 
                 // TODO: if _selected too big what happens? throws?
                 // TODO: Use link layer
-                var (link, data) = BackingSmartCapture.GetPacket(_selectedPacketIndex);
+                var packetBlock = _backingPcapng.GetPacket(_selectedPacketIndex);
+
+                var iface = _backingPcapng.Interfaces[packetBlock.InterfaceID];
+                var ifaceLinkType = iface.LinkType; 
 
                 // TODO: Remvoe this 'tab number' header thingy
                 var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
@@ -102,11 +109,11 @@ namespace PacketStudio.NewGUI.ViewModels
                     {
                         Header = _selectedPacketIndex,
                     };
-                    CurrentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, data.ToHex())
+                    CurrentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, packetBlock.Data.ToHex())
                     {
                         Details = new Dictionary<string, string>()
                     {
-                        {PacketSaveDataNGProtoFields.ENCAPS_TYPE, ((int)link).ToString()},
+                        {PacketSaveDataNGProtoFields.ENCAPS_TYPE, ((int)ifaceLinkType).ToString()},
                     }
                     });
                 }
@@ -149,31 +156,19 @@ namespace PacketStudio.NewGUI.ViewModels
 
         private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
 
-        public void LoadFile(ISmartCaptureFile smartCapture)
+        public void LoadFile(string path)
         {
-            BackingSmartCapture = smartCapture;
-            var tsharkTask = _tshark.GetTextOutputAsync(BackingSmartCapture.GetPcapngFilePath(), CancellationToken.None);
-            tsharkTask.ContinueWith((descTask) =>
-            {
-                _modifiedPackets.Clear();
-                PacketsDescriptions = descTask.Result;
-                SelectedPacketIndex = 0;
-            });
+            _backingPcapng = MemoryPcapng.ParsePcapng(path);
+
+            WiresharkPipeSender sender = new WiresharkPipeSender();
+            sender.SendPcapngAsync("lol", _backingPcapng);
+            WiresharkInterop wiresharkInterop = new WiresharkInterop(SharksFinder.GetDirectories()[0].WiresharkPath);
+            wiresharkInterop.ExportWithPipe("lol");
         }
 
         public void MovePacket(int newIndex)
         {
-            var currPacket = this.CurrentSessionPacket;
-            _modifiedPackets.Remove(currPacket);
-
-            BackingSmartCapture.MovePacket(this.SelectedPacketIndex, newIndex);
-            
-            var tsharkTask = _tshark.GetTextOutputAsync(BackingSmartCapture.GetPcapngFilePath(), CancellationToken.None);
-            tsharkTask.ContinueWith((descTask) =>
-            {
-                PacketsDescriptions = descTask.Result;
-                SelectedPacketIndex = newIndex;
-            });
+            // ??
         }
     }
 }

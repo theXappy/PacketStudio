@@ -12,6 +12,7 @@
     <None Remove="anvil.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FastPcapng\FastPcapng\FastPcapng.csproj" />
     <ProjectReference Include="..\PacketDotNet.Sctp\PacketDotNet.Sctp.csproj" />
     <ProjectReference Include="..\PacketStudio.Core\PacketStudio.Core.csproj" />
     <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj" />

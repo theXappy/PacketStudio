@@ -54,7 +54,8 @@ namespace PacketStudio.Core
             return RunWireshark(savedPcapPath);
         }
 
-        public WiresharkInteropTask RunWireshark(string captureFilePath)
+        /// <param name="inputPath">Either a file path or a pipe identifier</param>
+        public WiresharkInteropTask RunWireshark(string inputPath)
         {
             // Output. Empty for now, will be updated below
             WiresharkInteropTask outputTask = new WiresharkInteropTask();
@@ -77,9 +78,18 @@ namespace PacketStudio.Core
             fsw.Changed += FswChanged;
             fsw.EnableRaisingEvents = true;
 
+            // Setting command line arguments.
+            // By default assuming reading from file so the single argument is the path
+            string arguments = inputPath;
+            if(inputPath.StartsWith(@"\\.\pipe\"))
+            {
+                arguments = $"-i {inputPath} -k";
+            }
+
+            Debug.WriteLine(" &&& Running Wireshark with these arguments: " + arguments);
             // Running wireshark
             var wsCli = Cli.Wrap(_wiresharkPath)
-                .WithArguments(captureFilePath);
+                .WithArguments(arguments);
             CommandTask<CommandResult> cliTask = wsCli.ExecuteAsync();
             cliTask.Task.ContinueWith(_ =>
             {
@@ -103,5 +113,10 @@ namespace PacketStudio.Core
 				// ignored
 			}
 		}
-	}
+
+        public WiresharkInteropTask ExportWithPipe(string pipeName)
+        {
+            return RunWireshark($@"\\.\pipe\{pipeName}");
+        }
+    }
 }

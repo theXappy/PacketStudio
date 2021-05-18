@@ -438,7 +438,7 @@ namespace PacketStudio.NewGUI
                 .Where(item=>item.IsModified)
                 .Select(tabViewModel => tabViewModel.ExportPacket).ToList();
             TempPacketsSaver saver = new TempPacketsSaver();
-            var pcapngPath = saver.WritePackets((SessionViewModel.BackingSmartCapture as SmartPcapngCaptureFile)?.BackingFile,
+            var pcapngPath = saver.WritePackets(null,
                                 exportedPackets);
             
 
@@ -513,8 +513,7 @@ namespace PacketStudio.NewGUI
                     if(!filePath.EndsWith("pcapng")) {
                         throw new Exception("Not yet...");
                     }
-                    SmartPcapngCaptureFile spcf = new SmartPcapngCaptureFile(filePath);
-                    SessionViewModel.LoadFile(spcf);
+                    SessionViewModel.LoadFile(filePath);
                     fileLoaded = true;
                 }
                 catch(Exception ex) {
