@@ -55,7 +55,6 @@ namespace PacketStudio.DataAccess.SmartCapture
 
 
                 // Checking until first packet block or end of file
-                int packetCounter = 0;
                 using (FileStream fileStream = File.OpenRead(Path))
                 using (BinaryReader binReader = new BinaryReader(fileStream)) {
                     while (fileStream.Position != fileStream.Length) {
@@ -124,7 +123,7 @@ namespace PacketStudio.DataAccess.SmartCapture
             // TODO: Reverse Byte order not always false probably...
             byte[] data = newPacket.ConvertToByte(false, (ex) => Debug.WriteLine("LOL!" + ex));
 
-            using (FileStream fileStream = File.Open(Path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+            using (FileStream fileStream = File.Open(Path, FileMode.Open, FileAccess.ReadWrite))
             using (BinaryReader binReader = new BinaryReader(fileStream)) {
                 // Navigate to the overridden block start
                 long actualOffset = fileStream.Seek(packetBlockOffset, SeekOrigin.Begin);
@@ -219,6 +218,16 @@ namespace PacketStudio.DataAccess.SmartCapture
             File.Move(tempFilePath, Path);
             try { File.Delete(tempFilePath); } catch { /* I'm just being polite to the files system */ };
             _cachedOffsets = null;
+        }
+
+        public void AppendPacket(EnhancedPacketBlock newPacket)
+        {
+            // TODO: Reverse Byte order not always false probably...
+            byte[] data = newPacket.ConvertToByte(false, (ex) => Debug.WriteLine("LOL!" + ex));
+
+            using (FileStream fileStream = File.Open(Path, FileMode.Append, FileAccess.ReadWrite)) {
+                fileStream.Write(data);
+            }
         }
     }
 }

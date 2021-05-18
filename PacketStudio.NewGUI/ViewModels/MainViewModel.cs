@@ -160,5 +160,20 @@ namespace PacketStudio.NewGUI.ViewModels
                 SelectedPacketIndex = 0;
             });
         }
+
+        public void MovePacket(int newIndex)
+        {
+            var currPacket = this.CurrentSessionPacket;
+            _modifiedPackets.Remove(currPacket);
+
+            BackingSmartCapture.MovePacket(this.SelectedPacketIndex, newIndex);
+            
+            var tsharkTask = _tshark.GetTextOutputAsync(BackingSmartCapture.GetPcapngFilePath(), CancellationToken.None);
+            tsharkTask.ContinueWith((descTask) =>
+            {
+                PacketsDescriptions = descTask.Result;
+                SelectedPacketIndex = newIndex;
+            });
+        }
     }
 }

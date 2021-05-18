@@ -13,6 +13,10 @@ namespace PacketStudio.DataAccess.SmartCapture
         string[] GetPacketsDescriptions();
         (LinkLayerType linkLayer, byte[] data) GetPacket(int index);
 
+        void AppendPacket(LinkLayerType linkLayer, byte[] data);
+        void MovePacket(int oldIndex, int newIndex);
+        void ReplacePacket(LinkLayerType, byte[] data);
+
         // Returns a .pcapng file containing all the packets
         string GetPcapngFilePath();
     }
@@ -56,6 +60,24 @@ namespace PacketStudio.DataAccess.SmartCapture
             }
 
             return ((LinkLayerType)iface.LinkType, pkt.Data);
+        }
+
+        public void AppendPacket(LinkLayerType linkLayer, byte[] data)
+        {
+            _pcapngWeakHandle.AppendPacket();
+        }
+
+        public void MovePacket(int oldIndex, int newIndex)
+        {
+            // ??
+        }
+
+        public void ReplacePacket(int index, LinkLayerType missing_name, byte[] data)
+        {
+            EnhancedPacketBlock pkt = _pcapngWeakHandle.GetPacketAt(index);
+            pkt.Data = data;
+            _pcapngWeakHandle.ReplacePacket();
+            throw new NotImplementedException();
         }
 
         public int GetPacketsCount()

@@ -57,7 +57,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private readonly SessionState _sessionState = new SessionState();
+        private readonly SessionSaveState _sessionSaveState = new SessionSaveState();
 
         public static MainViewModel SessionViewModel { get; set; }
         private PacketDefiner CurrentPacketDefiner => null; // WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
@@ -116,7 +116,7 @@ namespace PacketStudio.NewGUI
         private void AddNewPacketTab(object sender, EventArgs e)
         {
             SessionViewModel?.AddNewPacket();
-            _sessionState.HasUnsavedChanges = true;
+            _sessionSaveState.HasUnsavedChanges = true;
         }
 
         private void UpdatePacketState(PacketDefiner invoker)
@@ -188,7 +188,7 @@ namespace PacketStudio.NewGUI
             if (_loading) return;
 
             UpdatePacketState(sender as PacketDefiner);
-            _sessionState.HasUnsavedChanges = true;
+            _sessionSaveState.HasUnsavedChanges = true;
         }
 
 
@@ -461,7 +461,7 @@ namespace PacketStudio.NewGUI
         {
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} - OpenMenuItemClicked");
 
-            if (_sessionState.HasUnsavedChanges) {
+            if (_sessionSaveState.HasUnsavedChanges) {
                 // Prompt user about unsaved changes in current session
                 var userSelection = MessageBox.Show(
                     "You have unsaved changes in the current session.\r\n" +
@@ -524,7 +524,7 @@ namespace PacketStudio.NewGUI
                 _loading = false;
             }
 
-            _sessionState.Reset();
+            _sessionSaveState.Reset();
 
             if(!fileLoaded) {
                 return;
@@ -532,7 +532,7 @@ namespace PacketStudio.NewGUI
 
             if (filePath.EndsWith(".p2s")) {
                 // Only 'associating' session if opened a p2s file. pcap/pcapng aren't treated like that.
-                _sessionState.AssociatedFilePath = filePath;
+                _sessionSaveState.AssociatedFilePath = filePath;
             }
 
             //
@@ -567,9 +567,9 @@ namespace PacketStudio.NewGUI
 
         private UserDecision DoSave()
         {
-            if (_sessionState.HasAssociatedFile) {
-                if (_sessionState.HasUnsavedChanges) {
-                    SaveSession(_sessionState.AssociatedFilePath);
+            if (_sessionSaveState.HasAssociatedFile) {
+                if (_sessionSaveState.HasUnsavedChanges) {
+                    SaveSession(_sessionSaveState.AssociatedFilePath);
                 }
                 // Else - Current state already saved to file, do nothing
                 return UserDecision.Save;
@@ -604,8 +604,8 @@ namespace PacketStudio.NewGUI
             var p2SSaver = new P2sSaver();
             p2SSaver.Save(path, sessionPackets);
 
-            _sessionState.AssociatedFilePath = path;
-            _sessionState.HasUnsavedChanges = false;
+            _sessionSaveState.AssociatedFilePath = path;
+            _sessionSaveState.HasUnsavedChanges = false;
         }
 
 
@@ -645,7 +645,7 @@ namespace PacketStudio.NewGUI
                 e.Cancel = true;
                 SessionViewModel.ResetItemsCollection();
             }
-            _sessionState.HasUnsavedChanges = true;
+            _sessionSaveState.HasUnsavedChanges = true;
         }
 
         private void TabControl_OnOnCloseAllTabs(object sender, CloseTabEventArgs e)
@@ -653,7 +653,7 @@ namespace PacketStudio.NewGUI
             // Closing all tabs but making a new empty one.
             e.Cancel = true;
             SessionViewModel.ResetItemsCollection();
-            _sessionState.HasUnsavedChanges = true;
+            _sessionSaveState.HasUnsavedChanges = true;
         }
 
         private void MenuButton_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -718,7 +718,7 @@ namespace PacketStudio.NewGUI
 
         private void NewSessionMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            if (_sessionState.HasUnsavedChanges) {
+            if (_sessionSaveState.HasUnsavedChanges) {
                 // Prompt user about unsaved changes in current session
                 var userSelection = MessageBox.Show("Unsaved Changes Alert",
                     "You have unsaved changes in the current session.\r\n" +
@@ -742,7 +742,7 @@ namespace PacketStudio.NewGUI
             }
 
             // Starting a new sessions!
-            _sessionState.Reset();
+            _sessionSaveState.Reset();
             SessionViewModel.ResetItemsCollection();
         }
 
@@ -778,6 +778,23 @@ namespace PacketStudio.NewGUI
             if (pd.DataContext is SessionPacketViewModel tivm)
                 tivm.CaretPosition = pd.CaretPosition;
         }
+
+
+
+        private void MoveBackward(object sender, RoutedEventArgs e)
+        {
+            int newIndex = 3;
+            SessionViewModel.MovePacket(newIndex);
+            throw new NotImplementedException();
+        }
+        private void MoveForward(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
 
         #region Drag Drop P/Invoke Ugliness
         const int WM_DROPFILES = 0x233;

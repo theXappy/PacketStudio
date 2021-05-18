@@ -2,19 +2,19 @@
 
 namespace PacketStudio.NewGUI
 {
-    public class SessionState
+    public class SessionSaveState
     {
         public bool HasUnsavedChanges { get; set; }
         [CanBeNull] public string AssociatedFilePath { get; set; }
         public bool HasAssociatedFile => !string.IsNullOrEmpty(AssociatedFilePath);
 
-        public SessionState()
+        public SessionSaveState()
         {
             HasUnsavedChanges = false;
             AssociatedFilePath = null;
         }
 
-        public SessionState(bool hasUnsavedChanges, [CanBeNull] string associatedFilePath)
+        public SessionSaveState(bool hasUnsavedChanges, [CanBeNull] string associatedFilePath)
         {
             HasUnsavedChanges = hasUnsavedChanges;
             AssociatedFilePath = associatedFilePath;

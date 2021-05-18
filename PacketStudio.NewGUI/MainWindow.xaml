@@ -720,6 +720,147 @@
                     <syncfusion:RibbonTextBox x:Name="previewDelayTextBox" Text="500" Visibility="Collapsed" IsKeyboardFocusedChanged="PreviewDelayTextBox_IsKeyboardFocusedChanged" PreviewKeyDown="PreviewDelayTextBox_PreviewKeyDown"/>
                 </syncfusion:RibbonBar>
             </syncfusion:RibbonTab>
+
+            <syncfusion:RibbonTab Background="Transparent" Caption="Arrange" FocusVisualStyle="{x:Null}" Focusable="False" MinWidth="23" syncfusion:Ribbon.KeyTip="A">
+                <syncfusion:RibbonBar  Focusable="False" Header="Move" IsLauncherButtonVisible="False" Margin="2,0">
+                    <syncfusion:RibbonButton Label="Move Backward" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                                             Click="MoveBackward"
+                                             IconType="VectorImage"
+                                             IconStretch="Fill" SizeForm="Large"
+                                             syncfusion:Ribbon.KeyTip="B"
+                                             MinWidth="50"
+                                             >
+                        <syncfusion:RibbonButton.VectorImage>
+                            <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m -4.3 154.8 v -172 h 172 v 172 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF8BB7F0" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 7.3401 86 70.95 22.3901 V 66.65 h 94.6 v 38.7 h -94.6 v 44.2599 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF4E7AB5" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 68.8 27.5802 V 64.5 68.8 h 4.3 90.3 v 34.4 H 73.1 68.8 v 4.3 36.9198 L 10.3802 86 68.8 27.5802 M 73.1 17.2 4.3 86 73.1 154.8 v -47.3 h 94.6 v -43 H 73.1 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                        </syncfusion:RibbonButton.VectorImage>
+                    </syncfusion:RibbonButton>
+                    <syncfusion:RibbonButton Label="Insert At ..." IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                                             Click="NormalizeHex"
+                                             IconType="VectorImage"
+                                             IconStretch="Fill" SizeForm="Large"
+                                             syncfusion:Ribbon.KeyTip="I"
+                                             MinWidth="50"
+                                             >
+                        <syncfusion:RibbonButton.VectorImage>
+
+                            <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M -223.22771 107.31062 V -64.689377 h 172 V 107.31062 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF8BB7F0" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 18 4 H 62 V 36 H 18 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <ScaleTransform ScaleX="2.15" ScaleY="2.15"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Path Fill="#FF4E7AB5" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 131.15 10.75 v 64.5 h -90.3 v -64.5 h 90.3 M 133.3 8.6 H 133.0287 38.7 V 77.4 H 133.11953 133.3 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFC5D4DE" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 4 44 H 22 V 76 L 21.901526 75.981831 4 76 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <ScaleTransform ScaleX="2.15" ScaleY="2.15"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Path Fill="#FF788B9C" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 45.15 96.75 v 64.5 h -34.4 v -64.5 h 34.4 M 47.3 94.6 H 8.6 v 68.8 h 38.7 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFC5D4DE" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 58 44 H 76 V 76 H 58 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <ScaleTransform ScaleX="2.15" ScaleY="2.15"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Path Fill="#FF788B9C" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 161.25 96.75 v 64.5 h -34.4 v -64.5 h 34.4 m 2.15 -2.15 h -38.7 v 68.8 h 38.7 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFC5D4DE" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 4 45 H 8 V 75 H 4 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <ScaleTransform ScaleX="2.15" ScaleY="2.15"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Path Fill="#FFC5D4DE" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 72 45 h 4 v 30 h -4 z" FillRule="NonZero"/>
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <ScaleTransform ScaleX="2.15" ScaleY="2.15"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Path Fill="#FF8BB7F0" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 94.60645 124.7 V 86 H 77.4172 v 38.7 H 55.9 L 86.02795 154.82795 116.15375 124.7 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF4E7AB5" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 92.45645 88.15 v 36.55 2.15 h 2.15 16.3572 L 86.02795 151.7857 61.0901 126.85 h 16.3271 2.15 V 124.7 88.15 h 12.88925 m 2.15 -2.15 H 77.4172 v 38.7 H 55.9 L 86.02795 154.82795 116.15375 124.7 h -21.5473 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+
+                        </syncfusion:RibbonButton.VectorImage>
+                    </syncfusion:RibbonButton>
+                    <syncfusion:RibbonButton Label="Move Forward" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                                             Click="FlattenStack"
+                                             IconType="VectorImage"
+                                             IconStretch="Fill" SizeForm="Large"
+                                             syncfusion:Ribbon.KeyTip="F"
+                                             MinWidth="50"
+                                             >
+                        <syncfusion:RibbonButton.VectorImage>
+
+                            <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m -4.3 154.8 v -172 h 172 v 172 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF8BB7F0" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 101.05 105.35 H 6.45 v -38.7 h 94.6 V 22.3901 L 164.6599 86 101.05 149.6099 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF4E7AB5" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 103.2 27.5802 161.6198 86 103.2 144.4198 V 107.5 103.2 H 98.9 8.6 V 68.8 h 90.3 4.3 V 64.5 27.5802 M 98.9 17.2 V 64.5 H 4.3 v 43 h 94.6 v 47.3 L 167.7 86 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+
+
+
+                        </syncfusion:RibbonButton.VectorImage>
+                    </syncfusion:RibbonButton>
+                </syncfusion:RibbonBar>
+                </syncfusion:RibbonTab>
         </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
