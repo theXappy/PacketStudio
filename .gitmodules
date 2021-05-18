@@ -1,0 +1,3 @@
+[submodule "FastPcapng"]
+	path = FastPcapng
+	url = https://github.com/theXappy/FastPcapng.git
