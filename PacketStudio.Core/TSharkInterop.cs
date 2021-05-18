@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -187,14 +188,15 @@ namespace PacketStudio.Core
                 .ContinueWith(pcapPathTask => GetTextOutputAsync(pcapPathTask.Result, token, toBeEnabledHeurs, toBeDisabledHeurs).Result, token);
         }
 
-       public Task<string[]> GetTextOutputAsync(string pcapPath, CancellationToken token,
+        /// <param name="inputPath">Either a file path or a pipe identifier</param>
+       public Task<string[]> GetTextOutputAsync(string inputPath, CancellationToken token,
             List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             return Task.Run(() =>
             {
                 token.ThrowIfCancellationRequested();
 
-                string args = GetTextOutputArgs(pcapPath, toBeEnabledHeurs, toBeDisabledHeurs);
+                string args = GetTextOutputArgs(inputPath, toBeEnabledHeurs, toBeDisabledHeurs);
                 Debug.WriteLine("GetText Args: " + args);
 
 
@@ -267,16 +269,22 @@ namespace PacketStudio.Core
             return false;
         }
 
-        private string GetTextOutputArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        private string GetTextOutputArgs(string inputPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            string oldVersionArgs = $"-r {pcapPath} -T tabs";
-            string newVersionArgs = $"-r {pcapPath} -T tabs -2";
+            string oldVersionArgs = $"-r {inputPath} -T tabs";
+            string newVersionArgs = $"-r {inputPath} -T tabs -2";
 
             string selected = oldVersionArgs;
             if (IsNewVersion())
             {
                 selected = newVersionArgs;
             }
+
+            if (inputPath.Contains(@"\\.\pipe\"))
+            {
+                Regex.Replace(selected, "^-r ", "-k -i ");
+            }
+
 
             if (toBeEnabledHeurs != null)
             {
