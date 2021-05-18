@@ -5,19 +5,23 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio", "PacketStudio\PacketStudio.csproj", "{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.DataAccess", "PacketStudio.DataAccess\PacketStudio.DataAccess.csproj", "{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.DataAccess", "PacketStudio.DataAccess\PacketStudio.DataAccess.csproj", "{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.NewGUI", "PacketStudio.NewGUI\PacketStudio.NewGUI.csproj", "{68615F16-0B85-4858-91F0-B8662BF3095A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.NewGUI", "PacketStudio.NewGUI\PacketStudio.NewGUI.csproj", "{68615F16-0B85-4858-91F0-B8662BF3095A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Core", "PacketStudio.Core\PacketStudio.Core.csproj", "{E7558B32-25C1-4175-97E5-CA1BFFE951F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.Core", "PacketStudio.Core\PacketStudio.Core.csproj", "{E7558B32-25C1-4175-97E5-CA1BFFE951F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet", "PacketDotNet\PacketDotNet.csproj", "{F205181B-B208-4D37-8AEC-899BE63932B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.NetAccess", "PacketStudio.NetAccess\PacketStudio.NetAccess.csproj", "{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.NetAccess", "PacketStudio.NetAccess\PacketStudio.NetAccess.csproj", "{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Tests", "PacketStudio.Tests\PacketStudio.Tests.csproj", "{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketDotNet.Sctp", "PacketDotNet.Sctp\PacketDotNet.Sctp.csproj", "{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet.Sctp", "PacketDotNet.Sctp\PacketDotNet.Sctp.csproj", "{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastPcapng", "FastPcapng\FastPcapng\FastPcapng.csproj", "{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastPcapng.DataBending", "FastPcapng\FastPcapng.DataBending\FastPcapng.DataBending.csproj", "{271010B1-0091-4277-BCDF-58D6E6F8BE18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +128,30 @@ Global
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Signed|Any CPU.Build.0 = Debug|Any CPU
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Signed|x86.ActiveCfg = Debug|Any CPU
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Signed|x86.Build.0 = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Release|x86.Build.0 = Release|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Signed|Any CPU.Build.0 = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Signed|x86.ActiveCfg = Debug|Any CPU
+		{EC8F19F0-92CC-4E7D-9031-EB41CE1AE1C1}.Signed|x86.Build.0 = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Debug|x86.Build.0 = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Release|x86.ActiveCfg = Release|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Release|x86.Build.0 = Release|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Signed|Any CPU.Build.0 = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Signed|x86.ActiveCfg = Debug|Any CPU
+		{271010B1-0091-4277-BCDF-58D6E6F8BE18}.Signed|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
