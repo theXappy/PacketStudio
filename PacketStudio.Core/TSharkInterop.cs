@@ -204,8 +204,12 @@ namespace PacketStudio.Core
                     .WithArguments(args)
                     .ExecuteBufferedAsync(Encoding.UTF8);
 
+                Debug.WriteLine(" @@@ Tshark started!");
+
+                Debug.WriteLine(" @@@ Waiting for Tshark results...");
                 var task = cli.Task;
                 var res = task.Result;
+                Debug.WriteLine(" @@@ Got Tshark results!");
 
                 if (res.ExitCode != 0)
                 {
@@ -222,7 +226,9 @@ namespace PacketStudio.Core
 
                 string noArrow = res.StandardOutput.Replace("\t\u2192", String.Empty);
 
-                return noArrow.Split('\n', StringSplitOptions.TrimEntries);
+                var finalLines = noArrow.Split('\n', StringSplitOptions.TrimEntries);
+                Debug.WriteLine($" @@@ Got Tshark results! Num Of Lines: {finalLines.Length}, First Line: {finalLines[0]}");
+                return finalLines;
             }, token);
         }
 

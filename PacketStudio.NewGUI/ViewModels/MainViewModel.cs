@@ -4,10 +4,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using FastPcapng;
 using FastPcapng.Internal;
+using Haukcode.PcapngUtils.Common;
+using Haukcode.PcapngUtils.PcapNG.BlockTypes;
+using Haukcode.PcapngUtils.PcapNG.CommonTypes;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
@@ -28,7 +32,7 @@ namespace PacketStudio.NewGUI.ViewModels
         private SessionPacketViewModel _currentSessionPacket;
 
 
-        private MemoryPcapng _backingPcapng;
+        private MemoryPcapng _backingPcapng = new MemoryPcapng();
         private string[] _packetsDescs = new string[0];
         private int _selectedPacketIndex = 0;
 
@@ -79,15 +83,23 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
+        public int PacketsCount => PacketsDescriptions.Length;
+
         public int SelectedPacketIndex
         {
             get { return _selectedPacketIndex; }
             set
             {
-                _selectedPacketIndex = value;
+                Debug.WriteLine($" XXX SelectedIndex changed to: {value}");
+                if (value != -1)
+                {
+                    // We say no to '-1's from the gui!
+                    _selectedPacketIndex = value;
+                    return;
+                }
                 this.RaisePropertyChanged(nameof(SelectedPacketIndex));
 
-                if(_selectedPacketIndex == -1)
+                if (_selectedPacketIndex == -1)
                     return;
 
                 // TODO: if _selected too big what happens? throws?
@@ -95,15 +107,17 @@ namespace PacketStudio.NewGUI.ViewModels
                 var packetBlock = _backingPcapng.GetPacket(_selectedPacketIndex);
 
                 var iface = _backingPcapng.Interfaces[packetBlock.InterfaceID];
-                var ifaceLinkType = iface.LinkType; 
+                var ifaceLinkType = iface.LinkType;
 
                 // TODO: Remvoe this 'tab number' header thingy
                 var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
-                if (sessionPacketObj != null) {
+                if (sessionPacketObj != null)
+                {
                     Debug.WriteLine($" @@@ A session packet object was already created and stored for packet #{_selectedPacketIndex}");
                     CurrentSessionPacket = sessionPacketObj;
                 }
-                else {
+                else
+                {
                     Debug.WriteLine($" @@@ NO session packet object foudn packet #{_selectedPacketIndex}, Creating new one!");
                     CurrentSessionPacket = new SessionPacketViewModel()
                     {
@@ -120,9 +134,12 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
+        public MemoryPcapng BackingPcapng => _backingPcapng;
+
         public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
-            if (psdng == null) {
+            if (psdng == null)
+            {
                 psdng = new PacketSaveDataNG(HexStreamType.Raw, String.Empty);
             }
 
@@ -160,22 +177,99 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             _backingPcapng = MemoryPcapng.ParsePcapng(path);
 
-            WiresharkPipeSender sender = new WiresharkPipeSender();
+            _modifiedPackets.Clear();
 
-            string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
-            var senderTask = sender.SendPcapngAsync(pipeName, _backingPcapng);
-            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\"+ pipeName, CancellationToken.None);
-
-            tsharkTask.ContinueWith(task =>
+            var updateDescsTask = UpdatePacketsDescriptions();
+            updateDescsTask.ContinueWith(task =>
             {
-                Debug.WriteLine(" @@@ LoadFile Finished, updating packet descriptions.");
-                this.PacketsDescriptions = task.Result;
+                this.SelectedPacketIndex = 0;
+            });
+        }
+
+        public Task UpdatePacketsDescriptions()
+        {
+            ApplyModifications();
+
+            WiresharkPipeSender sender = new WiresharkPipeSender();
+            string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
+             sender.SendPcapngAsync(pipeName, _backingPcapng);
+            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, CancellationToken.None);
+
+            return tsharkTask.ContinueWith(task =>
+            {
+                string[] descLines = task.Result;
+                while (descLines.All(line => string.IsNullOrWhiteSpace(line)))
+                {
+                    Debug.WriteLine(" @@@ Tshark messed up, retying...");
+                    string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
+                    sender.SendPcapngAsync(pipeName, _backingPcapng);
+                    descLines = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, CancellationToken.None).Result;
+                }
+
+                this.PacketsDescriptions = descLines;
             });
         }
 
         public void MovePacket(int newIndex)
         {
-            // ??
+            int currectIndex = CurrentSessionPacket.Header;
+            Debug.WriteLine($" @@@ Trying to move packet #{currectIndex} to Index #{newIndex}");
+            if (currectIndex == newIndex)
+            {
+                // Trying to move to same place
+                return;
+            }
+
+            _backingPcapng.MovePacket(currectIndex, newIndex);
+            CurrentSessionPacket.Header = newIndex;
+            // Update other modified packets
+            if (currectIndex > newIndex)
+            {
+                foreach (var pktVm in ModifiedPackets.Where(pkt => pkt.Header >= newIndex && pkt.Header < currectIndex))
+                {
+                    pktVm.Header++;
+                }
+            }
+            else if (currectIndex < newIndex)
+            {
+                foreach (var pktVm in ModifiedPackets.Where(pkt => pkt.Header > newIndex && pkt.Header < currectIndex))
+                {
+                    pktVm.Header--;
+                }
+            }
+
+            UpdatePacketsDescriptions().Wait();
+        }
+
+            public void ApplyModifications()
+        {
+            Debug.WriteLine(" @@@ ====== Applying Modifications ======");
+            foreach (SessionPacketViewModel packetVm in ModifiedPackets.Where(packetVm => packetVm.IsModified).ToList())
+            {
+                int index = packetVm.Header;
+                Debug.WriteLine($" @@@ Applying modification for packet #{index}");
+                TempPacketSaveData packet = packetVm.ExportPacket;
+
+                EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
+                oldEpb.Data = packet.Data;
+                if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
+                {
+                    // Mismatch link type, find other interface
+                    var matchingInterface =
+                        _backingPcapng.Interfaces.FirstOrDefault(iface =>
+                            iface.LinkType == (LinkTypes)packet.LinkLayer);
+                    if (matchingInterface == null)
+                    {
+                        throw new NotImplementedException("No interface for the linklayer of the packet");
+                    }
+                    var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
+                    oldEpb.InterfaceID = matchingIfaceId;
+                }
+
+                _backingPcapng.UpdatePacket(index, oldEpb);
+
+                ModifiedPackets.Remove(packetVm);
+            }
         }
     }
 }

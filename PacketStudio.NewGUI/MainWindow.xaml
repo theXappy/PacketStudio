@@ -749,7 +749,7 @@
                         </syncfusion:RibbonButton.VectorImage>
                     </syncfusion:RibbonButton>
                     <syncfusion:RibbonButton Label="Insert At ..." IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
-                                             Click="NormalizeHex"
+                                             Click="DoMoveDialog"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
                                              syncfusion:Ribbon.KeyTip="I"
@@ -831,7 +831,7 @@
                         </syncfusion:RibbonButton.VectorImage>
                     </syncfusion:RibbonButton>
                     <syncfusion:RibbonButton Label="Move Forward" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
-                                             Click="FlattenStack"
+                                             Click="MoveForward"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
                                              syncfusion:Ribbon.KeyTip="F"
@@ -881,8 +881,7 @@
                        syncfusion:DockingManager.SideInDockedMode="Top" 
                        >
                 <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
-                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}">
-                </ListBox>
+                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged"/>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
