@@ -171,10 +171,16 @@ namespace PacketStudio.NewGUI
                 SessionViewModel.CurrentSessionPacket.IsValid = true;
                 SessionViewModel.CurrentSessionPacket.ExportPacket = definer.ExportPacket;
 
-                // Call Live Update
+                // Call Live Update (packet tree)
                 if (previewEnabledCheckbox.IsChecked == true)
                 {
-                    Task.Delay(_livePreviewDelay).ContinueWith(task => UpdateLivePreview());
+                    Task.Delay(_livePreviewDelay).ContinueWith(task => UpdateLivePreviewTree());
+                }
+                // If this is a legit packet change (an not just selection of a different packet) also queue a packets list update
+                Debug.WriteLine($" @@@ Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
+                if (SessionViewModel.CurrentSessionPacket.IsModified)
+                {
+                    Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
                 }
             }
             else
@@ -220,15 +226,15 @@ namespace PacketStudio.NewGUI
             Dispatcher.Invoke(() => packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
         }
 
+
+        private CancellationTokenSource _lastUpdateTokenSource = null;
+        private object _tokenSourceLock = new object();
+
         /// <summary>
         /// Update Live Preview panels in the GUI. Invokes TShark and waits for it.
         /// </summary>
-        private void UpdateLivePreview()
+        private void UpdateLivePreviewTree()
         {
-            //
-            // * Packets List *
-            //
-            var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions();
 
             //
             //  * Protocol Tree *
@@ -243,15 +249,30 @@ namespace PacketStudio.NewGUI
 
             if (packetBytes != null && packetBytes.Data.Length != 0)
             {
-                var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes);
+                var tsharkTask = _tsharkInterOp.GetPdmlAsync(packetBytes, CancellationToken.None);
                 XElement packetPdml = tsharkTask.Result;
                 packetTreeView.PopulatePacketTree(packetPdml);
             }
 
             // Remove 'update in progress' indicators
             UnsetPacketTreeInProgress();
+        }
 
-            packetListUpdateTask.Wait();
+        private void UpdatePacketsList()
+        {
+            CancellationToken cToken;
+            lock (_tokenSourceLock)
+            {
+                _lastUpdateTokenSource?.Cancel();
+                _lastUpdateTokenSource = new CancellationTokenSource();
+                cToken = _lastUpdateTokenSource.Token;
+            }
+
+            //
+            // * Packets List *
+            //
+            var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions(cToken);
+            packetListUpdateTask.Wait(cToken);
         }
 
 
@@ -498,7 +519,8 @@ namespace PacketStudio.NewGUI
             {
                 if (wsSessionTask.PreferencesChanged)
                 {
-                    UpdateLivePreview();
+                    UpdateLivePreviewTree();
+                    UpdatePacketsList();
                 }
             });
         }
@@ -568,7 +590,8 @@ namespace PacketStudio.NewGUI
                     {
                         throw new Exception("Not yet...");
                     }
-                    SessionViewModel.LoadFile(filePath);
+                    // TODO: Maybe not a None token?
+                    SessionViewModel.LoadFileAsync(filePath, CancellationToken.None);
                     fileLoaded = true;
                 }
                 catch (Exception ex)
@@ -866,8 +889,10 @@ namespace PacketStudio.NewGUI
                 return;
             }
 
-            SessionViewModel.MovePacket(newIndex);
-            this.packetsList.SelectedIndex = newIndex;
+            SessionViewModel.MovePacket(newIndex).ContinueWith(_ =>
+            {
+                Dispatcher.Invoke(() => packetsList.SelectedIndex = newIndex);
+            });
         }
         private void MoveForward(object sender, RoutedEventArgs e)
         {
@@ -877,23 +902,33 @@ namespace PacketStudio.NewGUI
                 Debug.WriteLine(" @@@ Trying to move to too high of an index... stopping");
                 return;
             }
-            SessionViewModel.MovePacket(newIndex);
-            this.packetsList.SelectedIndex = newIndex;
+
+            SessionViewModel.MovePacket(newIndex).ContinueWith(_ =>
+            {
+                Dispatcher.Invoke(() => packetsList.SelectedIndex = newIndex);
+            });
         }
+
         private void DoMoveDialog(object sender, RoutedEventArgs e)
         {
             RelocatePacketWindow rpw = new RelocatePacketWindow();
             RelocatePacketViewModel rpvm = rpw.DataContext as RelocatePacketViewModel;
             rpvm.MaxPacketPosition = SessionViewModel.PacketsCount;
+            // Set 'NewPosition' to current position so the windows starts by showing the current state of
+            // the packets list
+            rpvm.NewPosition = SessionViewModel.SelectedPacketIndex.ToString();
+
+            // Prompts & block
             bool? res = rpw.ShowDialog();
             if (res == true)
             {
                 int index = int.Parse(rpvm.NewPosition);
-                SessionViewModel.MovePacket(index);
+                SessionViewModel.MovePacket(index).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() => packetsList.SelectedIndex = index);
+                });
             }
         }
-
-
 
         #region Drag Drop P/Invoke Ugliness
         const int WM_DROPFILES = 0x233;
@@ -972,6 +1007,14 @@ namespace PacketStudio.NewGUI
 
         private void packetsList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            int currIndex = packetsList.SelectedIndex;
+            if (currIndex == -1)
+            {
+                if (SessionViewModel.SelectedPacketIndex != -1)
+                {
+                    packetsList.SelectedIndex = SessionViewModel.SelectedPacketIndex;
+                }
+            }
         }
     }
 

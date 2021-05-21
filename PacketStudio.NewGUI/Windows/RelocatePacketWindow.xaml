@@ -9,8 +9,9 @@
         xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
         mc:Ignorable="d"
-        Title="Relocate packet" Height="163" Width="310"
-        FocusManager.FocusedElement="{Binding ElementName=inputTextBox}"
+        Title="Relocate packet" Height="119" Width="239"
+        FocusManager.FocusedElement="{Binding ElementName=inputTextBox}" Loaded="RibbonWindow_Loaded"
+        ResizeMode="NoResize"
         >
     <syncfusion:RibbonWindow.DataContext>
         <viewModels:RelocatePacketViewModel/>
@@ -26,76 +27,9 @@
                     IsEnabled="{Binding IsValidPosition}"
                     >Insert</Button>
         </DockPanel>
-
-        <Grid DockPanel.Dock="Top" Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="100px"/>
-                <ColumnDefinition Width="10px"/>
-                <ColumnDefinition Width="100px"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <Border x:Name="beforePacket" Grid.Column="1" BorderBrush="#FFEAD2B1" BorderThickness="2,3"
-                    Visibility="{Binding Path=IsNotAtStart, Converter={StaticResource VisibleIfTrueConverter}}"
-                    >
-                <DockPanel Background="#FFF1E4D2" Margin="0">
-                    <TextBox HorizontalAlignment="Center" MinWidth="30"  VerticalAlignment="Center" TextAlignment="Center" 
-                             Text="{Binding PrevPos, Mode=TwoWay}" 
-                             />
-                </DockPanel>
-            </Border>
-            <Border x:Name="afterPacket" Grid.Column="3" BorderBrush="#FFEAD2B1" BorderThickness="2,3"
-                    Visibility="{Binding Path=IsNotAtEnd, Converter={StaticResource VisibleIfTrueConverter}}"
-                    >
-                <DockPanel Background="#FFF1E4D2" Margin="0">
-                    <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" MinWidth="30"
-                             Text="{Binding NewPosition, Mode=TwoWay}"/>
-                </DockPanel>
-            </Border>
-        </Grid>
-        <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <Viewbox Stretch="Uniform"  Grid.Column="1" Margin="3">
-                <Canvas Name="svg863" Width="94.599998" Height="172" >
-                    <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                        <Path.Data>
-                            <PathGeometry Figures="M -0.252942 172 V 0 H 171.74706 v 172 z" FillRule="NonZero"/>
-                        </Path.Data>
-                    </Path>
-                    <Canvas Name="g859">
-                        <Canvas.RenderTransform>
-                            <TranslateTransform X="-38.7"/>
-                        </Canvas.RenderTransform>
-                        <Path Fill="#FFDCD5F2" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                            <Path.Data>
-                                <PathGeometry Figures="M 75.25 169.85 V 45.15 H 43.8901 L 86 3.0401 128.1099 45.15 H 96.75 v 124.7 z" FillRule="NonZero"/>
-                            </Path.Data>
-                        </Path>
-                        <Path Fill="#FF8B75A1" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                            <Path.Data>
-                                <PathGeometry Figures="M 86 6.0802 122.9198 43 H 98.9 94.6 v 4.3 120.4 H 77.4 V 47.3 43 H 73.1 49.0802 L 86 6.0802 M 86 0 38.7 47.3 H 73.1 V 172 H 98.9 V 47.3 h 34.4 z" FillRule="NonZero"/>
-                            </Path.Data>
-                        </Path>
-                    </Canvas>
-                </Canvas>
-            </Viewbox>
-            <Border x:Name="currentPacket" Grid.Column="1" Grid.Row="1" BorderBrush="#FFEAD2B1" BorderThickness="2,3">
-                <DockPanel Background="#FFF1E4D2" Margin="0">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Current</TextBlock>
-                </DockPanel>
-            </Border>
-
-        </Grid>
+        <DockPanel LastChildFill="True" MaxHeight="45">
+            <TextBlock DockPanel.Dock="Top" Margin="5,0">New index (0-based):</TextBlock>
+            <TextBox Margin="5,5" Text="{Binding NewPosition, UpdateSourceTrigger=PropertyChanged}"/>
+        </DockPanel>
     </DockPanel>
 </syncfusion:RibbonWindow>

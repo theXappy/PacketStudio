@@ -2,24 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using FastPcapng;
-using FastPcapng.Internal;
 using Haukcode.PcapngUtils.Common;
 using Haukcode.PcapngUtils.PcapNG.BlockTypes;
-using Haukcode.PcapngUtils.PcapNG.CommonTypes;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
-using PacketStudio.DataAccess.Providers;
 using PacketStudio.DataAccess.SaveData;
-using PacketStudio.DataAccess.SmartCapture;
-using Syncfusion.Windows.Controls.Gantt;
 using Syncfusion.Windows.Shared;
-using Syncfusion.Windows.Tools.Controls;
+using Task = System.Threading.Tasks.Task;
 
 namespace PacketStudio.NewGUI.ViewModels
 {
@@ -33,7 +26,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
 
         private MemoryPcapng _backingPcapng = new MemoryPcapng();
-        private string[] _packetsDescs = new string[0];
+        private ObservableCollection<string> _packetsDescs = new(new string[0]);
         private int _selectedPacketIndex = 0;
 
         public ObservableCollection<SessionPacketViewModel> ModifiedPackets
@@ -73,7 +66,7 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public string[] PacketsDescriptions
+        public ObservableCollection<string> PacketsDescriptions
         {
             get { return _packetsDescs; }
             set
@@ -83,7 +76,7 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public int PacketsCount => PacketsDescriptions.Length;
+        public int PacketsCount => PacketsDescriptions.Count;
 
         public int SelectedPacketIndex
         {
@@ -91,12 +84,12 @@ namespace PacketStudio.NewGUI.ViewModels
             set
             {
                 Debug.WriteLine($" XXX SelectedIndex changed to: {value}");
-                if (value != -1)
+                if (value == -1)
                 {
                     // We say no to '-1's from the gui!
-                    _selectedPacketIndex = value;
                     return;
                 }
+                _selectedPacketIndex = value;
                 this.RaisePropertyChanged(nameof(SelectedPacketIndex));
 
                 if (_selectedPacketIndex == -1)
@@ -113,12 +106,10 @@ namespace PacketStudio.NewGUI.ViewModels
                 var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
                 if (sessionPacketObj != null)
                 {
-                    Debug.WriteLine($" @@@ A session packet object was already created and stored for packet #{_selectedPacketIndex}");
                     CurrentSessionPacket = sessionPacketObj;
                 }
                 else
                 {
-                    Debug.WriteLine($" @@@ NO session packet object foudn packet #{_selectedPacketIndex}, Creating new one!");
                     CurrentSessionPacket = new SessionPacketViewModel()
                     {
                         Header = _selectedPacketIndex,
@@ -173,51 +164,68 @@ namespace PacketStudio.NewGUI.ViewModels
 
         private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
 
-        public void LoadFile(string path)
+        public Task LoadFileAsync(string path, CancellationToken token)
         {
             _backingPcapng = MemoryPcapng.ParsePcapng(path);
 
             _modifiedPackets.Clear();
 
-            var updateDescsTask = UpdatePacketsDescriptions();
-            updateDescsTask.ContinueWith(task =>
+            var updateDescsTask = UpdatePacketsDescriptions(token);
+            return updateDescsTask.ContinueWith(task =>
             {
                 this.SelectedPacketIndex = 0;
-            });
+                UpdatePacketsDescriptions(token);
+            }, token);
         }
 
-        public Task UpdatePacketsDescriptions()
+
+        public Task UpdatePacketsDescriptions(CancellationToken token)
         {
+            Debug.WriteLine(" @@@ List Update: Entered UpdatePacketsDescriptions");
             ApplyModifications();
 
             WiresharkPipeSender sender = new WiresharkPipeSender();
             string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
-             sender.SendPcapngAsync(pipeName, _backingPcapng);
-            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, CancellationToken.None);
+            sender.SendPcapngAsync(pipeName, _backingPcapng);
 
-            return tsharkTask.ContinueWith(task =>
+            Debug.WriteLine($" @@@ List Update: Entered Clearing old ObsCollection (had {PacketsDescriptions.Count} items)");
+            var newCollection =  new ObservableCollection<string>();
+            int DEBUG_HOW_MANY_TIMES_RAN = 0;
+
+            void HandleNewTSharkTextLine(string line)
             {
-                string[] descLines = task.Result;
-                while (descLines.All(line => string.IsNullOrWhiteSpace(line)))
+                DEBUG_HOW_MANY_TIMES_RAN++;
+                if (!string.IsNullOrWhiteSpace(line))
                 {
-                    Debug.WriteLine(" @@@ Tshark messed up, retying...");
-                    string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
-                    sender.SendPcapngAsync(pipeName, _backingPcapng);
-                    descLines = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, CancellationToken.None).Result;
-                }
+                    // On first valid packet update the collection
+                    if (this.PacketsDescriptions != newCollection)
+                    {
+                        this.PacketsDescriptions = newCollection;
+                    }
 
-                this.PacketsDescriptions = descLines;
+                    App.Current.Dispatcher.Invoke(() => { newCollection.Add(line); });
+                }
+            }
+
+
+            Debug.WriteLine($" @@@ List Update: Calling TSark");
+            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
+            tsharkTask.ContinueWith(task =>
+            {
+                    Debug.WriteLine($" @@@ List Update: Did TShark fail us? {task.Status}, Our function was invoked {DEBUG_HOW_MANY_TIMES_RAN} times");
             });
+
+            return tsharkTask;
         }
 
-        public void MovePacket(int newIndex)
+        public Task MovePacket(int newIndex)
         {
             int currectIndex = CurrentSessionPacket.Header;
             Debug.WriteLine($" @@@ Trying to move packet #{currectIndex} to Index #{newIndex}");
             if (currectIndex == newIndex)
             {
                 // Trying to move to same place
-                return;
+                return Task.CompletedTask;
             }
 
             _backingPcapng.MovePacket(currectIndex, newIndex);
@@ -238,10 +246,10 @@ namespace PacketStudio.NewGUI.ViewModels
                 }
             }
 
-            UpdatePacketsDescriptions().Wait();
+            return UpdatePacketsDescriptions(CancellationToken.None);
         }
 
-            public void ApplyModifications()
+        public void ApplyModifications()
         {
             Debug.WriteLine(" @@@ ====== Applying Modifications ======");
             foreach (SessionPacketViewModel packetVm in ModifiedPackets.Where(packetVm => packetVm.IsModified).ToList())

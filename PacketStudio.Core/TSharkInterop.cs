@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -20,6 +21,13 @@ namespace PacketStudio.Core
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class TSharkInterop
     {
+
+        public class TSharkInteropTask
+        {
+            public ObservableCollection<string> StdOutLines { get; set; }
+            public CommandTask<CommandResult> CliTask { get; set; }
+        }
+
         private string _tsharkPath;
         private readonly TempPacketsSaver _packetsSaver;
         private string _version;
@@ -179,57 +187,34 @@ namespace PacketStudio.Core
             }), token);
         }
 
-        public Task<string[]> GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, CancellationToken token, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        public Task GetTextOutputAsync(IEnumerable<TempPacketSaveData> packets, CancellationToken token, Action<string> handleStdoutLine, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
             // 2 Tasks:
             //      1. Same packets to file and get temporary pcap(ng) file path
             //      2. Feed GetTextOutputAsync overload which recieves a file path with all the received arguments
-            return Task.Run((() => _packetsSaver.WritePackets(packets)), token)
-                .ContinueWith(pcapPathTask => GetTextOutputAsync(pcapPathTask.Result, token, toBeEnabledHeurs, toBeDisabledHeurs).Result, token);
+            var pcapPathTask = Task.Run(() => _packetsSaver.WritePackets(packets), token);
+            return GetTextOutputAsync(pcapPathTask.Result, token, handleStdoutLine, toBeEnabledHeurs, toBeDisabledHeurs);
         }
 
         /// <param name="inputPath">Either a file path or a pipe identifier</param>
-       public Task<string[]> GetTextOutputAsync(string inputPath, CancellationToken token,
-            List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
+        public Task GetTextOutputAsync(string inputPath, CancellationToken token, Action<string> handleStdoutLine,
+             List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
-            return Task.Run(() =>
-            {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
-                string args = GetTextOutputArgs(inputPath, toBeEnabledHeurs, toBeDisabledHeurs);
-                Debug.WriteLine("GetText Args: " + args);
+            string args = GetTextOutputArgs(inputPath, toBeEnabledHeurs, toBeDisabledHeurs);
+            Debug.WriteLine("GetText Args: " + args);
 
+            var cli = Cli.Wrap(_tsharkPath)
+                .WithArguments(args)
+                .WithStandardOutputPipe(PipeTarget.ToDelegate(handleStdoutLine, Encoding.UTF8))
+                .ExecuteAsync(token);
 
-                var cli = Cli.Wrap(_tsharkPath)
-                    .WithArguments(args)
-                    .ExecuteBufferedAsync(Encoding.UTF8);
+            token.ThrowIfCancellationRequested();
 
-                Debug.WriteLine(" @@@ Tshark started!");
+            Debug.WriteLine(" @@@ Tshark started!");
 
-                Debug.WriteLine(" @@@ Waiting for Tshark results...");
-                var task = cli.Task;
-                var res = task.Result;
-                Debug.WriteLine(" @@@ Got Tshark results!");
-
-                if (res.ExitCode != 0)
-                {
-                    if (res.StandardOutput.Length > 0)
-                    {
-                        // Exit code isn't 0 but we have output so dismissing for now...
-                    }
-                    else
-                    {
-                        // No output, show exit code and error
-                        throw new Exception($"TShark returned with exit code: {res.ExitCode}\r\n{res.StandardError}");
-                    }
-                }
-
-                string noArrow = res.StandardOutput.Replace("\t\u2192", String.Empty);
-
-                var finalLines = noArrow.Split('\n', StringSplitOptions.TrimEntries);
-                Debug.WriteLine($" @@@ Got Tshark results! Num Of Lines: {finalLines.Length}, First Line: {finalLines[0]}");
-                return finalLines;
-            }, token);
+            return cli;
         }
 
         private string GetPdmlArgs(string pcapPath, List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
