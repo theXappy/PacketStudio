@@ -881,7 +881,15 @@
                        syncfusion:DockingManager.SideInDockedMode="Top" 
                        >
                 <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
-                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged"/>
+                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 
