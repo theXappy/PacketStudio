@@ -10,7 +10,7 @@
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
         mc:Ignorable="d"
         Title="Relocate packet" Height="119" Width="239"
-        FocusManager.FocusedElement="{Binding ElementName=inputTextBox}" Loaded="RibbonWindow_Loaded"
+        FocusManager.FocusedElement="{Binding ElementName=inputTextBox}"
         ResizeMode="NoResize"
         >
     <syncfusion:RibbonWindow.DataContext>

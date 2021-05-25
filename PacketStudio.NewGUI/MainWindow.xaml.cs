@@ -33,6 +33,8 @@ using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
 using PacketStudio.DataAccess.SmartCapture;
 
+#pragma warning disable CA1416 // Validate platform compatibility
+
 namespace PacketStudio.NewGUI
 {
     /// <summary>
@@ -120,12 +122,6 @@ namespace PacketStudio.NewGUI
             hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
         }
 
-        // TODO: Use this again
-        private void AddNewPacketTab(object sender, EventArgs e)
-        {
-            SessionViewModel?.AddNewPacket();
-            _sessionSaveState.HasUnsavedChanges = true;
-        }
 
         private void UpdatePacketState(PacketDefiner invoker)
         {
@@ -176,12 +172,6 @@ namespace PacketStudio.NewGUI
                 {
                     Task.Delay(_livePreviewDelay).ContinueWith(task => UpdateLivePreviewTree());
                 }
-                // If this is a legit packet change (an not just selection of a different packet) also queue a packets list update
-                Debug.WriteLine($" @@@ Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
-                if (SessionViewModel.CurrentSessionPacket.IsModified)
-                {
-                    Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
-                }
             }
             else
             {
@@ -199,6 +189,13 @@ namespace PacketStudio.NewGUI
                     hexEditor.ForegroundSecondColor = hexEditor.Foreground;
                     hexEditor.Visibility = Visibility.Visible;
                 }));
+            }
+
+            // If this is a legit packet change (an not just selection of a different packet) also queue a packets list update
+            Debug.WriteLine($" @@@ Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
+            if (SessionViewModel.CurrentSessionPacket.IsModified)
+            {
+                Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
             }
         }
 
@@ -263,14 +260,18 @@ namespace PacketStudio.NewGUI
             CancellationToken cToken;
             lock (_tokenSourceLock)
             {
-                _lastUpdateTokenSource?.Cancel();
+                try
+                {
+                    _lastUpdateTokenSource?.Cancel();
+                }
+                catch
+                {
+                    // Ignored
+                }
                 _lastUpdateTokenSource = new CancellationTokenSource();
                 cToken = _lastUpdateTokenSource.Token;
             }
 
-            //
-            // * Packets List *
-            //
             var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions(cToken);
             packetListUpdateTask.Wait(cToken);
         }
@@ -722,26 +723,6 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private void TabControl_OnOnCloseButtonClick(object sender, CloseTabEventArgs e)
-        {
-            // When closing last tab immediately open a new empty tab.
-            int numTabs = 0;// tabControl.ItemsSource.OfType<object>().Count();
-            Debug.WriteLine("Number of tabs: " + numTabs);
-            if (numTabs == 1)
-            {
-                e.Cancel = true;
-                SessionViewModel.ResetItemsCollection();
-            }
-            _sessionSaveState.HasUnsavedChanges = true;
-        }
-
-        private void TabControl_OnOnCloseAllTabs(object sender, CloseTabEventArgs e)
-        {
-            // Closing all tabs but making a new empty one.
-            e.Cancel = true;
-            SessionViewModel.ResetItemsCollection();
-            _sessionSaveState.HasUnsavedChanges = true;
-        }
 
         private void MenuButton_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -1016,6 +997,16 @@ namespace PacketStudio.NewGUI
                 }
             }
         }
+
+        private void NewPacket(object sender, RoutedEventArgs e)
+        {
+            SessionViewModel.AddNewPacket();
+            _sessionSaveState.HasUnsavedChanges = true;
+            if (previewEnabledCheckbox.IsChecked == true)
+            {
+                Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
+            }
+        }
     }
 
     internal enum UserDecision
@@ -1024,3 +1015,4 @@ namespace PacketStudio.NewGUI
         Cancel
     }
 }
+#pragma warning restore CA1416 // Validate platform compatibility

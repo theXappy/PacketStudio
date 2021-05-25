@@ -8,6 +8,8 @@ using System.Threading;
 using FastPcapng;
 using Haukcode.PcapngUtils.Common;
 using Haukcode.PcapngUtils.PcapNG.BlockTypes;
+using Haukcode.PcapngUtils.PcapNG.CommonTypes;
+using Haukcode.PcapngUtils.PcapNG.OptionTypes;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
@@ -142,6 +144,9 @@ namespace PacketStudio.NewGUI.ViewModels
             };
             new_model1.LoadInitialState(psdng);
             _modifiedPackets.Add(new_model1);
+
+            // TODO: Are those default parameters good?
+            _backingPcapng.AppendPacket(new EnhancedPacketBlock(0,new TimestampHelper(0,0),1,new byte[1]{0x00}, new EnhancedPacketOption()));
         }
 
 
@@ -184,14 +189,18 @@ namespace PacketStudio.NewGUI.ViewModels
             Debug.WriteLine(" @@@ List Update: Entered UpdatePacketsDescriptions");
             ApplyModifications();
 
+            Dictionary<int, SessionPacketViewModel> theMisfits = _modifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.Header);
+
             WiresharkPipeSender sender = new WiresharkPipeSender();
             string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
             sender.SendPcapngAsync(pipeName, _backingPcapng);
 
             Debug.WriteLine($" @@@ List Update: Entered Clearing old ObsCollection (had {PacketsDescriptions.Count} items)");
-            var newCollection =  new ObservableCollection<string>();
+            var newCollection = new ObservableCollection<string>();
+
             int DEBUG_HOW_MANY_TIMES_RAN = 0;
 
+            var i = 0;
             void HandleNewTSharkTextLine(string line)
             {
                 DEBUG_HOW_MANY_TIMES_RAN++;
@@ -203,16 +212,27 @@ namespace PacketStudio.NewGUI.ViewModels
                         this.PacketsDescriptions = newCollection;
                     }
 
-                    App.Current.Dispatcher.Invoke(() => { newCollection.Add(line); });
+                    if (theMisfits.TryGetValue(i, out _))
+                    {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            newCollection.Add(
+                                $"\t{i}\t[ PacketStudio: ERROR GENERATING PACKET! ]"); // TODO: Get 'Validation Error' from the object and show to user?
+                        });
+                    }
+                    else
+                    {
+                        App.Current.Dispatcher.Invoke(() => { newCollection.Add(line); });
+                    }
                 }
             }
 
 
-            Debug.WriteLine($" @@@ List Update: Calling TSark");
+            Debug.WriteLine($" @@@ List Update: Calling TShark");
             var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
             tsharkTask.ContinueWith(task =>
             {
-                    Debug.WriteLine($" @@@ List Update: Did TShark fail us? {task.Status}, Our function was invoked {DEBUG_HOW_MANY_TIMES_RAN} times");
+                Debug.WriteLine($" @@@ List Update: Did TShark fail us? {task.Status}, Our function was invoked {DEBUG_HOW_MANY_TIMES_RAN} times");
             });
 
             return tsharkTask;
@@ -255,28 +275,42 @@ namespace PacketStudio.NewGUI.ViewModels
             foreach (SessionPacketViewModel packetVm in ModifiedPackets.Where(packetVm => packetVm.IsModified).ToList())
             {
                 int index = packetVm.Header;
-                Debug.WriteLine($" @@@ Applying modification for packet #{index}");
-                TempPacketSaveData packet = packetVm.ExportPacket;
-
                 EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
-                oldEpb.Data = packet.Data;
-                if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
+                if (!packetVm.IsValid)
                 {
-                    // Mismatch link type, find other interface
-                    var matchingInterface =
-                        _backingPcapng.Interfaces.FirstOrDefault(iface =>
-                            iface.LinkType == (LinkTypes)packet.LinkLayer);
-                    if (matchingInterface == null)
+                    // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
+                    // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
+                    Array.Clear(oldEpb.Data, 0, oldEpb.Data.Length);
+                }
+                else
+                {
+                    Debug.WriteLine($" @@@ Applying modification for packet #{index}");
+                    TempPacketSaveData packet = packetVm.ExportPacket;
+
+                    oldEpb.Data = packet.Data;
+
+                    // Figure out best interface ID for this packet
+                    // Check if prev packet at this position had our link layer -- then use it's iface id
+                    if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
                     {
-                        throw new NotImplementedException("No interface for the linklayer of the packet");
+                        // Mismatch link type, find another interface
+                        var matchingInterface =
+                            _backingPcapng.Interfaces.FirstOrDefault(iface =>
+                                iface.LinkType == (LinkTypes)packet.LinkLayer);
+                        if (matchingInterface == null)
+                        {
+                            throw new NotImplementedException("No interface for the linklayer of the packet");
+                        }
+                        var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
+                        oldEpb.InterfaceID = matchingIfaceId;
                     }
-                    var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
-                    oldEpb.InterfaceID = matchingIfaceId;
+                    
+                    // This packet is no longer 'modified' compared to the pcapng
+                    ModifiedPackets.Remove(packetVm);
                 }
 
                 _backingPcapng.UpdatePacket(index, oldEpb);
 
-                ModifiedPackets.Remove(packetVm);
             }
         }
     }

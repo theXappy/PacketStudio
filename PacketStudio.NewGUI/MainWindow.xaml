@@ -509,6 +509,36 @@
                         </syncfusion:SplitButton.VectorImage>
                     </syncfusion:SplitButton>
                 </syncfusion:RibbonBar>
+                <syncfusion:RibbonBar  Focusable="False" Header="Collection Control" IsLauncherButtonVisible="False" Margin="2,0">
+                    <syncfusion:RibbonButton Label="New Packet" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                                             Click="NewPacket"
+                                             IconType="VectorImage"
+                                             IconStretch="Fill" SizeForm="Large"
+                                             syncfusion:Ribbon.KeyTip="A">
+                        <syncfusion:RibbonButton.VectorImage>
+                            <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 0 172 V 0 h 172 v 172 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFBAE0BD" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 10.75 10.75 h 150.5 v 150.5 H 10.75 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF5E9C76" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 159.1 12.9 V 159.1 H 12.9 V 12.9 h 146.2 m 4.3 -4.3 H 8.6 v 154.8 h 154.8 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFFFFFFF" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m 133.3 81.7 h -43 v -43 h -8.6 v 43 h -43 v 8.6 h 43 v 43 h 8.6 v -43 h 43 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                        </syncfusion:RibbonButton.VectorImage>
+                        </syncfusion:RibbonButton>
+                </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="2,0">
 
                     <syncfusion:RibbonButton Label="Encode Text" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"

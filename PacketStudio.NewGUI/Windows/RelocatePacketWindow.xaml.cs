@@ -24,9 +24,5 @@ namespace PacketStudio.NewGUI.Windows
             this.Close();
         }
 
-        private void RibbonWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            int x = 3;
-        }
     }
 }
