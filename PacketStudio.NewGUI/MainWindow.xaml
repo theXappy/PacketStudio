@@ -16,6 +16,9 @@
     <controls:RibbonWindow.DataContext>
         <viewModels:MainViewModel/>
     </controls:RibbonWindow.DataContext>
+    <syncfusion:RibbonWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+    </syncfusion:RibbonWindow.Resources>
 
     <DockPanel>
         <syncfusion:Ribbon x:Name="ribbon" DockPanel.Dock="Top" d:DesignHeight="167" >
@@ -910,8 +913,9 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Top" 
                        >
-                <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
-                         SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
+                <Grid>
+                    <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
+                             SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="0"/>
@@ -919,7 +923,10 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-
+                    <controls:SfBusyIndicator IsBusy="{Binding IsPacketsDescriptionsUpdating}"
+                                              Visibility="{Binding IsPacketsDescriptionsUpdating, Converter={StaticResource VisibleIfTrueConverter}, FallbackValue=Hidden}"
+                                              Background="#190074FF" />
+                </Grid>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 

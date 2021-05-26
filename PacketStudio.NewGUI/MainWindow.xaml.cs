@@ -262,7 +262,12 @@ namespace PacketStudio.NewGUI
             {
                 try
                 {
-                    _lastUpdateTokenSource?.Cancel();
+                    if (!Debugger.IsAttached)
+                    {
+                        // Only cancelling if running without debugger.
+                        // This might cause multiple Win32 expections which, when a debugger is attached, make the GUI freeze.
+                        _lastUpdateTokenSource?.Cancel();
+                    }
                 }
                 catch
                 {

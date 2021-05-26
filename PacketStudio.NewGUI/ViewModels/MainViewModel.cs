@@ -129,6 +129,17 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public MemoryPcapng BackingPcapng => _backingPcapng;
 
+        public bool IsPacketsDescriptionsUpdating
+        {
+            get => _isPacketsDescriptionsUpdating;
+            set
+            {
+                _isPacketsDescriptionsUpdating = value;
+                this.RaisePropertyChanged(nameof(IsPacketsDescriptionsUpdating));
+            }
+        }
+
+
         public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
             if (psdng == null)
@@ -168,6 +179,7 @@ namespace PacketStudio.NewGUI.ViewModels
         }
 
         private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
+        private bool _isPacketsDescriptionsUpdating;
 
         public Task LoadFileAsync(string path, CancellationToken token)
         {
@@ -186,6 +198,8 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public Task UpdatePacketsDescriptions(CancellationToken token)
         {
+            IsPacketsDescriptionsUpdating = true;
+
             Debug.WriteLine(" @@@ List Update: Entered UpdatePacketsDescriptions");
             ApplyModifications();
 
@@ -234,6 +248,8 @@ namespace PacketStudio.NewGUI.ViewModels
             {
                 Debug.WriteLine($" @@@ List Update: Did TShark fail us? {task.Status}, Our function was invoked {DEBUG_HOW_MANY_TIMES_RAN} times");
             });
+
+            tsharkTask.ContinueWith(_ => IsPacketsDescriptionsUpdating = false);
 
             return tsharkTask;
         }
