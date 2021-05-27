@@ -11,6 +11,7 @@
         xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
              d:DataContext="{d:DesignInstance viewModels:SessionPacketViewModel}"
+             DataContextChanged="PacketDefiner_OnDataContextChanged"
              >
     <UserControl.Resources>
         <wpfJokes:ListIndexToHexStreamType x:Key="ListIndexToHexStreamType" />

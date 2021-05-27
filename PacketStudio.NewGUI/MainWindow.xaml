@@ -541,6 +541,31 @@
                             </Path>
                         </syncfusion:RibbonButton.VectorImage>
                         </syncfusion:RibbonButton>
+                    <syncfusion:RibbonButton Label="Delete Packet" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
+                                             Click="DeletePacket"
+                                             IconType="VectorImage"
+                                             IconStretch="Fill" SizeForm="Large"
+                                             syncfusion:Ribbon.KeyTip="A">
+                        <syncfusion:RibbonButton.VectorImage>
+                            <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="m -17.2 159.1 v -172 h 172 v 172 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+
+                            <Path Fill="#FFF78F8F" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 90.3 103.845 38.0851 156.0599 20.2401 138.2149 72.455 86 20.2401 33.7851 38.0851 15.9401 90.3 68.155 142.5149 15.9401 160.3599 33.7851 108.145 86 l 52.2149 52.2149 -17.845 17.845 z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFC74343" StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M 142.5149 18.9802 157.3198 33.7851 108.145 82.9599 105.1049 86 l 3.0401 3.0401 49.1748 49.1748 -14.8049 14.8049 L 93.3401 103.845 90.3 100.8049 87.2599 103.845 38.0851 153.0198 23.2802 138.2149 72.455 89.0401 75.4951 86 72.455 82.9599 23.2802 33.7851 38.0851 18.9802 87.2599 68.155 90.3 71.1951 93.3401 68.155 142.5149 18.9802 m 0 -6.0802 L 90.3 65.1149 38.0851 12.9 17.2 33.7851 69.4149 86 17.2 138.2149 38.0851 159.1 90.3 106.8851 142.5149 159.1 163.4 138.2149 111.1851 86 163.4 33.7851 Z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+
+</syncfusion:RibbonButton.VectorImage>
+                        </syncfusion:RibbonButton>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="2,0">
 
@@ -903,7 +928,8 @@
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
                                                     Background="#323232"
                                                     syncfusion:SfSkinManager.VisualStyle="MaterialDark"
-                                            DataContext="{Binding CurrentSessionPacket}" SessionPacket="{Binding SessionPacket}"
+                                            DataContext="{Binding CurrentSessionPacket}"
+                                            SessionPacket="{Binding SessionPacket}"
                                                     />
             </syncfusion:DockingManager.ClientControl>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
@@ -915,7 +941,9 @@
                        >
                 <Grid>
                     <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
-                             SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource}" FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
+                             SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource, NotifyOnSourceUpdated=True}"
+                             SourceUpdated="PacketsList_OnSourceUpdated"
+                             FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="0"/>
@@ -935,7 +963,12 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
+                       <Grid>
                 <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
+                    <controls:SfBusyIndicator IsBusy="{Binding IsPacketPreviewUpdating}"
+                                              Visibility="{Binding IsPacketPreviewUpdating, Converter={StaticResource VisibleIfTrueConverter}, FallbackValue=Hidden}"
+                                              Background="#190074FF" />
+                </Grid>
             </DockPanel>
             <DockPanel syncfusion:DockingManager.CanClose="False" 
                        syncfusion:DockingManager.IsContextMenuButtonVisible="False" 

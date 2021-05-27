@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="anvil.ico" />
+    <None Remove="log4net.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FastPcapng\FastPcapng\FastPcapng.csproj" />
@@ -18,6 +19,9 @@
     <ProjectReference Include="..\PacketStudio.DataAccess\PacketStudio.DataAccess.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\edit-copy_csharp.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -47,6 +51,7 @@
     <Resource Include="anvil.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
     <PackageReference Include="Syncfusion.DataGridExcelExport.Wpf" Version="19.1.0.59" />
   </ItemGroup>

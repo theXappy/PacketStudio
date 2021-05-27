@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -247,6 +248,7 @@ namespace PacketStudio.NewGUI.Controls
 
         private void HexTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            Debug.WriteLine(" *** OnTextChanged "+hexTextBox.Text);
             if (sender != null && sender is TextBox box)
             {
                 // Trick to update the 'Content' binding for every character
@@ -255,7 +257,7 @@ namespace PacketStudio.NewGUI.Controls
                 binding.UpdateSource();
             }
 
-            // Also trigger a whole 'packet changed'
+            //// Also trigger a whole 'packet changed'
             OnPacketChanged(this, new EventArgs());
         }
 
@@ -267,6 +269,16 @@ namespace PacketStudio.NewGUI.Controls
         private void hexTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void PacketDefiner_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ResetPacketUpdateEvent();
+        }
+
+        public void ResetPacketUpdateEvent()
+        {
+            PacketChanged = null;
         }
     }
 }

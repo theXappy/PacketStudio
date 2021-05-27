@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using log4net;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
@@ -20,6 +21,8 @@ namespace PacketStudio.NewGUI.ViewModels
 
     public class SessionPacketViewModel : ViewModelBase
     {
+        private ILog _looger = LogManager.GetLogger(typeof(SessionPacketViewModel));
+
         private HexStreamType packetType;
         private string content;
         private int header;
@@ -131,7 +134,15 @@ namespace PacketStudio.NewGUI.ViewModels
 
         // Note that IsModified is 'true' if _initalState is 'null' because that means we don't have
         // a packet we dereive from and any state of the current packet is "New" (and hence "Modified" compared to 'null')
-        public bool IsModified => !_initalState?.Equals(this.SessionPacket) ?? true;
+        public bool IsModified
+        {
+            get
+            {
+                _looger.Debug($"IsModifed Invoked. _initialState null = {_initalState == null}, SessionPacket: {this.SessionPacket}, Are Equals: {_initalState?.Equals(SessionPacket)}");
+
+                return !_initalState?.Equals(this.SessionPacket) ?? true;
+            }
+        }
 
 
         public void LoadInitialState(PacketSaveDataNG psd)
@@ -167,5 +178,9 @@ namespace PacketStudio.NewGUI.ViewModels
         }
 
 
+        public override string ToString()
+        {
+            return $"Header: {header}, HexType: {this.PacketType}, Content: {content}";
+        }
     }
 }

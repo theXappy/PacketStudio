@@ -46,6 +46,8 @@ namespace PacketStudio.NewGUI.ViewModels
             get { return _currentSessionPacket; }
             set
             {
+                Debug.WriteLine($"CurrentSessionPacket Updating!!!!! Value: {value}");
+
                 // Handle last packet
                 if (_currentSessionPacket != null)
                 {
@@ -139,6 +141,19 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
+        public bool IsPacketPreviewUpdating
+        {
+            get
+            {
+                return _isPacketPreviewUpdating;
+            }
+            set
+            {
+                _isPacketPreviewUpdating = value;
+                this.RaisePropertyChanged(nameof(IsPacketPreviewUpdating));
+            }
+        }
+
 
         public void AddNewPacket(PacketSaveDataNG psdng = null)
         {
@@ -172,7 +187,8 @@ namespace PacketStudio.NewGUI.ViewModels
         public MainViewModel()
         {
             _modifiedPackets = new ObservableCollection<SessionPacketViewModel>();
-            CurrentSessionPacket = new SessionPacketViewModel();
+            _currentSessionPacket = new SessionPacketViewModel();
+            _currentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw,""));
 
             // Register self with parent MainWindow
             MainWindow.SessionViewModel = this;
@@ -180,6 +196,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
         private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
         private bool _isPacketsDescriptionsUpdating;
+        private bool _isPacketPreviewUpdating;
 
         public Task LoadFileAsync(string path, CancellationToken token)
         {
@@ -200,7 +217,6 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             IsPacketsDescriptionsUpdating = true;
 
-            Debug.WriteLine(" @@@ List Update: Entered UpdatePacketsDescriptions");
             ApplyModifications();
 
             Dictionary<int, SessionPacketViewModel> theMisfits = _modifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.Header);
@@ -209,7 +225,6 @@ namespace PacketStudio.NewGUI.ViewModels
             string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
             sender.SendPcapngAsync(pipeName, _backingPcapng);
 
-            Debug.WriteLine($" @@@ List Update: Entered Clearing old ObsCollection (had {PacketsDescriptions.Count} items)");
             var newCollection = new ObservableCollection<string>();
 
             int DEBUG_HOW_MANY_TIMES_RAN = 0;
@@ -244,10 +259,6 @@ namespace PacketStudio.NewGUI.ViewModels
 
             Debug.WriteLine($" @@@ List Update: Calling TShark");
             var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
-            tsharkTask.ContinueWith(task =>
-            {
-                Debug.WriteLine($" @@@ List Update: Did TShark fail us? {task.Status}, Our function was invoked {DEBUG_HOW_MANY_TIMES_RAN} times");
-            });
 
             tsharkTask.ContinueWith(_ => IsPacketsDescriptionsUpdating = false);
 
@@ -328,6 +339,20 @@ namespace PacketStudio.NewGUI.ViewModels
                 _backingPcapng.UpdatePacket(index, oldEpb);
 
             }
+        }
+
+        public void DeletePacket()
+        {
+            if (this.PacketsCount == 1)
+            {
+                // Don't allow removing last one?
+                // Or remove and add new empty one?
+                return;
+            }
+
+            ModifiedPackets.Remove(this.CurrentSessionPacket);
+            this.BackingPcapng.RemovePacket(SelectedPacketIndex);
+            this.SelectedPacketIndex = Math.Max(0, SelectedPacketIndex - 1);
         }
     }
 }

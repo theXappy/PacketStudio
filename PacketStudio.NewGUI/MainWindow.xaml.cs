@@ -12,12 +12,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using FastPcapng;
+using log4net;
+using log4net.Util;
 using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
@@ -42,6 +45,9 @@ namespace PacketStudio.NewGUI
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        private bool _loading;
+        private readonly ILog _logger;
+
         // TODO: Load last/Load from available list in start up instead
         WiresharkDirectory _wiresharkDirectory;
         private WiresharkInterop _wsInterOp;
@@ -84,46 +90,64 @@ namespace PacketStudio.NewGUI
 
         public MainWindow()
         {
+            // Init logger
+            var configFile = new FileInfo("log4net.config");
+            log4net.Config.XmlConfigurator.Configure(configFile);
+
+            _logger = LogManager.GetLogger(typeof(MainWindow));
+            _logger.Info("PacketStudio started! Inside MainWindow Ctor.");
+
+
             InitializeComponent();
 
             bool foundWsInSettings = SharksFinder.TryGetByPath(Settings.Default.WiresharkDir, out WiresharkDirectory dir);
             if (foundWsInSettings)
             {
+                _logger.Info($"Wireshark directory found in settings. Dir: {dir.WiresharkPath}");
+
                 // Found wireshark in settings.
                 this.WiresharkDir = dir;
             }
             else
             {
+                _logger.Info($"No Wireshark directory in settings. Prompting user to choose version.");
+
                 // No wireshark in settings, prompt user to select a version
                 WiresharkFinderWindow wfw = new WiresharkFinderWindow();
                 bool? userChoseWiresharkVersion = wfw.ShowDialog();
                 if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
                 {
+                    _logger.Info($"User canceled Wireshark version selection windows. Terminating!");
                     Environment.Exit(1);
                 }
 
                 var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
                 if (finderViewModel == null)
                 {
+                    _logger.Error($"ViewModel of wireshark version window was null (or not {nameof(WiresharkFinderViewModel)}). Terminating!");
                     Environment.Exit(1);
                 }
 
                 WiresharkDir = finderViewModel.SelectedItem;
+                _logger.Info($"User selected this Wireshark version: {WiresharkDir.WiresharkPath}");
 
+                _logger.Info($"Saving user's choice to settings. Wireshark version: {WiresharkDir.WiresharkPath}");
                 // Also save in settings for next runs
                 Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
                 Settings.Default.Save();
-
+                _logger.Info($"Saved Wireshark version to settings!");
             }
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
+            _logger.Info($"Applying Preview delay value");
             ApplyNewPreviewDelayValue();
+            _logger.Info($"Applied Preview delay value");
 
             hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
         }
 
 
-        private void UpdatePacketState(PacketDefiner invoker)
+        private void UpdatePacketState(PacketDefiner invoker, bool avoidPacketsListUpdate = false)
         {
             PacketDefiner definer = invoker;
 
@@ -192,8 +216,8 @@ namespace PacketStudio.NewGUI
             }
 
             // If this is a legit packet change (an not just selection of a different packet) also queue a packets list update
-            Debug.WriteLine($" @@@ Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
-            if (SessionViewModel.CurrentSessionPacket.IsModified)
+            _logger.DebugExt(()=>$"Inside {nameof(UpdatePacketState)} : Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
+            if (!avoidPacketsListUpdate && SessionViewModel.CurrentSessionPacket.IsModified)
             {
                 Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
             }
@@ -207,21 +231,9 @@ namespace PacketStudio.NewGUI
             _sessionSaveState.HasUnsavedChanges = true;
         }
 
-        private void SetPacketTreeInProgress()
-        {
-            Dispatcher.Invoke(() =>
-            {
-                packetTreeView.previewTree.Items.Clear();
-                packetTreeView.previewTree.Items.Add("Loading...");
-                var loadingColor = DockManager.Background;
-                packetTreeView.previewTree.Background = loadingColor;
-            });
-        }
+        private void SetPacketTreeInProgress() => SessionViewModel.IsPacketPreviewUpdating = true;
 
-        private void UnsetPacketTreeInProgress()
-        {
-            Dispatcher.Invoke(() => packetTreeView.previewTree.Background = new SolidColorBrush(Colors.White));
-        }
+        private void UnsetPacketTreeInProgress() => SessionViewModel.IsPacketPreviewUpdating = false;
 
 
         private CancellationTokenSource _lastUpdateTokenSource = null;
@@ -232,6 +244,7 @@ namespace PacketStudio.NewGUI
         /// </summary>
         private void UpdateLivePreviewTree()
         {
+            _logger.DebugExt(()=>$"{nameof(UpdateLivePreviewTree)} Invoked");
 
             //
             //  * Protocol Tree *
@@ -253,10 +266,13 @@ namespace PacketStudio.NewGUI
 
             // Remove 'update in progress' indicators
             UnsetPacketTreeInProgress();
+
+            _logger.DebugExt(()=>$"{nameof(UpdateLivePreviewTree)} Finished");
         }
 
         private void UpdatePacketsList()
         {
+            _logger.DebugExt(()=>$"{nameof(UpdatePacketsList)} Invoked");
             CancellationToken cToken;
             lock (_tokenSourceLock)
             {
@@ -279,6 +295,7 @@ namespace PacketStudio.NewGUI
 
             var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions(cToken);
             packetListUpdateTask.Wait(cToken);
+            _logger.DebugExt(()=>$"{nameof(UpdatePacketsList)} Finished");
         }
 
 
@@ -531,7 +548,6 @@ namespace PacketStudio.NewGUI
             });
         }
 
-        private bool _loading;
 
         private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
         {
@@ -1012,6 +1028,31 @@ namespace PacketStudio.NewGUI
                 Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
             }
         }
+
+        private void DeletePacket(object sender, RoutedEventArgs e)
+        {
+            SessionViewModel.DeletePacket();
+        }
+
+        private void PacketsList_OnSourceUpdated(object? sender, DataTransferEventArgs e)
+        {
+            //
+            // This event handler runs everytime a new packet is selected and AFTER the packet was successfuly loaded
+            // into the packet definer (so all the unwanted 'PacketChanged' trials to raise already happened)
+            // we can now re-register to this event.
+            // Notice: The de-registeration is happening in PacketDefiner's "data context changed" event handler
+            //
+
+            if (this.IsInitialized)
+            {
+                CurrentPacketDefiner.ResetPacketUpdateEvent(); // Prevent weird edge cases (hopefully)
+                CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
+
+                UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
+            }
+        }
+
+
     }
 
     internal enum UserDecision

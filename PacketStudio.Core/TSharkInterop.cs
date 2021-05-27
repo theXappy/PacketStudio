@@ -212,8 +212,6 @@ namespace PacketStudio.Core
 
             token.ThrowIfCancellationRequested();
 
-            Debug.WriteLine(" @@@ Tshark started!");
-
             return cli;
         }
 
