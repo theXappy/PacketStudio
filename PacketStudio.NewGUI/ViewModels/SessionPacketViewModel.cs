@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using log4net;
 using PacketStudio.Core;
@@ -25,7 +24,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
         private HexStreamType packetType;
         private string content;
-        private int header;
+        private int _packetIndex;
         private int caretPos;
         private int selStart;
         private int selLen;
@@ -59,7 +58,7 @@ namespace PacketStudio.NewGUI.ViewModels
                 // Check for specific header name
                 if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.HEADER_FIELD, out string newHeader))
                 {
-                    Header = int.Parse(newHeader);
+                    PacketIndex = int.Parse(newHeader);
                 }
                 if (value.Metadata.TryGetValue(PackSaveDataNGMetaFields.CARET_POS_FIELD, out string newCaretPosString))
                 {
@@ -71,13 +70,13 @@ namespace PacketStudio.NewGUI.ViewModels
             }
         }
 
-        public int Header
+        public int PacketIndex
         {
-            get => header;
+            get => _packetIndex;
             set
             {
-                header = value;
-                OnPropertyChanged(nameof(Header));
+                _packetIndex = value;
+                OnPropertyChanged(nameof(PacketIndex));
             }
         }
         public int CaretPosition
@@ -180,7 +179,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public override string ToString()
         {
-            return $"Header: {header}, HexType: {this.PacketType}, Content: {content}";
+            return $"PacketIndex: {_packetIndex}, HexType: {this.PacketType}, Content: {content}";
         }
     }
 }

@@ -512,7 +512,7 @@ namespace PacketStudio.NewGUI
             if (invalidItems.Any())
             {
                 string invalidItemsNames =
-                    string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.Header}\""));
+                    string.Join(", ", invalidItems.Select(tabViewModel => $"\"{tabViewModel.PacketIndex}\""));
                 string error = "Can not export to Wireshark because some tabs contain invalid packet definitions.\n\n" +
                                $"Invalid tabs: {invalidItemsNames}";
                 MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);

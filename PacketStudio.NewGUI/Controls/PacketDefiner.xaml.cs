@@ -142,7 +142,7 @@ namespace PacketStudio.NewGUI.Controls
                 if (success)
                 {
                     var packetViewModel = DataContext as SessionPacketViewModel;
-                    res.PacketNumber = packetViewModel.Header;
+                    res.PacketNumber = packetViewModel.PacketIndex;
                 }
 
                 return success ? res : null;

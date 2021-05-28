@@ -120,7 +120,7 @@ namespace PacketStudio.NewGUI.ViewModels
                 var ifaceLinkType = iface.LinkType;
 
                 // TODO: Remvoe this 'tab number' header thingy
-                var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.Header == _selectedPacketIndex);
+                var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.PacketIndex == _selectedPacketIndex);
                 if (sessionPacketObj != null)
                 {
                     CurrentSessionPacket = sessionPacketObj;
@@ -129,7 +129,7 @@ namespace PacketStudio.NewGUI.ViewModels
                 {
                     CurrentSessionPacket = new SessionPacketViewModel()
                     {
-                        Header = _selectedPacketIndex,
+                        PacketIndex = _selectedPacketIndex,
                     };
                     CurrentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, packetBlock.Data.ToHex())
                     {
@@ -178,7 +178,7 @@ namespace PacketStudio.NewGUI.ViewModels
             int tabNumber = nextTabNumber++;
             SessionPacketViewModel new_model1 = new SessionPacketViewModel()
             {
-                Header = tabNumber,
+                PacketIndex = tabNumber,
                 Content = $"",
             };
             new_model1.LoadInitialState(psdng);
@@ -232,7 +232,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
             ApplyModifications();
 
-            Dictionary<int, SessionPacketViewModel> theMisfits = _modifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.Header);
+            Dictionary<int, SessionPacketViewModel> theMisfits = _modifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.PacketIndex);
 
             WiresharkPipeSender sender = new WiresharkPipeSender();
             string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
@@ -283,7 +283,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public Task MovePacket(int newIndex)
         {
-            int currectIndex = CurrentSessionPacket.Header;
+            int currectIndex = CurrentSessionPacket.PacketIndex;
             Debug.WriteLine($" @@@ Trying to move packet #{currectIndex} to Index #{newIndex}");
             if (currectIndex == newIndex)
             {
@@ -292,24 +292,24 @@ namespace PacketStudio.NewGUI.ViewModels
             }
 
             _backingPcapng.MovePacket(currectIndex, newIndex);
-            CurrentSessionPacket.Header = newIndex;
+            CurrentSessionPacket.PacketIndex = newIndex;
             // Update other modified packets
             lock (_modifiedPacketsLock)
             {
                 if (currectIndex > newIndex)
                 {
                     foreach (var pktVm in ModifiedPackets.Where(pkt =>
-                        pkt.Header >= newIndex && pkt.Header < currectIndex))
+                        pkt.PacketIndex >= newIndex && pkt.PacketIndex < currectIndex))
                     {
-                        pktVm.Header++;
+                        pktVm.PacketIndex++;
                     }
                 }
                 else if (currectIndex < newIndex)
                 {
                     foreach (var pktVm in ModifiedPackets.Where(pkt =>
-                        pkt.Header > newIndex && pkt.Header < currectIndex))
+                        pkt.PacketIndex > newIndex && pkt.PacketIndex < currectIndex))
                     {
-                        pktVm.Header--;
+                        pktVm.PacketIndex--;
                     }
                 }
             }
@@ -332,7 +332,7 @@ namespace PacketStudio.NewGUI.ViewModels
                     }
 
                     Debug.WriteLine(" @@@ = ... And it's modified!");
-                    int index = packetVm.Header;
+                    int index = packetVm.PacketIndex;
                     EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
                     if (!packetVm.IsValid)
                     {
