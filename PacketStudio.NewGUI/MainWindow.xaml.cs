@@ -1054,6 +1054,8 @@ namespace PacketStudio.NewGUI
             Debug.WriteLine(" @@@ Registering PacketChange handler LOL!!!!! ");
             CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
 
+            // Only time this function runs and we don't want to update the packet state is when we are still in InitializeComponents in the Ctor
+            // this bool tells as if this is the case
             if (this.IsInitialized)
             {
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
