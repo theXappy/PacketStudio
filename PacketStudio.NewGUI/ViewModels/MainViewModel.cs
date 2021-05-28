@@ -222,7 +222,6 @@ namespace PacketStudio.NewGUI.ViewModels
             return updateDescsTask.ContinueWith(task =>
             {
                 this.SelectedPacketIndex = 0;
-                UpdatePacketsDescriptions(token);
             }, token);
         }
 
@@ -274,9 +273,9 @@ namespace PacketStudio.NewGUI.ViewModels
             }
 
 
-            Debug.WriteLine($" @@@ List Update: Calling TShark");
             var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
 
+            tsharkTask.ContinueWith(_ => Debug.WriteLine($" @@@ Did TShark fail us? Our Func's Invoked {DEBUG_HOW_MANY_TIMES_RAN} times"));
             tsharkTask.ContinueWith(_ => IsPacketsDescriptionsUpdating = false);
 
             return tsharkTask;
