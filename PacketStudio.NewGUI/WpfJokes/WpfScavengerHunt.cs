@@ -20,7 +20,6 @@ namespace PacketStudio.NewGUI.WpfJokes
         public static T FindChild<T>(DependencyObject parent, string childName = null)
             where T : DependencyObject
         {
-            // Confirm parent and childName are valid. 
             if (parent == null) return null;
 
             T foundChild = null;
@@ -61,7 +60,6 @@ namespace PacketStudio.NewGUI.WpfJokes
 
         public static List<T> GetLogicalChildCollection<T>(this DependencyObject parent) where T : DependencyObject
         {
-            // Confirm parent and childName are valid. 
             if (parent == null) return null;
 
             List<T> output = new List<T>();
