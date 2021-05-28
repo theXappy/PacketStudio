@@ -1059,14 +1059,6 @@ namespace PacketStudio.NewGUI
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
             }
         }
-
-
-    }
-
-    internal enum UserDecision
-    {
-        Save,
-        Cancel
     }
 }
 #pragma warning restore CA1416 // Validate platform compatibility
