@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO.Compression;
-using System.Linq;
-using System.Threading;
-using FastPcapng;
+﻿using FastPcapng;
 using Haukcode.PcapngUtils.Common;
 using Haukcode.PcapngUtils.PcapNG.BlockTypes;
 using Haukcode.PcapngUtils.PcapNG.CommonTypes;
@@ -14,6 +7,14 @@ using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.SaveData;
 using Syncfusion.Windows.Shared;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using Syncfusion.Windows.Controls.Gantt;
 using Task = System.Threading.Tasks.Task;
 
 namespace PacketStudio.NewGUI.ViewModels
@@ -31,6 +32,11 @@ namespace PacketStudio.NewGUI.ViewModels
         private ObservableCollection<string> _packetsDescs = new(new string[0]);
         private int _selectedPacketIndex = 0;
 
+        private object _modifiedPacketsLock = new();
+
+        /// <summary>
+        /// Be a good sport and don't change this collection. Treat it as a read-only collection.
+        /// </summary>
         public ObservableCollection<SessionPacketViewModel> ModifiedPackets
         {
             get { return _modifiedPackets; }
@@ -59,13 +65,20 @@ namespace PacketStudio.NewGUI.ViewModels
                     else
                     {
                         Debug.WriteLine(" ### Packet was NOT modified");
-                        ModifiedPackets.Remove(_currentSessionPacket);
+                        lock (_modifiedPacketsLock)
+                        {
+                            ModifiedPackets.Remove(_currentSessionPacket);
+                        }
                     }
                 }
 
                 // Handle new packet
                 _currentSessionPacket = value;
-                ModifiedPackets.Add(_currentSessionPacket);
+                lock (_modifiedPacketsLock)
+                {
+                    ModifiedPackets.Add(_currentSessionPacket);
+                }
+
                 this.RaisePropertyChanged(nameof(CurrentSessionPacket));
             }
         }
@@ -172,7 +185,7 @@ namespace PacketStudio.NewGUI.ViewModels
             _modifiedPackets.Add(new_model1);
 
             // TODO: Are those default parameters good?
-            _backingPcapng.AppendPacket(new EnhancedPacketBlock(0,new TimestampHelper(0,0),1,new byte[1]{0x00}, new EnhancedPacketOption()));
+            _backingPcapng.AppendPacket(new EnhancedPacketBlock(0, new TimestampHelper(0, 0), 1, new byte[1] { 0x00 }, new EnhancedPacketOption()));
         }
 
 
@@ -187,8 +200,9 @@ namespace PacketStudio.NewGUI.ViewModels
         public MainViewModel()
         {
             _modifiedPackets = new ObservableCollection<SessionPacketViewModel>();
-            _currentSessionPacket = new SessionPacketViewModel();
-            _currentSessionPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw,""));
+            var newPacket = new SessionPacketViewModel();
+            newPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, ""));
+            this.CurrentSessionPacket = newPacket;
 
             // Register self with parent MainWindow
             MainWindow.SessionViewModel = this;
@@ -243,7 +257,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
                     if (theMisfits.TryGetValue(i, out _))
                     {
-                        App.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
                             newCollection.Add(
                                 $"\t{i}\t[ PacketStudio: ERROR GENERATING PACKET! ]"); // TODO: Get 'Validation Error' from the object and show to user?
@@ -251,7 +265,10 @@ namespace PacketStudio.NewGUI.ViewModels
                     }
                     else
                     {
-                        App.Current.Dispatcher.Invoke(() => { newCollection.Add(line); });
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            newCollection.Add(line);
+                        });
                     }
                 }
             }
@@ -278,18 +295,23 @@ namespace PacketStudio.NewGUI.ViewModels
             _backingPcapng.MovePacket(currectIndex, newIndex);
             CurrentSessionPacket.Header = newIndex;
             // Update other modified packets
-            if (currectIndex > newIndex)
+            lock (_modifiedPacketsLock)
             {
-                foreach (var pktVm in ModifiedPackets.Where(pkt => pkt.Header >= newIndex && pkt.Header < currectIndex))
+                if (currectIndex > newIndex)
                 {
-                    pktVm.Header++;
+                    foreach (var pktVm in ModifiedPackets.Where(pkt =>
+                        pkt.Header >= newIndex && pkt.Header < currectIndex))
+                    {
+                        pktVm.Header++;
+                    }
                 }
-            }
-            else if (currectIndex < newIndex)
-            {
-                foreach (var pktVm in ModifiedPackets.Where(pkt => pkt.Header > newIndex && pkt.Header < currectIndex))
+                else if (currectIndex < newIndex)
                 {
-                    pktVm.Header--;
+                    foreach (var pktVm in ModifiedPackets.Where(pkt =>
+                        pkt.Header > newIndex && pkt.Header < currectIndex))
+                    {
+                        pktVm.Header--;
+                    }
                 }
             }
 
@@ -298,46 +320,59 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public void ApplyModifications()
         {
-            Debug.WriteLine(" @@@ ====== Applying Modifications ======");
-            foreach (SessionPacketViewModel packetVm in ModifiedPackets.Where(packetVm => packetVm.IsModified).ToList())
+            lock (_modifiedPacketsLock)
             {
-                int index = packetVm.Header;
-                EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
-                if (!packetVm.IsValid)
+                Debug.WriteLine(" @@@ ====== Applying Modifications ======");
+                foreach (SessionPacketViewModel packetVm in ModifiedPackets.ToList())
                 {
-                    // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
-                    // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
-                    Array.Clear(oldEpb.Data, 0, oldEpb.Data.Length);
-                }
-                else
-                {
-                    Debug.WriteLine($" @@@ Applying modification for packet #{index}");
-                    TempPacketSaveData packet = packetVm.ExportPacket;
-
-                    oldEpb.Data = packet.Data;
-
-                    // Figure out best interface ID for this packet
-                    // Check if prev packet at this position had our link layer -- then use it's iface id
-                    if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
+                    Debug.WriteLine(" @@@ = Another packet found in the ModifiedPacketsList");
+                    if (!packetVm.IsModified)
                     {
-                        // Mismatch link type, find another interface
-                        var matchingInterface =
-                            _backingPcapng.Interfaces.FirstOrDefault(iface =>
-                                iface.LinkType == (LinkTypes)packet.LinkLayer);
-                        if (matchingInterface == null)
-                        {
-                            throw new NotImplementedException("No interface for the linklayer of the packet");
-                        }
-                        var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
-                        oldEpb.InterfaceID = matchingIfaceId;
+                        Debug.WriteLine(" @@@ = ... But the packet is not modified, so skipping !~!~");
+                        continue;
                     }
-                    
-                    // This packet is no longer 'modified' compared to the pcapng
-                    ModifiedPackets.Remove(packetVm);
+
+                    Debug.WriteLine(" @@@ = ... And it's modified!");
+                    int index = packetVm.Header;
+                    EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
+                    if (!packetVm.IsValid)
+                    {
+                        // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
+                        // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
+                        Array.Clear(oldEpb.Data, 0, oldEpb.Data.Length);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($" @@@ = Applying modification for packet #{index}");
+                        TempPacketSaveData packet = packetVm.ExportPacket;
+
+                        oldEpb.Data = packet.Data;
+                        oldEpb.PacketLength = packet.Data.Length;
+
+                        // Figure out best interface ID for this packet
+                        // Check if prev packet at this position had our link layer -- then use it's iface id
+                        if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
+                        {
+                            // Mismatch link type, find another interface
+                            var matchingInterface =
+                                _backingPcapng.Interfaces.FirstOrDefault(iface =>
+                                    iface.LinkType == (LinkTypes)packet.LinkLayer);
+                            if (matchingInterface == null)
+                            {
+                                throw new NotImplementedException("No interface for the linklayer of the packet");
+                            }
+
+                            var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
+                            oldEpb.InterfaceID = matchingIfaceId;
+                        }
+
+                        // This packet is no longer 'modified' compared to the pcapng
+                        ModifiedPackets.Remove(packetVm);
+                    }
+
+                    _backingPcapng.UpdatePacket(index, oldEpb);
+
                 }
-
-                _backingPcapng.UpdatePacket(index, oldEpb);
-
             }
         }
 
@@ -350,9 +385,30 @@ namespace PacketStudio.NewGUI.ViewModels
                 return;
             }
 
-            ModifiedPackets.Remove(this.CurrentSessionPacket);
+            lock (_modifiedPacketsLock)
+            {
+                ModifiedPackets.Remove(this.CurrentSessionPacket);
+            }
+
             this.BackingPcapng.RemovePacket(SelectedPacketIndex);
             this.SelectedPacketIndex = Math.Max(0, SelectedPacketIndex - 1);
+        }
+
+        public void UpdateCurrentPacketState(bool b, TempPacketSaveData definerExportPacket)
+        {
+            bool isPreviouslyModified = CurrentSessionPacket.IsModified;
+            CurrentSessionPacket.IsValid = true;
+            CurrentSessionPacket.ExportPacket = definerExportPacket;
+
+            // If packet "became" modified
+            if (isPreviouslyModified && CurrentSessionPacket.IsModified)
+            {
+                if (!ModifiedPackets.Contains(CurrentSessionPacket)) // Prevent duplicates
+                {
+                    ModifiedPackets.Add(CurrentSessionPacket);
+                }
+            }
+            
         }
     }
 }

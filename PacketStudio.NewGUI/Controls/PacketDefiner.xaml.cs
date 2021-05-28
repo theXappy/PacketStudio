@@ -278,6 +278,7 @@ namespace PacketStudio.NewGUI.Controls
 
         public void ResetPacketUpdateEvent()
         {
+            Debug.WriteLine(" @@@ Resetting PacketChanged Event... ");
             PacketChanged = null;
         }
     }

@@ -188,8 +188,7 @@ namespace PacketStudio.NewGUI
                 }));
 
                 // Update Tab's MainViewModel
-                SessionViewModel.CurrentSessionPacket.IsValid = true;
-                SessionViewModel.CurrentSessionPacket.ExportPacket = definer.ExportPacket;
+                SessionViewModel.UpdateCurrentPacketState(true, definer.ExportPacket);
 
                 // Call Live Update (packet tree)
                 if (previewEnabledCheckbox.IsChecked == true)
@@ -199,8 +198,8 @@ namespace PacketStudio.NewGUI
             }
             else
             {
-                SessionViewModel.CurrentSessionPacket.IsValid = false;
-                SessionViewModel.CurrentSessionPacket.ExportPacket = null;
+                // Update Tab's MainViewModel
+                SessionViewModel.UpdateCurrentPacketState(false, null);
 
                 // Code below requierd BeginInvoke otherwise
                 // the caret in the PacketDefiner textbox might not update
@@ -216,7 +215,7 @@ namespace PacketStudio.NewGUI
             }
 
             // If this is a legit packet change (an not just selection of a different packet) also queue a packets list update
-            _logger.DebugExt(()=>$"Inside {nameof(UpdatePacketState)} : Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
+            _logger.DebugExt(() => $"Inside {nameof(UpdatePacketState)} : Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
             if (!avoidPacketsListUpdate && SessionViewModel.CurrentSessionPacket.IsModified)
             {
                 Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
@@ -244,7 +243,7 @@ namespace PacketStudio.NewGUI
         /// </summary>
         private void UpdateLivePreviewTree()
         {
-            _logger.DebugExt(()=>$"{nameof(UpdateLivePreviewTree)} Invoked");
+            _logger.DebugExt(() => $"{nameof(UpdateLivePreviewTree)} Invoked");
 
             //
             //  * Protocol Tree *
@@ -267,12 +266,12 @@ namespace PacketStudio.NewGUI
             // Remove 'update in progress' indicators
             UnsetPacketTreeInProgress();
 
-            _logger.DebugExt(()=>$"{nameof(UpdateLivePreviewTree)} Finished");
+            _logger.DebugExt(() => $"{nameof(UpdateLivePreviewTree)} Finished");
         }
 
         private void UpdatePacketsList()
         {
-            _logger.DebugExt(()=>$"{nameof(UpdatePacketsList)} Invoked");
+            _logger.DebugExt(() => $"{nameof(UpdatePacketsList)} Invoked");
             CancellationToken cToken;
             lock (_tokenSourceLock)
             {
@@ -295,7 +294,7 @@ namespace PacketStudio.NewGUI
 
             var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions(cToken);
             packetListUpdateTask.Wait(cToken);
-            _logger.DebugExt(()=>$"{nameof(UpdatePacketsList)} Finished");
+            _logger.DebugExt(() => $"{nameof(UpdatePacketsList)} Finished");
         }
 
 
@@ -956,6 +955,11 @@ namespace PacketStudio.NewGUI
             source.AddHook(WndProc);
 
             DragAcceptFiles(hwnd, true);
+
+            // The call to OnSourceInitialized above, for some reason, triggers DataContextChanged in the PacketDefiner
+            // so it de-registers our handler and we need to re-register it here.
+            // IIRC, this function is ran once in the entire program's life. So it's an ungly hack but that's what it is.
+            ReReisterPacketChangedEvent();
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -1034,7 +1038,10 @@ namespace PacketStudio.NewGUI
             SessionViewModel.DeletePacket();
         }
 
-        private void PacketsList_OnSourceUpdated(object? sender, DataTransferEventArgs e)
+        private void PacketsList_OnSourceUpdated(object? sender, DataTransferEventArgs e) =>
+            ReReisterPacketChangedEvent();
+
+            private void ReReisterPacketChangedEvent()
         {
             //
             // This event handler runs everytime a new packet is selected and AFTER the packet was successfuly loaded
@@ -1043,11 +1050,12 @@ namespace PacketStudio.NewGUI
             // Notice: The de-registeration is happening in PacketDefiner's "data context changed" event handler
             //
 
+            CurrentPacketDefiner.ResetPacketUpdateEvent(); // Prevent weird edge cases (hopefully)
+            Debug.WriteLine(" @@@ Registering PacketChange handler LOL!!!!! ");
+            CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
+
             if (this.IsInitialized)
             {
-                CurrentPacketDefiner.ResetPacketUpdateEvent(); // Prevent weird edge cases (hopefully)
-                CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
-
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
             }
         }
