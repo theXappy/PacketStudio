@@ -334,7 +334,11 @@ namespace PacketStudio.NewGUI.ViewModels
                     Debug.WriteLine(" @@@ = ... And it's modified!");
                     int index = packetVm.PacketIndex;
                     EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
-                    if (!packetVm.IsValid)
+
+                    // Note we are both checking if the packet is valid and if we can 'Export it' using ".ExportPacket" because
+                    // very quick changes to the packet in the GUI might make it both IsValid=True && ExportPacket==null
+                    TempPacketSaveData packet = packetVm.ExportPacket;
+                    if (!packetVm.IsValid || packet == null)
                     {
                         // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
                         // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
@@ -343,8 +347,6 @@ namespace PacketStudio.NewGUI.ViewModels
                     else
                     {
                         Debug.WriteLine($" @@@ = Applying modification for packet #{index}");
-                        TempPacketSaveData packet = packetVm.ExportPacket;
-
                         oldEpb.Data = packet.Data;
                         oldEpb.PacketLength = packet.Data.Length;
 
