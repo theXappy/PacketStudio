@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace PacketStudio.NewGUI.WpfJokes
 {
-	[ValueConversion(typeof(Encoding), typeof(string))]
+    [ValueConversion(typeof(Encoding), typeof(string))]
 	public class EncodingToStringConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

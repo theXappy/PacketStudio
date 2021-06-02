@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using log4net;
 using PacketStudio.Core;
@@ -31,7 +32,15 @@ namespace PacketStudio.NewGUI.ViewModels
         private PacketSaveDataNG _sessionPacket;
         private TempPacketSaveData _exportPacket;
 
-        public bool IsValid { get; set; }
+        public bool IsValid
+        {
+            get => _isValid;
+            set
+            {
+                Debug.WriteLine($" @@@ *** IsValid of Packet {this.PacketIndex} Changed to {value}");
+                _isValid = value;
+            }
+        }
 
         public string ValidationError { get; set; }
 
@@ -46,6 +55,7 @@ namespace PacketStudio.NewGUI.ViewModels
         }
 
         private PacketSaveDataNG _initalState = null;
+        private bool _isValid;
 
         public PacketSaveDataNG SessionPacket
         {

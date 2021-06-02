@@ -218,7 +218,7 @@ namespace PacketStudio.NewGUI
             _logger.DebugExt(() => $"Inside {nameof(UpdatePacketState)} : Is this a modified packet: {SessionViewModel.CurrentSessionPacket.IsModified}");
             if (!avoidPacketsListUpdate && SessionViewModel.CurrentSessionPacket.IsModified)
             {
-                Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
+                UpdatePacketsListAsync();
             }
         }
 
@@ -235,7 +235,7 @@ namespace PacketStudio.NewGUI
         private void UnsetPacketTreeInProgress() => SessionViewModel.IsPacketPreviewUpdating = false;
 
 
-        private CancellationTokenSource _lastUpdateTokenSource = null;
+        private CancellationTokenSource _packetsListTokenSource = null;
         private object _tokenSourceLock = new object();
 
         /// <summary>
@@ -269,33 +269,52 @@ namespace PacketStudio.NewGUI
             _logger.DebugExt(() => $"{nameof(UpdateLivePreviewTree)} Finished");
         }
 
-        private void UpdatePacketsList()
+        private Task UpdatePacketsListAsync()
         {
-            _logger.DebugExt(() => $"{nameof(UpdatePacketsList)} Invoked");
-            CancellationToken cToken;
-            lock (_tokenSourceLock)
+            return Task.Run(() =>
             {
+                _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Invoked");
+                if (!Monitor.TryEnter(_tokenSourceLock))
+                {
+                    // Another thread is currently locking the source below so it will get the state of packets WE wanted to 
+                    // update to anyway (it didn't reach "Update Packets Descs" function)
+                    _logger.DebugExt(() =>
+                        $"{nameof(UpdatePacketsListAsync)} Aborted because other thread is already starting it");
+                    return;
+                }
+
+
+                _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Trying to cancel previous task");
                 try
                 {
-                    if (!Debugger.IsAttached)
+                    //if (!Debugger.IsAttached)
                     {
                         // Only cancelling if running without debugger.
                         // This might cause multiple Win32 expections which, when a debugger is attached, make the GUI freeze.
-                        _lastUpdateTokenSource?.Cancel();
+                        _packetsListTokenSource?.Cancel();
+                        _packetsListTokenSource = null;
                     }
                 }
                 catch
                 {
                     // Ignored
                 }
-                _lastUpdateTokenSource = new CancellationTokenSource();
-                cToken = _lastUpdateTokenSource.Token;
-            }
 
-            var packetListUpdateTask = SessionViewModel.UpdatePacketsDescriptions(cToken);
-            packetListUpdateTask.Wait(cToken);
-            _logger.DebugExt(() => $"{nameof(UpdatePacketsList)} Finished");
+                _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Creating new source + token");
+                _packetsListTokenSource = new CancellationTokenSource();
+                CancellationToken cToken = _packetsListTokenSource.Token;
+
+                // Waiting the delay
+                Task.Delay(_livePreviewDelay, cToken).Wait();
+
+                Monitor.Exit(_tokenSourceLock);
+
+                _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Running 'Packets Descriptions' Update func");
+                SessionViewModel.UpdatePacketsDescriptions(cToken).Wait();
+                _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Finished");
+            });
         }
+        
 
 
         // This method copies the current showing packet to the clipboard
@@ -542,7 +561,7 @@ namespace PacketStudio.NewGUI
                 if (wsSessionTask.PreferencesChanged)
                 {
                     UpdateLivePreviewTree();
-                    UpdatePacketsList();
+                    UpdatePacketsListAsync();
                 }
             });
         }
@@ -1029,7 +1048,7 @@ namespace PacketStudio.NewGUI
             _sessionSaveState.HasUnsavedChanges = true;
             if (previewEnabledCheckbox.IsChecked == true)
             {
-                Task.Delay(_livePreviewDelay).ContinueWith(task => UpdatePacketsList());
+                UpdatePacketsListAsync();
             }
         }
 
@@ -1055,7 +1074,7 @@ namespace PacketStudio.NewGUI
             CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
 
             // Only time this function runs and we don't want to update the packet state is when we are still in InitializeComponents in the Ctor
-            // this bool tells as if this is the case
+            // this bool tells us if this is the case
             if (this.IsInitialized)
             {
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);

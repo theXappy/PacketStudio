@@ -101,26 +101,26 @@
                                     <PathGeometry Figures="M0 172v-172h172v172z" FillRule="NonZero"/>
                                 </Path.Data>
                             </Path>
-                                <Path Fill="#FFDBB065" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                                    <Path.Data>
-                                        <PathGeometry Figures="M5.375 155.875v-139.75h46.14975l21.5 21.5h82.85025v118.25z" FillRule="NonZero"/>
-                                    </Path.Data>
-                                </Path>
-                                <Path Fill="#FF967A44" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                                    <Path.Data>
-                                        <PathGeometry Figures="M49.2995 21.5l18.35025 18.35025l3.14975 3.14975h4.4505h75.25v107.5h-139.75v-129h38.5495M53.75 10.75h-53.75v150.5h161.25v-129h-86l-21.5 -21.5z" FillRule="NonZero"/>
-                                    </Path.Data>
-                                </Path>
-                                    <Path Fill="#FFF5CE85" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                                        <Path.Data>
-                                            <PathGeometry Figures="M6.0845 155.875l9.40625 -75.25h50.27775l21.5 -10.75h78.72225l-9.55675 86z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                    <Path Fill="#FF967A44" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
-                                        <Path.Data>
-                                            <PathGeometry Figures="M159.99225 75.25l-8.3635 75.25h-139.449l8.0625 -64.5h44.25775h2.537l2.26825 -1.1395l19.23175 -9.6105h71.45525M172 64.5h-86l-21.5 10.75h-53.75l-10.75 86h161.25l10.75 -96.75z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
+                            <Path Fill="#FFDBB065" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M5.375 155.875v-139.75h46.14975l21.5 21.5h82.85025v118.25z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF967A44" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M49.2995 21.5l18.35025 18.35025l3.14975 3.14975h4.4505h75.25v107.5h-139.75v-129h38.5495M53.75 10.75h-53.75v150.5h161.25v-129h-86l-21.5 -21.5z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FFF5CE85" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M6.0845 155.875l9.40625 -75.25h50.27775l21.5 -10.75h78.72225l-9.55675 86z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
+                            <Path Fill="#FF967A44" StrokeThickness="1" StrokeMiterLimit="10" StrokeDashArray="" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                <Path.Data>
+                                    <PathGeometry Figures="M159.99225 75.25l-8.3635 75.25h-139.449l8.0625 -64.5h44.25775h2.537l2.26825 -1.1395l19.23175 -9.6105h71.45525M172 64.5h-86l-21.5 10.75h-53.75l-10.75 86h161.25l10.75 -96.75z" FillRule="NonZero"/>
+                                </Path.Data>
+                            </Path>
                         </syncfusion:RibbonButton.VectorImage>
                     </syncfusion:RibbonButton>
                     <syncfusion:RibbonButton
@@ -543,7 +543,7 @@
                                 </Path.Data>
                             </Path>
                         </syncfusion:RibbonButton.VectorImage>
-                        </syncfusion:RibbonButton>
+                    </syncfusion:RibbonButton>
                     <syncfusion:RibbonButton Label="Delete Packet" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
                                              Click="DeletePacket"
                                              IconType="VectorImage"
@@ -567,8 +567,8 @@
                                 </Path.Data>
                             </Path>
 
-</syncfusion:RibbonButton.VectorImage>
-                        </syncfusion:RibbonButton>
+                        </syncfusion:RibbonButton.VectorImage>
+                    </syncfusion:RibbonButton>
                 </syncfusion:RibbonBar>
                 <syncfusion:RibbonBar  Focusable="False" Header="Edit" IsLauncherButtonVisible="False" Margin="2,0">
 
@@ -921,11 +921,11 @@
                         </syncfusion:RibbonButton.VectorImage>
                     </syncfusion:RibbonButton>
                 </syncfusion:RibbonBar>
-                </syncfusion:RibbonTab>
+            </syncfusion:RibbonTab>
         </syncfusion:Ribbon>
         <syncfusion:DockingManager x:Name="DockManager" UseDocumentContainer="False">
             <syncfusion:DockingManager.ClientControl>
-                                        <controls1:PacketDefiner
+                <controls1:PacketDefiner
                                             x:Name="theOneAndOnlyPd"
                                                     PacketChanged="PacketDefinerPacketChanged"
                                                     CaretPositionChanged="PacketDefiner_OnCaretPositionChanged"
@@ -970,8 +970,8 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                       <Grid>
-                <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
+                <Grid>
+                    <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
                     <controls:SfBusyIndicator IsBusy="{Binding IsPacketPreviewUpdating}"
                                               Visibility="{Binding IsPacketPreviewUpdating, Converter={StaticResource VisibleIfTrueConverter}, FallbackValue=Hidden}"
                                               Background="#190074FF" />

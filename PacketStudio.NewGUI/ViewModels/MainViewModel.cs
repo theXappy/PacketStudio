@@ -1,4 +1,4 @@
-﻿using FastPcapng;
+using FastPcapng;
 using Haukcode.PcapngUtils.Common;
 using Haukcode.PcapngUtils.PcapNG.BlockTypes;
 using Haukcode.PcapngUtils.PcapNG.CommonTypes;
@@ -67,7 +67,7 @@ namespace PacketStudio.NewGUI.ViewModels
                         Debug.WriteLine(" ### Packet was NOT modified");
                         lock (_modifiedPacketsLock)
                         {
-                            ModifiedPackets.Remove(_currentSessionPacket);
+                                ModifiedPackets.Remove(_currentSessionPacket);
                         }
                     }
                 }
@@ -76,7 +76,10 @@ namespace PacketStudio.NewGUI.ViewModels
                 _currentSessionPacket = value;
                 lock (_modifiedPacketsLock)
                 {
-                    ModifiedPackets.Add(_currentSessionPacket);
+                    if (!ModifiedPackets.Contains(_currentSessionPacket))
+                    {
+                        ModifiedPackets.Add(_currentSessionPacket);
+                    }
                 }
 
                 this.RaisePropertyChanged(nameof(CurrentSessionPacket));
@@ -120,13 +123,16 @@ namespace PacketStudio.NewGUI.ViewModels
                 var ifaceLinkType = iface.LinkType;
 
                 // TODO: Remvoe this 'tab number' header thingy
-                var sessionPacketObj = _modifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.PacketIndex == _selectedPacketIndex);
+                var sessionPacketObj = ModifiedPackets.FirstOrDefault((SessionPacketViewModel viewModel) => viewModel.PacketIndex == _selectedPacketIndex);
+                Debug.WriteLine($" XXX Trying to find previous packetVM with this index: {_selectedPacketIndex} did it work? {sessionPacketObj != null}");
                 if (sessionPacketObj != null)
                 {
+                    Debug.WriteLine($" XXX It worked so changing CurrentSessionPacket to it");
                     CurrentSessionPacket = sessionPacketObj;
                 }
                 else
                 {
+                    Debug.WriteLine($" XXX It did not work so we are generating a new SessionPacketViewMode");
                     CurrentSessionPacket = new SessionPacketViewModel()
                     {
                         PacketIndex = _selectedPacketIndex,
@@ -182,7 +188,7 @@ namespace PacketStudio.NewGUI.ViewModels
                 Content = $"",
             };
             new_model1.LoadInitialState(psdng);
-            _modifiedPackets.Add(new_model1);
+            ModifiedPackets.Add(new_model1);
 
             // TODO: Are those default parameters good?
             _backingPcapng.AppendPacket(new EnhancedPacketBlock(0, new TimestampHelper(0, 0), 1, new byte[1] { 0x00 }, new EnhancedPacketOption()));
@@ -191,7 +197,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public void ResetItemsCollection()
         {
-            _modifiedPackets.Clear();
+            ModifiedPackets.Clear();
             // Add first packet
             nextTabNumber = 1;
             AddNewPacket(null);
@@ -199,7 +205,7 @@ namespace PacketStudio.NewGUI.ViewModels
         }
         public MainViewModel()
         {
-            _modifiedPackets = new ObservableCollection<SessionPacketViewModel>();
+            ModifiedPackets = new ObservableCollection<SessionPacketViewModel>();
             var newPacket = new SessionPacketViewModel();
             newPacket.LoadInitialState(new PacketSaveDataNG(HexStreamType.Raw, ""));
             this.CurrentSessionPacket = newPacket;
@@ -216,7 +222,7 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             _backingPcapng = MemoryPcapng.ParsePcapng(path);
 
-            _modifiedPackets.Clear();
+            ModifiedPackets.Clear();
 
             var updateDescsTask = UpdatePacketsDescriptions(token);
             return updateDescsTask.ContinueWith(task =>
@@ -232,7 +238,7 @@ namespace PacketStudio.NewGUI.ViewModels
 
             ApplyModifications();
 
-            Dictionary<int, SessionPacketViewModel> theMisfits = _modifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.PacketIndex);
+            Dictionary<int, SessionPacketViewModel> theMisfits = ModifiedPackets.Where(pkt => !pkt.IsValid).ToDictionary(pkt => pkt.PacketIndex);
 
             WiresharkPipeSender sender = new WiresharkPipeSender();
             string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
@@ -258,8 +264,9 @@ namespace PacketStudio.NewGUI.ViewModels
                     {
                         Application.Current.Dispatcher.Invoke(() =>
                         {
+                            string prefix = (i + 1).ToString().PadLeft(5, ' ');
                             newCollection.Add(
-                                $"\t{i}\t[ PacketStudio: ERROR GENERATING PACKET! ]"); // TODO: Get 'Validation Error' from the object and show to user?
+                                $"{prefix}\t[ PacketStudio: ERROR GENERATING PACKET! ]"); // TODO: Get 'Validation Error' from the object and show to user?
                         });
                     }
                     else
@@ -269,11 +276,28 @@ namespace PacketStudio.NewGUI.ViewModels
                             newCollection.Add(line);
                         });
                     }
+                    i++;
                 }
             }
 
 
             var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
+
+            // Pad with "ERROR GEN'ING" to number of packets
+            tsharkTask.ContinueWith(t =>
+            {
+                while (i != this.PacketsCount)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        string prefix = (i + 1).ToString().PadLeft(5, ' ');
+                        newCollection.Add(
+                            $"{prefix}\t[ PacketStudio: ERROR GENERATING PACKET! ]"); // TODO: Get 'Validation Error' from the object and show to user?
+                    });
+                    i++;
+                }
+            });
+
 
             tsharkTask.ContinueWith(_ => Debug.WriteLine($" @@@ Did TShark fail us? Our Func's Invoked {DEBUG_HOW_MANY_TIMES_RAN} times"));
             tsharkTask.ContinueWith(_ => IsPacketsDescriptionsUpdating = false);
@@ -321,17 +345,17 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             lock (_modifiedPacketsLock)
             {
-                Debug.WriteLine(" @@@ ====== Applying Modifications ======");
+
                 foreach (SessionPacketViewModel packetVm in ModifiedPackets.ToList())
                 {
-                    Debug.WriteLine(" @@@ = Another packet found in the ModifiedPacketsList");
-                    if (!packetVm.IsModified)
+                    Debug.WriteLine($" @@@ = Another packet found in the ModifiedPacketsList. Index: {packetVm.PacketIndex}");
+                    if (!packetVm.IsModified && packetVm.IsValid)
                     {
-                        Debug.WriteLine(" @@@ = ... But the packet is not modified, so skipping !~!~");
+                        Debug.WriteLine(" @@@ = ... But the packet is not modified (and valid), so skipping !~!~");
                         continue;
                     }
 
-                    Debug.WriteLine(" @@@ = ... And it's modified!");
+                    Debug.WriteLine(" @@@ = ... And it's modified (or invalid)! Let's see if we can export it (if it's valid)");
                     int index = packetVm.PacketIndex;
                     EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
 
@@ -340,15 +364,18 @@ namespace PacketStudio.NewGUI.ViewModels
                     TempPacketSaveData packet = packetVm.ExportPacket;
                     if (!packetVm.IsValid || packet == null)
                     {
+                        Debug.WriteLine($" @@@ = Cannot export. '!packetVm.IsValid || packet == null' failed. Is it the null part? {packet == null}");
                         // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
                         // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
                         Array.Clear(oldEpb.Data, 0, oldEpb.Data.Length);
                     }
                     else
                     {
-                        Debug.WriteLine($" @@@ = Applying modification for packet #{index}");
+                        Debug.WriteLine($" @@@ = It's valid! Applying modification for packet #{index}");
                         oldEpb.Data = packet.Data;
+                        Debug.WriteLine($" @@@ = Its Data: {packet.Data.ToHex()}");
                         oldEpb.PacketLength = packet.Data.Length;
+                        Debug.WriteLine($" @@@ = Its Data Length: {packet.Data.Length}");
 
                         // Figure out best interface ID for this packet
                         // Check if prev packet at this position had our link layer -- then use it's iface id
@@ -368,7 +395,18 @@ namespace PacketStudio.NewGUI.ViewModels
                         }
 
                         // This packet is no longer 'modified' compared to the pcapng
-                        ModifiedPackets.Remove(packetVm);
+                        // but NOT if it's current packet
+                        if (packetVm != this.CurrentSessionPacket)
+                        {
+                            Debug.WriteLine($" @@@ Removing modiifed packet: {packetVm.PacketIndex}. Is it even in the collection? {ModifiedPackets.Contains(packetVm)}");
+                            ModifiedPackets.Remove(packetVm);
+                        }
+                        else
+                        {
+                            // This makes the packet report "IsModifed" = false
+                            packetVm.LoadInitialState(packetVm.SessionPacket);
+                            Debug.WriteLine(" @@@ HaHaHaHaHaHaHaHaHa That was a nice bug :)");
+                        }
                     }
 
                     _backingPcapng.UpdatePacket(index, oldEpb);
@@ -395,10 +433,10 @@ namespace PacketStudio.NewGUI.ViewModels
             this.SelectedPacketIndex = Math.Max(0, SelectedPacketIndex - 1);
         }
 
-        public void UpdateCurrentPacketState(bool b, TempPacketSaveData definerExportPacket)
+        public void UpdateCurrentPacketState(bool isValid, TempPacketSaveData definerExportPacket)
         {
             bool isPreviouslyModified = CurrentSessionPacket.IsModified;
-            CurrentSessionPacket.IsValid = true;
+            CurrentSessionPacket.IsValid = isValid;
             CurrentSessionPacket.ExportPacket = definerExportPacket;
 
             // If packet "became" modified
@@ -409,7 +447,7 @@ namespace PacketStudio.NewGUI.ViewModels
                     ModifiedPackets.Add(CurrentSessionPacket);
                 }
             }
-            
+
         }
     }
 }
