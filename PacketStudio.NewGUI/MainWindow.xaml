@@ -10,6 +10,7 @@
         syncfusionskin:SfSkinManager.Theme="{syncfusionskin:SkinManager ThemeName=Blend}"
         xmlns:viewModels="clr-namespace:PacketStudio.NewGUI.ViewModels"
         xmlns:controls1="clr-namespace:PacketStudio.NewGUI.Controls"
+        xmlns:wpfJokes="clr-namespace:PacketStudio.NewGUI.WpfJokes"
         x:Class="PacketStudio.NewGUI.MainWindow"
         mc:Ignorable="d"
         Title="                                 PacketStudio 2.0" Height="837" Width="1166" ShowHelpButton="False" Icon="/anvil.ico" >
@@ -18,6 +19,8 @@
     </controls:RibbonWindow.DataContext>
     <syncfusion:RibbonWindow.Resources>
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+        <wpfJokes:TsharkLineToBackgroundColorConverter x:Key="TsharkLineToBackgroundColor" />
+        <wpfJokes:TsharkLineToForegroundColorConverter x:Key="TsharkLineToForegroundColor" />
     </syncfusion:RibbonWindow.Resources>
 
     <DockPanel>
@@ -943,14 +946,18 @@
                     <ListBox x:Name="packetsList" Background="White" ItemsSource="{Binding PacketsDescriptions}"
                              SelectedIndex="{Binding SelectedPacketIndex, Mode=OneWayToSource, NotifyOnSourceUpdated=True}"
                              SourceUpdated="PacketsList_OnSourceUpdated"
-                             FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                             FontFamily="Consolas" FontSize="12" SelectionChanged="packetsList_SelectionChanged"
+                             Padding="0"
+                             >
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,0,0,-1"/>
+                                <Setter Property="Background" Value="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource TsharkLineToBackgroundColor}}"/>
+                                <Setter Property="Foreground" Value="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource TsharkLineToForegroundColor}}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                     <controls:SfBusyIndicator IsBusy="{Binding IsPacketsDescriptionsUpdating}"
                                               Visibility="{Binding IsPacketsDescriptionsUpdating, Converter={StaticResource VisibleIfTrueConverter}, FallbackValue=Hidden}"
                                               Background="#190074FF" />

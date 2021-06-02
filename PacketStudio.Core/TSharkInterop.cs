@@ -294,6 +294,7 @@ namespace PacketStudio.Core
 
             // Force Wireshark's default columns in output format 
             selected +=
+                " --color" +
                 " -o \"gui.column.format:" +
                 "\"No\",\"%m\","
                 +
@@ -302,7 +303,8 @@ namespace PacketStudio.Core
                 "\"Destination\",\"%d\"," +
                 "\"Protocol\",\"%p\"," +
                 "\"Length\",\"%L\"," +
-                "\"Info\",\"%i\"" +
+                "\"Info\",\"%i\"," +
+                "\"ColoringRuleName\",\"%Cus:frame.coloring_rule.name:0:R\""+
                 "\""
                 ;
 
