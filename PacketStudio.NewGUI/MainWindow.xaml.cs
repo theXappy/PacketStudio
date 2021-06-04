@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -25,16 +22,13 @@ using Microsoft.Win32;
 using PacketStudio.Core;
 using PacketStudio.DataAccess;
 using PacketStudio.DataAccess.Providers;
-using PacketStudio.DataAccess.SaveData;
 using PacketStudio.DataAccess.Saver;
 using PacketStudio.NewGUI.Controls;
 using PacketStudio.NewGUI.PacketTemplatesControls;
 using PacketStudio.NewGUI.Properties;
 using PacketStudio.NewGUI.ViewModels;
 using PacketStudio.NewGUI.Windows;
-using PacketStudio.NewGUI.WpfJokes;
 using Syncfusion.Windows.Tools.Controls;
-using PacketStudio.DataAccess.SmartCapture;
 
 #pragma warning disable CA1416 // Validate platform compatibility
 
@@ -144,6 +138,8 @@ namespace PacketStudio.NewGUI
             _logger.Info($"Applied Preview delay value");
 
             hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
+
+            LoadRecentFilesFromSettings();
         }
 
 
@@ -628,7 +624,7 @@ namespace PacketStudio.NewGUI
                 {
                     if (!filePath.EndsWith("pcapng"))
                     {
-                        throw new Exception("Not yet...");
+                        throw new Exception("Trying to open a file without the .pcapng extension. It's not supported yet...");
                     }
                     // TODO: Maybe not a None token?
                     SessionViewModel.LoadFileAsync(filePath, CancellationToken.None);
@@ -659,18 +655,60 @@ namespace PacketStudio.NewGUI
             // Add to 'Recent files list' (or not, if present)
             //
 
-            if (_applicationMenu.MenuItems.OfType<SimpleMenuButton>().Any(item => item.Label == filePath))
+            AddToRecentFiles(filePath);
+        }
+
+        private void AddToRecentFiles(string filePath)
+        {
+            string recentFilesEncoded = Settings.Default.RecentFiles;
+
+            if (recentFilesEncoded.Contains(filePath))
             {
-                // File already in recents list, nothing more to do...
-                return;
+                // Already in list, remove old occurence before adding to head
+                recentFilesEncoded = recentFilesEncoded.Replace($"{filePath},", string.Empty);
             }
-            // Adding file to 'recent files' list in the app menu
-            var newMenuButton = new SimpleMenuButton()
+
+            // Adding to head (to indicate most recent)
+            recentFilesEncoded = $"{filePath}," + recentFilesEncoded;
+
+            // Check if we have too many entires (by counting commas in the encoded string)
+            int MAX_RECENT_FILES_ENTRIES = 10;
+            if (recentFilesEncoded.Count(ch => ch == ',') > MAX_RECENT_FILES_ENTRIES)
             {
-                Label = filePath,
-            };
-            newMenuButton.Click += RecentFileMenuItemClicked;
-            _applicationMenu.MenuItems.Add(newMenuButton);
+                // We have too many... let's cut a few (most likly just 1)
+                // Take all characters and count commas. When number of commas == MAX_RECENT_FILES_ENTRIES then stop.
+                int i = 0;
+                recentFilesEncoded = new string(recentFilesEncoded.TakeWhile(c => c != ',' || (++i < MAX_RECENT_FILES_ENTRIES)).ToArray());
+            }
+
+            // Adding file to 'recent files' list in the app menu
+            Settings.Default.RecentFiles = recentFilesEncoded;
+            Settings.Default.Save();
+
+            // Just reload the entire thing from the settings (easier than maintaining dup code here nad in LoadRecentFilesFromSettings
+            LoadRecentFilesFromSettings();
+        }
+
+        void LoadRecentFilesFromSettings()
+        {
+            _applicationMenu.MenuItems.Clear();
+            foreach (string filePath in Settings.Default.RecentFiles.Split(','))
+            {
+                string normalizedFilePath = filePath.Trim(',');
+                if(String.IsNullOrWhiteSpace(normalizedFilePath))
+                    continue;
+                if(!File.Exists(normalizedFilePath))
+                    continue;
+                
+
+                // Adding file to 'recent files' list in the app menu
+                var newMenuButton = new SimpleMenuButton()
+                {
+                    Label = normalizedFilePath,
+                };
+                newMenuButton.Click += RecentFileMenuItemClicked;
+                _applicationMenu.MenuItems.Add(newMenuButton);
+            }
         }
 
         private void RecentFileMenuItemClicked(object sender, RoutedEventArgs e)
@@ -1080,6 +1118,7 @@ namespace PacketStudio.NewGUI
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
             }
         }
+
     }
 }
 #pragma warning restore CA1416 // Validate platform compatibility

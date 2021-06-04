@@ -416,7 +416,8 @@
                                                      IconStretch="Fill"
                                                      SizeForm="ExtraSmall"
                                                      Margin="1,1,10,1"
-                                                     syncfusion:Ribbon.KeyTip="C">
+                                                     syncfusion:Ribbon.KeyTip="C"
+                                             >
                         <syncfusion:RibbonButton.VectorImage>
                             <!-- Copy icon in XAML shapes -->
                             <Path Fill="#FF788B9C" Opacity="1">
@@ -450,7 +451,7 @@
                                                     Click="CopyCSharpShort"
                                                     IconType="VectorImage"
                                                     syncfusion:Ribbon.KeyTip="3"
-                                                    Margin="0"
+                                                    Margin="0,1"
                                                     >
                         <syncfusion:DropDownMenuItem Header="0xAA, 0xBB" Click="CopyCSharpShort" HorizontalAlignment="Left"/>
                         <syncfusion:DropDownMenuItem Header="new byte[]{0xAA, 0xBB};" Click="CopyCSharpLong" HorizontalAlignment="Left" IconSize="0,0"/>
@@ -515,12 +516,13 @@
                         </syncfusion:SplitButton.VectorImage>
                     </syncfusion:SplitButton>
                 </syncfusion:RibbonBar>
-                <syncfusion:RibbonBar  Focusable="False" Header="Collection Control" IsLauncherButtonVisible="False" Margin="2,0">
+                <syncfusion:RibbonBar  Focusable="False" Header="Collection Control" IsLauncherButtonVisible="False" Margin="2,0" >
                     <syncfusion:RibbonButton Label="New Packet" IsLargeImageVisible="True" Padding="0" ScrollViewer.CanContentScroll="True"
                                              Click="NewPacket"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
-                                             syncfusion:Ribbon.KeyTip="A">
+                                             syncfusion:Ribbon.KeyTip="N"
+                                             Margin="6,0,0,0">
                         <syncfusion:RibbonButton.VectorImage>
                             <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
                                 <Path.Data>
@@ -548,7 +550,7 @@
                                              Click="DeletePacket"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
-                                             syncfusion:Ribbon.KeyTip="A">
+                                             syncfusion:Ribbon.KeyTip="D">
                         <syncfusion:RibbonButton.VectorImage>
                             <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
                                 <Path.Data>
@@ -611,7 +613,7 @@
                                              Click="NormalizeHex"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
-                                             syncfusion:Ribbon.KeyTip="N">
+                                             syncfusion:Ribbon.KeyTip="H">
                         <syncfusion:RibbonButton.VectorImage>
                             <!-- Hammer icon in XAML shapes -->
                             <Path Name="path86" Fill="#FF66798F" Opacity="1">
@@ -660,7 +662,7 @@
                                              Click="FlattenStack"
                                              IconType="VectorImage"
                                              IconStretch="Fill" SizeForm="Large"
-                                             syncfusion:Ribbon.KeyTip="N">
+                                             syncfusion:Ribbon.KeyTip="F">
                         <syncfusion:RibbonButton.VectorImage>
                             <!-- No-Stack icon in XAML shapes -->
                             <Path StrokeThickness="1" StrokeMiterLimit="10" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
