@@ -972,8 +972,8 @@
                        syncfusion:DockingManager.CanAutoHide="False" 
                        syncfusion:DockingManager.SideInDockedMode="Right" 
                        syncfusion:DockingManager.DesiredWidthInDockedMode="450">
-                <Grid>
-                    <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
+                <Grid Background="White">
+                    <controls1:PacketTreeView x:Name="packetTreeView" DockPanel.Dock="Top" Foreground="Black" Background="White" SelectedItemChanged="PacketTreeView_OnSelectedItemChanged"/>
                     <controls:SfBusyIndicator IsBusy="{Binding IsPacketPreviewUpdating}"
                                               Visibility="{Binding IsPacketPreviewUpdating, Converter={StaticResource VisibleIfTrueConverter}, FallbackValue=Hidden}"
                                               Background="#190074FF" />
