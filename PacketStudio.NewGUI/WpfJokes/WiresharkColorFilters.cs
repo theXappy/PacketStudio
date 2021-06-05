@@ -15,13 +15,10 @@ namespace PacketStudio.NewGUI.WpfJokes
         public Dictionary<string, Color> ForeColors = new();
         private WiresharkColorFilters()
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                , @"Wireshark\profiles\Default3\colorfilters");
-
-            string path2 =
+            string path =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
                     , @"Wireshark\colorfilters");
-            foreach (string ruleLine in File.ReadLines(path).Concat(File.ReadLines(path2)))
+            foreach (string ruleLine in File.ReadLines(path))
             {
                 int firstAtIndex = ruleLine.IndexOf('@');
                 if (firstAtIndex == -1)
