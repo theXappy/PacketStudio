@@ -17,7 +17,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
     [DisplayName("Raw Frame")]
-    [Order(0)]
+    [Order((int)HexStreamType.Raw)]
     [HexStreamType(HexStreamType.Raw)]
     public partial class RawTemplateControl : UserControl, IPacketTemplateControl
     {

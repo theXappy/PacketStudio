@@ -471,7 +471,7 @@ namespace PacketStudio.NewGUI
                 {
                     // User selected an item without highlight specified (maybe a generated field)
                     // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                    // currPacket.SelectionStart = 0;  TODO: Test me :) I should solve a bug
+                    currPacket.SelectionStart = 0;
                     currPacket.SelectionLength = 0;
                 }
             }
@@ -489,7 +489,7 @@ namespace PacketStudio.NewGUI
                     {
                         // User selected an item from the generated headers, nothing to show in the packet definer control
                         // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                        // currPacket.SelectionStart = 0;  TODO: Test me :) I should solve a bug
+                        currPacket.SelectionStart = 0;
                         currPacket.SelectionLength = 0;
                         return;
                     }
