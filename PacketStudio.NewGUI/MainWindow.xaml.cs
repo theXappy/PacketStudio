@@ -39,10 +39,12 @@ namespace PacketStudio.NewGUI
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        private bool _loading;
-        private readonly ILog _logger;
+        const int MAX_RECENT_FILES_ENTRIES = 10;
 
-        // TODO: Load last/Load from available list in start up instead
+        private readonly ILog _logger;
+        
+        private bool _fileLoading;
+
         WiresharkDirectory _wiresharkDirectory;
         private WiresharkInterop _wsInterOp;
         private TSharkInterop _tsharkInterOp;
@@ -63,9 +65,8 @@ namespace PacketStudio.NewGUI
         }
 
         private readonly SessionSaveState _sessionSaveState = new SessionSaveState();
-
         public static MainViewModel SessionViewModel { get; set; }
-        private PacketDefiner CurrentPacketDefiner => theOneAndOnlyPd; // WpfScavengerHunt.FindChild<PacketDefiner>(tabControl);
+        private PacketDefiner CurrentPacketDefiner => theOneAndOnlyPd;
 
         private int _livePreviewDelay;
         private int LivePreviewDelay
@@ -81,6 +82,8 @@ namespace PacketStudio.NewGUI
             }
         }
 
+        private CancellationTokenSource _packetsListTokenSource = null;
+        private object _packetListTokenSrouceLock = new object();
 
         public MainWindow()
         {
@@ -141,7 +144,6 @@ namespace PacketStudio.NewGUI
 
             LoadRecentFilesFromSettings();
         }
-
 
         private void UpdatePacketState(PacketDefiner invoker, bool avoidPacketsListUpdate = false)
         {
@@ -220,19 +222,11 @@ namespace PacketStudio.NewGUI
 
         private void PacketDefinerPacketChanged(object sender, EventArgs e)
         {
-            if (_loading) return;
+            if (_fileLoading) return;
 
             UpdatePacketState(sender as PacketDefiner);
             _sessionSaveState.HasUnsavedChanges = true;
         }
-
-        private void SetPacketTreeInProgress() => SessionViewModel.IsPacketPreviewUpdating = true;
-
-        private void UnsetPacketTreeInProgress() => SessionViewModel.IsPacketPreviewUpdating = false;
-
-
-        private CancellationTokenSource _packetsListTokenSource = null;
-        private object _tokenSourceLock = new object();
 
         /// <summary>
         /// Update Live Preview panels in the GUI. Invokes TShark and waits for it.
@@ -246,7 +240,7 @@ namespace PacketStudio.NewGUI
             //
 
             // Indicate 'update in progress' instead of previous packet tree
-            SetPacketTreeInProgress();
+            SessionViewModel.IsPacketPreviewUpdating = true;
 
             TempPacketSaveData packetBytes = null;
             Dispatcher.BeginInvoke((Action)(() => { packetBytes = SessionViewModel.CurrentSessionPacket.ExportPacket; })).Task
@@ -260,7 +254,7 @@ namespace PacketStudio.NewGUI
             }
 
             // Remove 'update in progress' indicators
-            UnsetPacketTreeInProgress();
+            SessionViewModel.IsPacketPreviewUpdating = false;
 
             _logger.DebugExt(() => $"{nameof(UpdateLivePreviewTree)} Finished");
         }
@@ -270,7 +264,7 @@ namespace PacketStudio.NewGUI
             return Task.Run(() =>
             {
                 _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Invoked");
-                if (!Monitor.TryEnter(_tokenSourceLock))
+                if (!Monitor.TryEnter(_packetListTokenSrouceLock))
                 {
                     // Another thread is currently locking the source below so it will get the state of packets WE wanted to 
                     // update to anyway (it didn't reach "Update Packets Descs" function)
@@ -303,16 +297,18 @@ namespace PacketStudio.NewGUI
                 // Waiting the delay
                 Task.Delay(_livePreviewDelay, cToken).Wait();
 
-                Monitor.Exit(_tokenSourceLock);
+                Monitor.Exit(_packetListTokenSrouceLock);
 
                 _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Running 'Packets Descriptions' Update func");
                 SessionViewModel.UpdatePacketsDescriptions(cToken).Wait();
                 _logger.DebugExt(() => $"{nameof(UpdatePacketsListAsync)} Finished");
             });
         }
-        
 
-
+        #region Copy Paste Funcs
+        private void DoPaste(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Paste();
+        private void DoCopy(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Copy();
+        private void DoCut(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Cut();
         // This method copies the current showing packet to the clipboard
         // The format of the data will be '0xAA, 0xBB'
         private void CopyCSharpShort(object sender, RoutedEventArgs e)
@@ -329,7 +325,6 @@ namespace PacketStudio.NewGUI
 
             copyForCSharpButton.IsDropDownOpen = false;
         }
-
         // This method copies the current showing packet to the clipboard
         // The format of the data will be 'new byte[]{0xAA, 0xBB};'
         private void CopyCSharpLong(object sender, RoutedEventArgs e)
@@ -346,7 +341,8 @@ namespace PacketStudio.NewGUI
 
             copyForCSharpButton.IsDropDownOpen = false;
         }
-
+        #endregion
+        
         /// <summary>
         /// Asserts the current showing packet is valid. Otherwise shows an error to the user
         /// </summary>
@@ -427,7 +423,6 @@ namespace PacketStudio.NewGUI
 
         }
 
-
         private void NormalizeHex(object sender, RoutedEventArgs e)
         {
             try
@@ -500,26 +495,6 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        // TODO: Export this somewherr else
-        private int GetHeadersLengthFromType(HexStreamType packetType)
-        {
-            var assm = this.GetType().Assembly;
-            var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
-
-            foreach (var packetTemplateType in packetTemplateTypes)
-            {
-                HexStreamTypeAttribute typeAttr = packetTemplateType.GetCustomAttributes(typeof(HexStreamTypeAttribute), false).FirstOrDefault() as HexStreamTypeAttribute;
-                HexStreamType sType = typeAttr.StreamType;
-
-                if (sType == packetType)
-                {
-                    IPacketTemplateControl iptc = (IPacketTemplateControl)Activator.CreateInstance(packetTemplateType);
-                    return iptc.GetHeadersLength();
-                }
-            }
-            throw new ArgumentException($"Couldn't find template (and headers length) for type: {packetType}");
-        }
-
         private void ExportToWireshark(object sender, RoutedEventArgs e)
         {
             var items = SessionViewModel.ModifiedPackets;
@@ -561,7 +536,6 @@ namespace PacketStudio.NewGUI
                 }
             });
         }
-
 
         private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
         {
@@ -619,7 +593,7 @@ namespace PacketStudio.NewGUI
             bool fileLoaded = false;
             using (Dispatcher.DisableProcessing())
             {
-                _loading = true;
+                _fileLoading = true;
                 try
                 {
                     if (!filePath.EndsWith("pcapng"))
@@ -635,7 +609,7 @@ namespace PacketStudio.NewGUI
                     MessageBox.Show($"Failed to open file {filePath}\n" +
                         $"Error: {ex.Message}");
                 }
-                _loading = false;
+                _fileLoading = false;
             }
 
             _sessionSaveState.Reset();
@@ -658,6 +632,7 @@ namespace PacketStudio.NewGUI
             AddToRecentFiles(filePath);
         }
 
+        #region Recent Files List Maintanance
         private void AddToRecentFiles(string filePath)
         {
             string recentFilesEncoded = Settings.Default.RecentFiles;
@@ -672,7 +647,6 @@ namespace PacketStudio.NewGUI
             recentFilesEncoded = $"{filePath}," + recentFilesEncoded;
 
             // Check if we have too many entires (by counting commas in the encoded string)
-            int MAX_RECENT_FILES_ENTRIES = 10;
             if (recentFilesEncoded.Count(ch => ch == ',') > MAX_RECENT_FILES_ENTRIES)
             {
                 // We have too many... let's cut a few (most likly just 1)
@@ -688,18 +662,17 @@ namespace PacketStudio.NewGUI
             // Just reload the entire thing from the settings (easier than maintaining dup code here nad in LoadRecentFilesFromSettings
             LoadRecentFilesFromSettings();
         }
-
         void LoadRecentFilesFromSettings()
         {
             _applicationMenu.MenuItems.Clear();
             foreach (string filePath in Settings.Default.RecentFiles.Split(','))
             {
                 string normalizedFilePath = filePath.Trim(',');
-                if(String.IsNullOrWhiteSpace(normalizedFilePath))
+                if (String.IsNullOrWhiteSpace(normalizedFilePath))
                     continue;
-                if(!File.Exists(normalizedFilePath))
+                if (!File.Exists(normalizedFilePath))
                     continue;
-                
+
 
                 // Adding file to 'recent files' list in the app menu
                 var newMenuButton = new SimpleMenuButton()
@@ -710,65 +683,52 @@ namespace PacketStudio.NewGUI
                 _applicationMenu.MenuItems.Add(newMenuButton);
             }
         }
-
         private void RecentFileMenuItemClicked(object sender, RoutedEventArgs e)
         {
             SimpleMenuButton smb = sender as SimpleMenuButton;
             LoadFile(smb.Label);
         }
+        #endregion
 
-        // *************************************************
-        //
-        //                Saving to file
-        //
-        // *************************************************
+        #region Save Functions
+        private void SaveSession(string destP2sPath)
+        {
+            var sessionPackets = SessionViewModel.ModifiedPackets.Select(model => model.SessionPacket);
+            var p2SSaver = new P2sSaver();
+            p2SSaver.Save(destP2sPath, sessionPackets);
 
-
+            _sessionSaveState.AssociatedFilePath = destP2sPath;
+            _sessionSaveState.HasUnsavedChanges = false;
+        }
         private UserDecision DoSave()
         {
-            if (_sessionSaveState.HasAssociatedFile)
-            {
-                if (_sessionSaveState.HasUnsavedChanges)
-                {
-                    SaveSession(_sessionSaveState.AssociatedFilePath);
-                }
-                // Else - Current state already saved to file, do nothing
-                return UserDecision.Save;
-            }
+            if (!_sessionSaveState.HasAssociatedFile) return DoSaveAs(); // No file? Ask user what to do
+            if (!_sessionSaveState.HasUnsavedChanges) return UserDecision.Save; // There's a file but no unsaved chagnges. do nothing.
+            // There's a file AND some unsaved changes. Save 'em.
+            SaveSession(_sessionSaveState.AssociatedFilePath);
+            return UserDecision.Save;
 
             // Not associated with a file - treat as "Save As..." (prompt for path)
-            return DoSaveAs();
         }
         private UserDecision DoSaveAs()
         {
-            SaveFileDialog sfd = new SaveFileDialog
+            SaveFileDialog saveDestinationPrompt = new SaveFileDialog
             {
                 AddExtension = true,
                 Filter = "PacketStudio 2 Session file|*.p2s",
                 DefaultExt = ".p2s"
             };
-            var res = sfd.ShowDialog(this);
-            if (!res.HasValue || res.Value == false)
-                return UserDecision.Cancel;
-
-            SaveSession(sfd.FileName);
+            var res = saveDestinationPrompt.ShowDialog(this);
+            if (res.Value == false) return UserDecision.Cancel; // User decided not to save after all
+            // User wanted to save. Save to the file he selected
+            SaveSession(saveDestinationPrompt.FileName);
             return UserDecision.Save;
         }
-
         private void SaveMenuItemClicked(object sender, RoutedEventArgs e) => DoSave();
         private void SaveAsMenuItemClicked(object sender, RoutedEventArgs e) => DoSaveAs();
+        #endregion
+
         private void ExitMenuItemClicked(object sender, RoutedEventArgs e) => Close();
-
-        private void SaveSession(string path)
-        {
-            var sessionPackets = SessionViewModel.ModifiedPackets.Select(model => model.SessionPacket);
-            var p2SSaver = new P2sSaver();
-            p2SSaver.Save(path, sessionPackets);
-
-            _sessionSaveState.AssociatedFilePath = path;
-            _sessionSaveState.HasUnsavedChanges = false;
-        }
-
 
         private void ChangeWsDir(object sender, RoutedEventArgs e)
         {
@@ -902,11 +862,6 @@ namespace PacketStudio.NewGUI
             SessionViewModel.ResetItemsCollection();
         }
 
-        private void DoPaste(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Paste();
-
-        private void DoCopy(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Copy();
-
-        private void DoCut(object sender, RoutedEventArgs e) => CurrentPacketDefiner.Cut();
 
         private void EncodeText(object sender, RoutedEventArgs e)
         {
@@ -936,8 +891,7 @@ namespace PacketStudio.NewGUI
                 tivm.CaretPosition = pd.CaretPosition;
         }
 
-
-
+        #region Move Packets
         private void MoveBackward(object sender, RoutedEventArgs e)
         {
             int newIndex = SessionViewModel.SelectedPacketIndex - 1;
@@ -988,6 +942,8 @@ namespace PacketStudio.NewGUI
             }
         }
 
+        #endregion
+
         #region Drag Drop P/Invoke Ugliness
         const int WM_DROPFILES = 0x233;
 
@@ -1015,7 +971,7 @@ namespace PacketStudio.NewGUI
 
             // The call to OnSourceInitialized above, for some reason, triggers DataContextChanged in the PacketDefiner
             // so it de-registers our handler and we need to re-register it here.
-            // IIRC, this function is ran once in the entire program's life. So it's an ungly hack but that's what it is.
+            // IIRC, this function is ran once in the entire program's life. So it's an ugly hack but that's what it is.
             ReReisterPacketChangedEvent();
         }
 
@@ -1080,7 +1036,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private void NewPacket(object sender, RoutedEventArgs e)
+        private void AddNewPacket(object sender, RoutedEventArgs e)
         {
             SessionViewModel.AddNewPacket();
             _sessionSaveState.HasUnsavedChanges = true;
@@ -1095,10 +1051,12 @@ namespace PacketStudio.NewGUI
             SessionViewModel.DeletePacket();
         }
 
+        #region PacketsList packet switching workaround
+
         private void PacketsList_OnSourceUpdated(object? sender, DataTransferEventArgs e) =>
             ReReisterPacketChangedEvent();
 
-            private void ReReisterPacketChangedEvent()
+        private void ReReisterPacketChangedEvent()
         {
             //
             // This event handler runs everytime a new packet is selected and AFTER the packet was successfuly loaded
@@ -1118,6 +1076,7 @@ namespace PacketStudio.NewGUI
                 UpdatePacketState(CurrentPacketDefiner, avoidPacketsListUpdate: true);
             }
         }
+        #endregion
 
     }
 }
