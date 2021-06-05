@@ -7,7 +7,7 @@ Extends your protocol analysis & reverse engineering with PacketStudio by levera
 The UI allows you to edit pcap/pcapng files, add/remove/edit packets all with live feedback and easy ways to export your work.
 
 
-![screenshot](https://i.imgur.com/Nfo3rHO.png)
+![screenshot](https://i.imgur.com/4PQmhSB.png)
 
 \* PacketStudio works with offline captures, this tool does not manipulate live data.
 
