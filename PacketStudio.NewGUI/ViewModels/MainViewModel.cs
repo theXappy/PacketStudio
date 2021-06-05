@@ -67,7 +67,7 @@ namespace PacketStudio.NewGUI.ViewModels
                         Debug.WriteLine(" ### Packet was NOT modified");
                         lock (_modifiedPacketsLock)
                         {
-                                ModifiedPackets.Remove(_currentSessionPacket);
+                            ModifiedPackets.Remove(_currentSessionPacket);
                         }
                     }
                 }

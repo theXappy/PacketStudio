@@ -13,7 +13,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
     [DisplayName("TCP Packet")]
-    [Order(1)]
+    [Order(2)]
     [HexStreamType(HexStreamType.TcpPayload)]
     public partial class TcpTemplateControl : UserControl, IPacketTemplateControl
     {

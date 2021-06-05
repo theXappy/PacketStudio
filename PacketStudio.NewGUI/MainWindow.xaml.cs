@@ -42,7 +42,7 @@ namespace PacketStudio.NewGUI
         const int MAX_RECENT_FILES_ENTRIES = 10;
 
         private readonly ILog _logger;
-        
+
         private bool _fileLoading;
 
         WiresharkDirectory _wiresharkDirectory;
@@ -342,7 +342,7 @@ namespace PacketStudio.NewGUI
             copyForCSharpButton.IsDropDownOpen = false;
         }
         #endregion
-        
+
         /// <summary>
         /// Asserts the current showing packet is valid. Otherwise shows an error to the user
         /// </summary>
@@ -459,16 +459,20 @@ namespace PacketStudio.NewGUI
             }
             _lastBytesHighlightning = e.BytesHiglightning;
 
+
+            var currPacket = SessionViewModel.CurrentSessionPacket;
+
             if (e.BytesHiglightning == BytesHighlightning.Empty)
             {
                 hexEditor.SelectionStop = -1;
                 hexEditor.SelectionStart = -1;
-                bool isDefinerNormalized = Regex.IsMatch(SessionViewModel.CurrentSessionPacket.Content, "^[0-9A-Fa-f]+$");
+                bool isDefinerNormalized = Regex.IsMatch(currPacket.Content, "^[0-9A-Fa-f]+$");
                 if (isDefinerNormalized)
                 {
-                    // User selected an item from the generated headers, nothing to show in the packet definer control
+                    // User selected an item without highlight specified (maybe a generated field)
                     // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                    SessionViewModel.CurrentSessionPacket.SelectionLength = 0;
+                    // currPacket.SelectionStart = 0;  TODO: Test me :) I should solve a bug
+                    currPacket.SelectionLength = 0;
                 }
             }
             else
@@ -476,23 +480,44 @@ namespace PacketStudio.NewGUI
                 hexEditor.SelectionStart = e.BytesHiglightning.Offset;
                 hexEditor.SelectionStop = e.BytesHiglightning.Offset + e.BytesHiglightning.Length - 1;
 
-                bool isDefinerNormalized = Regex.IsMatch(SessionViewModel.CurrentSessionPacket.Content, "^[0-9A-Fa-f]+$");
+                bool isDefinerNormalized = Regex.IsMatch(currPacket.Content, "^[0-9A-Fa-f]+$");
                 if (isDefinerNormalized)
                 {
-                    int headersLength = GetHeadersLengthFromType(SessionViewModel.CurrentSessionPacket.PacketType);
+                    int headersLength = GetHeadersLengthFromType(currPacket.PacketType);
                     int newOffset = (e.BytesHiglightning.Offset - headersLength) * 2;
                     if (newOffset < 0)
                     {
                         // User selected an item from the generated headers, nothing to show in the packet definer control
                         // Remove any previous selection (so to not confuse the user that the previous selection is also the right one for the current selecte field)
-                        SessionViewModel.CurrentSessionPacket.SelectionLength = 0;
+                        // currPacket.SelectionStart = 0;  TODO: Test me :) I should solve a bug
+                        currPacket.SelectionLength = 0;
                         return;
                     }
                     // User selected an item within the user's input in the definer - highlighting it for them.
-                    SessionViewModel.CurrentSessionPacket.SelectionStart = newOffset;
-                    SessionViewModel.CurrentSessionPacket.SelectionLength = e.BytesHiglightning.Length * 2;
+                    currPacket.SelectionStart = newOffset;
+                    currPacket.SelectionLength = e.BytesHiglightning.Length * 2;
                 }
             }
+        }
+
+        // TODO: Export this somewherr else
+        private int GetHeadersLengthFromType(HexStreamType packetType)
+        {
+            var assm = this.GetType().Assembly;
+            var packetTemplateTypes = assm.GetTypes().Where(type => typeof(IPacketTemplateControl).IsAssignableFrom(type) && !type.IsInterface);
+
+            foreach (var packetTemplateType in packetTemplateTypes)
+            {
+                HexStreamTypeAttribute typeAttr = packetTemplateType.GetCustomAttributes(typeof(HexStreamTypeAttribute), false).FirstOrDefault() as HexStreamTypeAttribute;
+                HexStreamType sType = typeAttr.StreamType;
+
+                if (sType == packetType)
+                {
+                    IPacketTemplateControl iptc = (IPacketTemplateControl)Activator.CreateInstance(packetTemplateType);
+                    return iptc.GetHeadersLength();
+                }
+            }
+            throw new ArgumentException($"Couldn't find template (and headers length) for type: {packetType}");
         }
 
         private void ExportToWireshark(object sender, RoutedEventArgs e)

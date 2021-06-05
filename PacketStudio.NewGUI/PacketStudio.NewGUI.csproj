@@ -118,6 +118,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="PacketTemplatesControls\IpTemplateControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Windows\RelocatePacketWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

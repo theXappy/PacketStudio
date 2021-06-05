@@ -12,19 +12,20 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
     /// <summary>
     /// Interaction logic for UdpTemplateControl.xaml
     /// </summary>
-    [DisplayName("UDP Packet")]
-    [Order(3)]
-    [HexStreamType(HexStreamType.UdpPayload)]
-    public partial class UdpTemplateControl : UserControl, IPacketTemplateControl
+    [DisplayName("IP Packet")]
+    [Order(1)]
+    [HexStreamType(HexStreamType.IpPayload)]
+    public partial class IpTemplateControl : UserControl, IPacketTemplateControl
     {
-        public int GetHeadersLength() => EthernetFields.HeaderLength + IPv4Fields.HeaderLength + UdpFields.HeaderLength;
+        public int GetHeadersLength() => EthernetFields.HeaderLength + IPv4Fields.HeaderLength;
 
-        private static readonly UdpPacketFactory _factory = new UdpPacketFactory();
+        private static readonly IpPacketFactory _factory = new IpPacketFactory();
 
-        public UdpTemplateControl()
+        public IpTemplateControl()
         {
             InitializeComponent();
             streamTextbox.Text = "1";
+            protocolTextbox.Text = "1";
         }
 
         public event EventHandler Changed;
@@ -38,8 +39,19 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             if (!int.TryParse(this.streamTextbox.Text, out _)) {
                 return false;
             }
+            
+            // Assert we have a valid protocol number
+            if (String.IsNullOrWhiteSpace(this.protocolTextbox.Text)) { 
+                return false;
+            }
+            if (!int.TryParse(this.protocolTextbox.Text, out int protoVal)) {
+                return false;
+            }
+            if (protoVal < 0 || protoVal > 255) {
+                return false;
+            }
 
-            // Only restriction: payload can't be too long
+            // Only restriction left: payload can't be too long
             return raw.Length <= ushort.MaxValue;
         }
 
@@ -47,8 +59,11 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         {
             if (int.TryParse(this.streamTextbox.Text, out int streamId))
             {
-                TempPacketSaveData packet = _factory.GetPacket(rawHex, streamId);
-                return (true, packet, null);
+                if (int.TryParse(this.protocolTextbox.Text, out int protoInt))
+                {
+                    TempPacketSaveData packet = _factory.GetPacket(rawHex, streamId, (byte)protoInt);
+                    return (true, packet, null);
+                }
             }
 
             return (false, null, $"Unknown error in {this.GetType()}");
@@ -70,5 +85,6 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
 
+        private void ProtocolTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);
     }
 }
