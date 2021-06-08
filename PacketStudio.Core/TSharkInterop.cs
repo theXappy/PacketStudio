@@ -205,9 +205,23 @@ namespace PacketStudio.Core
             string args = GetTextOutputArgs(inputPath, toBeEnabledHeurs, toBeDisabledHeurs);
             Debug.WriteLine("GetText Args: " + args);
 
+            var oldHandlerStdOut = handleStdoutLine;
+
+            handleStdoutLine = (line) =>
+            {
+                Debug.WriteLine("[TSHARK] STDOUT: " + line);
+                oldHandlerStdOut(line);
+            };
+
+            Action<string> handleStdErrLine = (line) =>
+            {
+                Debug.WriteLine("[TSHARK] STDERR: " + line);
+            };
+
             var cli = Cli.Wrap(_tsharkPath)
                 .WithArguments(args)
                 .WithStandardOutputPipe(PipeTarget.ToDelegate(handleStdoutLine, Encoding.UTF8))
+                .WithStandardErrorPipe(PipeTarget.ToDelegate(handleStdErrLine, Encoding.UTF8))
                 .ExecuteAsync(token);
 
             token.ThrowIfCancellationRequested();
