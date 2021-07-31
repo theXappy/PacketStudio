@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio", "PacketStudio\PacketStudio.csproj", "{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.DataAccess", "PacketStudio.DataAccess\PacketStudio.DataAccess.csproj", "{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.NewGUI", "PacketStudio.NewGUI\PacketStudio.NewGUI.csproj", "{68615F16-0B85-4858-91F0-B8662BF3095A}"
@@ -14,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet", "PacketDotNet\PacketDotNet.csproj", "{F205181B-B208-4D37-8AEC-899BE63932B6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketStudio.NetAccess", "PacketStudio.NetAccess\PacketStudio.NetAccess.csproj", "{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketStudio.Tests", "PacketStudio.Tests\PacketStudio.Tests.csproj", "{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketDotNet.Sctp", "PacketDotNet.Sctp\PacketDotNet.Sctp.csproj", "{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}"
 EndProject
@@ -33,18 +29,6 @@ Global
 		Signed|x86 = Signed|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Debug|x86.Build.0 = Debug|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Release|x86.ActiveCfg = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Release|x86.Build.0 = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Signed|Any CPU.ActiveCfg = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Signed|Any CPU.Build.0 = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Signed|x86.ActiveCfg = Release|Any CPU
-		{E6A5C94E-562D-4FAD-94C9-9718735C2B9B}.Signed|x86.Build.0 = Release|Any CPU
 		{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{587FB8B1-BC09-40D5-950D-4CD0A3C5F855}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -104,18 +88,6 @@ Global
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|Any CPU.Build.0 = Release|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|x86.ActiveCfg = Release|Any CPU
 		{5A85DFA7-D683-4A0C-84D5-D4BED3D738BD}.Signed|x86.Build.0 = Release|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Debug|x86.Build.0 = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|x86.ActiveCfg = Release|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Release|x86.Build.0 = Release|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|Any CPU.Build.0 = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|x86.ActiveCfg = Debug|Any CPU
-		{0DBDA36B-E38D-4BBA-9FA0-5BD18B19E1C4}.Signed|x86.Build.0 = Debug|Any CPU
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EA5D1A6-8F76-4318-95A1-D9BAE543932F}.Debug|x86.ActiveCfg = Debug|Any CPU
