@@ -200,6 +200,8 @@ namespace PacketStudio.Core
         public Task GetTextOutputAsync(string inputPath, CancellationToken token, Action<string> handleStdoutLine,
              List<string> toBeEnabledHeurs = null, List<string> toBeDisabledHeurs = null)
         {
+            CancellationTokenSource selfTokenSource = new CancellationTokenSource();
+            CancellationTokenSource combo = CancellationTokenSource.CreateLinkedTokenSource(token, selfTokenSource.Token);
             token.ThrowIfCancellationRequested();
 
             string args = GetTextOutputArgs(inputPath, toBeEnabledHeurs, toBeDisabledHeurs);
@@ -216,13 +218,18 @@ namespace PacketStudio.Core
             Action<string> handleStdErrLine = (line) =>
             {
                 Debug.WriteLine("[TSHARK] STDERR: " + line);
+                if(line.Contains("save preferences to remove this warning"))
+                {
+                    Debug.WriteLine("[TSHARK] Invalid preference was spotted in TShark. This usually makes TShark hang so we are aborting now.");
+                    selfTokenSource.Cancel();
+                }
             };
 
             var cli = Cli.Wrap(_tsharkPath)
                 .WithArguments(args)
                 .WithStandardOutputPipe(PipeTarget.ToDelegate(handleStdoutLine, Encoding.UTF8))
                 .WithStandardErrorPipe(PipeTarget.ToDelegate(handleStdErrLine, Encoding.UTF8))
-                .ExecuteAsync(token);
+                .ExecuteAsync(combo.Token);
 
             token.ThrowIfCancellationRequested();
 
