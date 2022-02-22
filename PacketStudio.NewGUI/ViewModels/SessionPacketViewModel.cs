@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -129,6 +129,8 @@ namespace PacketStudio.NewGUI.ViewModels
                 }
 
                 OnPropertyChanged(nameof(Content));
+                if(SessionPacket != null)
+                    OnPropertyChanged(nameof(SessionPacket));
             }
         }
         public HexStreamType PacketType
@@ -137,7 +139,13 @@ namespace PacketStudio.NewGUI.ViewModels
             set
             {
                 packetType = value;
+                if (SessionPacket != null)
+                {
+                    SessionPacket.Type = packetType;
+                }
                 OnPropertyChanged(nameof(PacketType));
+                if(SessionPacket != null)
+                    OnPropertyChanged(nameof(SessionPacket));
             }
         }
 
