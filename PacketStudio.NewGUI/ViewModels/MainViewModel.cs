@@ -16,6 +16,7 @@ using System.Threading;
 using System.Windows;
 using Syncfusion.Windows.Controls.Gantt;
 using Task = System.Threading.Tasks.Task;
+using PacketStudio.DataAccess.Providers;
 
 namespace PacketStudio.NewGUI.ViewModels
 {
@@ -220,7 +221,16 @@ namespace PacketStudio.NewGUI.ViewModels
 
         public Task LoadFileAsync(string path, CancellationToken token)
         {
-            _backingPcapng = MemoryPcapng.ParsePcapng(path);
+            return LoadFileAsync(MemoryPcapng.ParsePcapng(path), token);
+        }
+        public Task LoadFileAsync(CancellationToken token)
+        {
+            MemoryPcapng pcap = new MemoryPcapng();
+            return LoadFileAsync(pcap, token);
+        }
+        public Task LoadFileAsync(MemoryPcapng memPcap, CancellationToken token)
+        {
+            _backingPcapng = memPcap;
 
             ModifiedPackets.Clear();
 

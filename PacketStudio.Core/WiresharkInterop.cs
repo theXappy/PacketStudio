@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using CliWrap;
 using PacketStudio.DataAccess;
+using PacketStudio.Core.Utils;
+using System.Text;
 
 namespace PacketStudio.Core
 {
@@ -22,9 +25,33 @@ namespace PacketStudio.Core
 		private string _wiresharkPath;
 		private TempPacketsSaver _packetsSaver;
 
-	    public string Version { get; private set; }
+        private string _version;
+        public string Version
+        {
+            get => _version;
+            private set
+            {
+                _version = value;
 
-		public string WiresharkPath
+                VersionMajor = 0;
+                VersionMinor = 0;
+                string[] splitted = Version?.Split('.');
+                if (splitted != null && splitted.Length >= 2)
+                {
+                    int.TryParse(splitted[0], out var major);
+                    int.TryParse(splitted[1], out var minor);
+                    VersionMajor = major;
+                    VersionMinor = minor;
+                }
+            }
+        }
+
+        public int VersionMajor { get; set; }
+        public int VersionMinor { get; set; }
+
+        private byte[] _basedOnString = Encoding.ASCII.GetBytes("based on official release ");
+
+        public string WiresharkPath
 		{
 			get => _wiresharkPath;
 			set
@@ -36,6 +63,22 @@ namespace PacketStudio.Core
 				}
 			    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(value);
 			    Version = fvi.ProductVersion;
+                try
+                {
+                    byte[] wiresharkExeBytes = File.ReadAllBytes(value);
+                    int position = wiresharkExeBytes.IndexOfSequence(_basedOnString);
+                    if (position != -1)
+                    {
+                        position += _basedOnString.Length;
+                        byte[] dataWithAddress = wiresharkExeBytes[position..(position + 10)];
+                        int endPos = Array.IndexOf(dataWithAddress, (byte)' ');
+                        Version = Encoding.ASCII.GetString(dataWithAddress[..endPos]);
+                    }
+                }
+                catch
+                {
+                    // Just use the file version...
+                }
                 
 				_wiresharkPath = value;
 			}

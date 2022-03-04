@@ -542,12 +542,33 @@ namespace PacketStudio.NewGUI
                 .Select(tabViewModel => tabViewModel.ExportPacket).ToList();
             SessionViewModel.ApplyModifications();
 
+            WiresharkInterop.WiresharkInteropTask wsSessionTask;
 
-            var wsSender = new WiresharkPipeSender();
+            if (_wsInterOp.VersionMajor < 2)
+            {
 
-            string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
-            var senderTask = wsSender.SendPcapngAsync(pipeName, SessionViewModel.BackingPcapng);
-            var wsSessionTask = _wsInterOp.RunWireshark(@"\\.\pipe\" + pipeName);
+                var packetsSaver = new TempPacketsSaver();
+                if (exportedPackets.Count == 0)
+                {
+                    string path = Path.ChangeExtension(Path.GetTempFileName(), "pcapng");
+                    using FileStream fs = File.OpenWrite(path);
+                    SessionViewModel.BackingPcapng.WriteTo(fs);
+                    fs.Close();
+                    wsSessionTask = _wsInterOp.RunWireshark(path);
+                }
+                else
+                {
+                    throw new NotImplementedException("Can't handle sessions with modified packets not applied to the backing pcapng for Wireshark versions before v2");
+                }
+            }
+            else
+            {
+                var wsSender = new WiresharkPipeSender();
+
+                string pipeName = "ps_2_ws_pipe" + (new Random()).Next();
+                var senderTask = wsSender.SendPcapngAsync(pipeName, SessionViewModel.BackingPcapng);
+                wsSessionTask = _wsInterOp.RunWireshark(@"\\.\pipe\" + pipeName);
+            }
 
             // The following task continues when the user exits Wireshark.
             // In this case, we might want to trigger a preview update IF the user changed preferences using WS's GUI 
@@ -616,6 +637,7 @@ namespace PacketStudio.NewGUI
             var provider = ppf.Create(filePath);
 
             bool fileLoaded = false;
+            ReReisterPacketChangedEvent();
             using (Dispatcher.DisableProcessing())
             {
                 _fileLoading = true;
@@ -623,10 +645,14 @@ namespace PacketStudio.NewGUI
                 {
                     if (!filePath.EndsWith("pcapng"))
                     {
-                        throw new Exception("Trying to open a file without the .pcapng extension. It's not supported yet...");
+                        // TODO: Maybe not a None token?
+                        SessionViewModel.LoadFileAsync(CancellationToken.None);
                     }
-                    // TODO: Maybe not a None token?
-                    SessionViewModel.LoadFileAsync(filePath, CancellationToken.None);
+                    else
+                    {
+                        // TODO: Maybe not a None token?
+                        SessionViewModel.LoadFileAsync(filePath, CancellationToken.None);
+                    }
                     fileLoaded = true;
                 }
                 catch (Exception ex)

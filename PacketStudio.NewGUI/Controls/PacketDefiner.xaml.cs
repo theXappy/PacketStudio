@@ -80,6 +80,9 @@ namespace PacketStudio.NewGUI.Controls
                 hexTextBox.Text = newPacket.PacketData;
 
                 this.PacketTemplateControl.LoadSaveDetails(newPacket.Details);
+
+                // Notifying listener (main windows) that the export packet changed
+                OnPacketChanged(this, null);
             }
 
         }
@@ -273,7 +276,7 @@ namespace PacketStudio.NewGUI.Controls
 
         private void PacketDefiner_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ResetPacketUpdateEvent();
+            //ResetPacketUpdateEvent();
         }
 
         public void ResetPacketUpdateEvent()
