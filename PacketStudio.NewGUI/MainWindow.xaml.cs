@@ -118,32 +118,7 @@ namespace PacketStudio.NewGUI
             }
             else
             {
-                _logger.Info($"No Wireshark directory in settings. Prompting user to choose version.");
-
-                // No wireshark in settings, prompt user to select a version
-                WiresharkFinderWindow wfw = new WiresharkFinderWindow();
-                bool? userChoseWiresharkVersion = wfw.ShowDialog();
-                if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
-                {
-                    _logger.Info($"User canceled Wireshark version selection windows. Terminating!");
-                    Environment.Exit(1);
-                }
-
-                var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
-                if (finderViewModel == null)
-                {
-                    _logger.Error($"ViewModel of wireshark version window was null (or not {nameof(WiresharkFinderViewModel)}). Terminating!");
-                    Environment.Exit(1);
-                }
-
-                WiresharkDir = finderViewModel.SelectedItem;
-                _logger.Info($"User selected this Wireshark version: {WiresharkDir.WiresharkPath}");
-
-                _logger.Info($"Saving user's choice to settings. Wireshark version: {WiresharkDir.WiresharkPath}");
-                // Also save in settings for next runs
-                Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
-                Settings.Default.Save();
-                _logger.Info($"Saved Wireshark version to settings!");
+                PromptUserForWireshark();
             }
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
@@ -154,6 +129,36 @@ namespace PacketStudio.NewGUI
             hexEditor.Stream = new MemoryStream(Array.Empty<byte>());
 
             LoadRecentFilesFromSettings();
+        }
+
+        private void PromptUserForWireshark()
+        {
+            _logger.Info($"No Wireshark directory in settings. Prompting user to choose version.");
+
+            // No wireshark in settings, prompt user to select a version
+            WiresharkFinderWindow wfw = new WiresharkFinderWindow();
+            bool? userChoseWiresharkVersion = wfw.ShowDialog();
+            if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
+            {
+                _logger.Info($"User canceled Wireshark version selection windows. Terminating!");
+                Environment.Exit(1);
+            }
+
+            var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
+            if (finderViewModel == null)
+            {
+                _logger.Error($"ViewModel of wireshark version window was null (or not {nameof(WiresharkFinderViewModel)}). Terminating!");
+                Environment.Exit(1);
+            }
+
+            WiresharkDir = finderViewModel.SelectedItem;
+            _logger.Info($"User selected this Wireshark version: {WiresharkDir.WiresharkPath}");
+
+            _logger.Info($"Saving user's choice to settings. Wireshark version: {WiresharkDir.WiresharkPath}");
+            // Also save in settings for next runs
+            Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
+            Settings.Default.Save();
+            _logger.Info($"Saved Wireshark version to settings!");
         }
 
         private void UpdatePacketState(PacketDefiner invoker, bool avoidPacketsListUpdate = false)
@@ -796,32 +801,7 @@ namespace PacketStudio.NewGUI
 
         private void ChangeWsDir(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog
-            {
-                Filter = "Wireshark.exe|Wireshark.exe"
-            };
-            try
-            {
-                ofd.InitialDirectory = Path.GetDirectoryName(WiresharkDir.WiresharkPath);
-            }
-            catch
-            {
-                // IDK...
-            }
-            bool? res = ofd.ShowDialog();
-            if (res != true) return;
-
-            if (!ofd.CheckFileExists) return;
-
-            string dirPath = Path.GetDirectoryName(ofd.FileName);
-            if (SharksFinder.TryGetByPath(dirPath, out WiresharkDirectory wsDir))
-            {
-                // Update settings
-                Settings.Default.WiresharkDir = wsDir.WiresharkPath;
-
-                // Raise list updated "event"
-                WiresharkDir = wsDir;
-            }
+            PromptUserForWireshark();
         }
 
 
