@@ -47,7 +47,18 @@ namespace PacketStudio.NewGUI
 
         WiresharkDirectory _wiresharkDirectory;
         private WiresharkInterop _wsInterOp;
-        private TSharkInterop _tsharkInterOp;
+        private TSharkInterop _tsharkInterOp
+        {
+            get
+            {
+                return SessionViewModel.TsharkInterop;
+            }
+            set
+            {
+                SessionViewModel.TsharkInterop = value;
+            }
+        }
+
         public WiresharkDirectory WiresharkDir
         {
             get => _wiresharkDirectory;
@@ -224,7 +235,9 @@ namespace PacketStudio.NewGUI
         {
             if (_fileLoading) return;
 
-            UpdatePacketState(sender as PacketDefiner);
+            PacketDefiner definer = sender as PacketDefiner;
+            SessionViewModel.CurrentSessionPacket.SessionPacket = definer.SessionPacket;
+            UpdatePacketState(definer);
             _sessionSaveState.HasUnsavedChanges = true;
         }
 

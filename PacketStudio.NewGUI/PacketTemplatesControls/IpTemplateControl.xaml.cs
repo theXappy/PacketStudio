@@ -73,6 +73,7 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
         {
             var dict = new Dictionary<string, string>();
             dict[PacketSaveDataNGProtoFields.STREAM_ID] = streamTextbox.Text;
+            dict[PacketSaveDataNGProtoFields.PPID_ID] = protocolTextbox.Text;
             return dict;
         }
 
@@ -81,6 +82,9 @@ namespace PacketStudio.NewGUI.PacketTemplatesControls
             string streamId;
             if (data.TryGetValue(PacketSaveDataNGProtoFields.STREAM_ID, out streamId))
                 streamTextbox.Text = streamId;
+            string ppid;
+            if (data.TryGetValue(PacketSaveDataNGProtoFields.PPID_ID, out ppid))
+                protocolTextbox.Text = ppid;
         }
 
         private void StreamTextbox_OnTextChanged(object sender, TextChangedEventArgs e) => Changed?.Invoke(this, e);

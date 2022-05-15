@@ -225,6 +225,7 @@ namespace PacketStudio.Core
                 }
             };
 
+            Debug.WriteLine("[TSHARK] Invoking this tshark: " + _tsharkPath);
             var cli = Cli.Wrap(_tsharkPath)
                 .WithArguments(args)
                 .WithStandardOutputPipe(PipeTarget.ToDelegate(handleStdoutLine, Encoding.UTF8))

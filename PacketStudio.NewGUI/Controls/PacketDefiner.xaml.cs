@@ -72,6 +72,9 @@ namespace PacketStudio.NewGUI.Controls
         {
             if (e.NewValue is PacketSaveDataNG newPacket)
             {
+                if (this.SessionPacket.Equals(newPacket))
+                    return;
+
                 // Getting the right listbox item of the "packet types list"
                 var listItem = _streamTypeToListItems[newPacket.Type];
 
@@ -238,6 +241,11 @@ namespace PacketStudio.NewGUI.Controls
 
         private void PacketTemplateControlChanged(object sender, EventArgs e)
         {
+            // Invoking getter actually applies changes.
+            // TODO: Modify the Session Packet HERE and not in the getter
+            var sesPacket = SessionPacket;
+            GC.KeepAlive(sesPacket); // prevent compiler rom removing last line
+
             this.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => this.OnPacketChanged(this, e)));
         }
 

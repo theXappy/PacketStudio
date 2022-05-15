@@ -194,7 +194,6 @@ namespace PacketStudio.NewGUI.ViewModels
             Content = normalizedBytes.ToHex();
         }
 
-
         public override string ToString()
         {
             return $"PacketIndex: {_packetIndex}, HexType: {this.PacketType}, Content: {content}";

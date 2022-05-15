@@ -215,7 +215,7 @@ namespace PacketStudio.NewGUI.ViewModels
             MainWindow.SessionViewModel = this;
         }
 
-        private TSharkInterop _tshark = new TSharkInterop(SharksFinder.GetDirectories().First().TsharkPath);
+        public TSharkInterop TsharkInterop { get; set; }
         private bool _isPacketsDescriptionsUpdating;
         private bool _isPacketPreviewUpdating;
 
@@ -291,7 +291,7 @@ namespace PacketStudio.NewGUI.ViewModels
             }
 
 
-            var tsharkTask = _tshark.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
+            var tsharkTask = TsharkInterop.GetTextOutputAsync(@"\\.\pipe\" + pipeName, token, HandleNewTSharkTextLine);
 
             // Pad with "ERROR GEN'ING" to number of packets
             tsharkTask.ContinueWith(t =>
