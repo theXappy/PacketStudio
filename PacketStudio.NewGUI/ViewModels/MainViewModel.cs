@@ -355,6 +355,21 @@ namespace PacketStudio.NewGUI.ViewModels
         {
             lock (_modifiedPacketsLock)
             {
+                List<InterfaceDescriptionBlock> newInterfacesList = new List<InterfaceDescriptionBlock>();
+
+                int GetIndexOrAdd(InterfaceDescriptionBlock iface)
+                {
+                    // Let's find the (old or new) interface's index will be after re-ordering
+                    int matchingIfaceId = newInterfacesList.IndexOf(iface);
+                    if (matchingIfaceId == -1)
+                    {
+                        // Not yet in the new interfaces list. Let's add it now
+                        newInterfacesList.Add(iface);
+                        matchingIfaceId = newInterfacesList.IndexOf(iface);
+                    }
+                    return matchingIfaceId;
+                }
+
 
                 foreach (SessionPacketViewModel packetVm in ModifiedPackets.ToList())
                 {
@@ -378,6 +393,9 @@ namespace PacketStudio.NewGUI.ViewModels
                         // If the VM is not valid we can't generate a packet so let's just reset this packet in the backing pacpng
                         // so when wireshark processes it it doesn't freak out/ruin other packets (e.g. in TCP stream)
                         Array.Clear(oldEpb.Data, 0, oldEpb.Data.Length);
+
+                        InterfaceDescriptionBlock matchingInterface = _backingPcapng.Interfaces[oldEpb.InterfaceID];
+                        oldEpb.InterfaceID = GetIndexOrAdd(matchingInterface);
                     }
                     else
                     {
@@ -389,20 +407,23 @@ namespace PacketStudio.NewGUI.ViewModels
 
                         // Figure out best interface ID for this packet
                         // Check if prev packet at this position had our link layer -- then use it's iface id
-                        if (_backingPcapng.Interfaces[oldEpb.InterfaceID].LinkType != (LinkTypes)packet.LinkLayer)
+
+
+                        InterfaceDescriptionBlock matchingInterface = _backingPcapng.Interfaces[oldEpb.InterfaceID];
+                        if (matchingInterface.LinkType != (LinkTypes)packet.LinkLayer)
                         {
-                            // Mismatch link type, find another interface
-                            var matchingInterface =
+                            // Mismatch link type, Just find any another interface with that type and go with it...
+                            matchingInterface =
                                 _backingPcapng.Interfaces.FirstOrDefault(iface =>
                                     iface.LinkType == (LinkTypes)packet.LinkLayer);
                             if (matchingInterface == null)
                             {
-                                throw new NotImplementedException("No interface for the linklayer of the packet");
+                                // No interface for that link type yet. Creating a new one here!
+                                matchingInterface = new InterfaceDescriptionBlock((LinkTypes)packet.LinkLayer, 0, new InterfaceDescriptionOption());
                             }
-
-                            var matchingIfaceId = _backingPcapng.Interfaces.IndexOf(matchingInterface);
-                            oldEpb.InterfaceID = matchingIfaceId;
                         }
+
+                        oldEpb.InterfaceID = GetIndexOrAdd(matchingInterface);
 
                         // This packet is no longer 'modified' compared to the pcapng
                         // but NOT if it's current packet
@@ -421,7 +442,12 @@ namespace PacketStudio.NewGUI.ViewModels
 
                     _backingPcapng.UpdatePacket(index, oldEpb);
 
-                }
+                } // foreach
+
+                // Now let's remove those unused interface blocks
+                _backingPcapng.Interfaces.Clear();
+                _backingPcapng.Interfaces.AddRange(newInterfacesList);
+
             }
         }
 
