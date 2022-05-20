@@ -118,7 +118,11 @@ namespace PacketStudio.NewGUI
             }
             else
             {
-                PromptUserForWireshark();
+                bool success = PromptUserForWireshark();
+                if(!success)
+                {
+                    Environment.Exit(1);
+                }
             }
 
             // TODO: Replace with getting the value from config and using "LivePreviewDelay = *configValue*"
@@ -131,7 +135,7 @@ namespace PacketStudio.NewGUI
             LoadRecentFilesFromSettings();
         }
 
-        private void PromptUserForWireshark()
+        private bool PromptUserForWireshark()
         {
             _logger.Info($"No Wireshark directory in settings. Prompting user to choose version.");
 
@@ -140,15 +144,15 @@ namespace PacketStudio.NewGUI
             bool? userChoseWiresharkVersion = wfw.ShowDialog();
             if (!userChoseWiresharkVersion.HasValue || !userChoseWiresharkVersion.Value)
             {
-                _logger.Info($"User canceled Wireshark version selection windows. Terminating!");
-                Environment.Exit(1);
+                _logger.Info($"User canceled Wireshark version selection windows...");
+                return false;
             }
 
             var finderViewModel = wfw.DataContext as WiresharkFinderViewModel;
             if (finderViewModel == null)
             {
                 _logger.Error($"ViewModel of wireshark version window was null (or not {nameof(WiresharkFinderViewModel)}). Terminating!");
-                Environment.Exit(1);
+                return false;
             }
 
             WiresharkDir = finderViewModel.SelectedItem;
@@ -159,6 +163,7 @@ namespace PacketStudio.NewGUI
             Settings.Default.WiresharkDir = WiresharkDir.WiresharkPath;
             Settings.Default.Save();
             _logger.Info($"Saved Wireshark version to settings!");
+            return true;
         }
 
         private void UpdatePacketState(PacketDefiner invoker, bool avoidPacketsListUpdate = false)
@@ -603,8 +608,6 @@ namespace PacketStudio.NewGUI
 
         private void OpenMenuItemClicked(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} - OpenMenuItemClicked");
-
             if (_sessionSaveState.HasUnsavedChanges)
             {
                 // Prompt user about unsaved changes in current session
@@ -798,16 +801,11 @@ namespace PacketStudio.NewGUI
         #endregion
 
         private void ExitMenuItemClicked(object sender, RoutedEventArgs e) => Close();
-
-        private void ChangeWsDir(object sender, RoutedEventArgs e)
-        {
-            PromptUserForWireshark();
-        }
+        private void ChangeWsDir(object sender, RoutedEventArgs e) => PromptUserForWireshark();
 
 
         private void MenuButton_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Debug.WriteLine(e.Key);
             if (!e.IsDown)
                 return;
             if (e.Key != Key.Down && e.Key != Key.Up &&
@@ -815,7 +813,6 @@ namespace PacketStudio.NewGUI
                 return;
 
             MenuButton invokingButton = sender as MenuButton;
-            Debug.WriteLine(e.Key);
             if (e.Key == Key.Return || e.Key == Key.Enter)
             {
                 switch (invokingButton.Name)
@@ -941,7 +938,6 @@ namespace PacketStudio.NewGUI
             int newIndex = SessionViewModel.SelectedPacketIndex - 1;
             if (newIndex < 0)
             {
-                Debug.WriteLine(" @@@ Trying to move to negative index... stopping");
                 return;
             }
 
@@ -955,7 +951,6 @@ namespace PacketStudio.NewGUI
             int newIndex = SessionViewModel.SelectedPacketIndex + 1;
             if (newIndex >= SessionViewModel.PacketsCount)
             {
-                Debug.WriteLine(" @@@ Trying to move to too high of an index... stopping");
                 return;
             }
 
@@ -1090,10 +1085,7 @@ namespace PacketStudio.NewGUI
             }
         }
 
-        private void DeletePacket(object sender, RoutedEventArgs e)
-        {
-            SessionViewModel.DeletePacket();
-        }
+        private void DeletePacket(object sender, RoutedEventArgs e) => SessionViewModel.DeletePacket();
 
         #region PacketsList packet switching workaround
 
@@ -1110,7 +1102,6 @@ namespace PacketStudio.NewGUI
             //
 
             CurrentPacketDefiner.ResetPacketUpdateEvent(); // Prevent weird edge cases (hopefully)
-            Debug.WriteLine(" @@@ Registering PacketChange handler LOL!!!!! ");
             CurrentPacketDefiner.PacketChanged += PacketDefinerPacketChanged;
 
             // Only time this function runs and we don't want to update the packet state is when we are still in InitializeComponents in the Ctor
