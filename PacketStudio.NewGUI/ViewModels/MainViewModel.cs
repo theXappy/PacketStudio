@@ -373,14 +373,6 @@ namespace PacketStudio.NewGUI.ViewModels
 
                 foreach (SessionPacketViewModel packetVm in ModifiedPackets.ToList())
                 {
-                    Debug.WriteLine($" @@@ = Another packet found in the ModifiedPacketsList. Index: {packetVm.PacketIndex}");
-                    if (!packetVm.IsModified && packetVm.IsValid)
-                    {
-                        Debug.WriteLine(" @@@ = ... But the packet is not modified (and valid), so skipping !~!~");
-                        continue;
-                    }
-
-                    Debug.WriteLine(" @@@ = ... And it's modified (or invalid)! Let's see if we can export it (if it's valid)");
                     int index = packetVm.PacketIndex;
                     EnhancedPacketBlock oldEpb = _backingPcapng.GetPacket(index);
 
@@ -399,11 +391,14 @@ namespace PacketStudio.NewGUI.ViewModels
                     }
                     else
                     {
-                        Debug.WriteLine($" @@@ = It's valid! Applying modification for packet #{index}");
-                        oldEpb.Data = packet.Data;
-                        Debug.WriteLine($" @@@ = Its Data: {packet.Data.ToHex()}");
-                        oldEpb.PacketLength = packet.Data.Length;
-                        Debug.WriteLine($" @@@ = Its Data Length: {packet.Data.Length}");
+                        if (packetVm.IsModified)
+                        {
+                            Debug.WriteLine($" @@@ = It's valid! Applying modification for packet #{index}");
+                            oldEpb.Data = packet.Data;
+                            Debug.WriteLine($" @@@ = Its Data: {packet.Data.ToHex()}");
+                            oldEpb.PacketLength = packet.Data.Length;
+                            Debug.WriteLine($" @@@ = Its Data Length: {packet.Data.Length}");
+                        }
 
                         // Figure out best interface ID for this packet
                         // Check if prev packet at this position had our link layer -- then use it's iface id
